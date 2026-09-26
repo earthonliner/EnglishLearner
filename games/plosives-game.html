@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>爆破音大冒险 · Plosive Party</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1B1F3B;--panel:#262B52;--ink:#F5F3FF;--muted:#A9AFD1;--p:#FF6B9D;--b:#FF9F43;--t:#FFD93D;--d:#6BCB77;--k:#4D96FF;--g:#C77DFF;--ok:#3DDC97;--no:#FF5D5D;
+--fd:'Baloo 2','PingFang SC','Microsoft YaHei',sans-serif;--fb:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;--ipa:'Charis SIL','Doulos SIL','Times New Roman',serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100vh;background-image:radial-gradient(circle at 20% 10%,#31386b 0,transparent 40%),radial-gradient(circle at 80% 90%,#3a2a5c 0,transparent 40%)}
+header{padding:22px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-family:var(--fd);font-size:34px;font-weight:800;background:linear-gradient(90deg,var(--p),var(--t),var(--k));-webkit-background-clip:text;background-clip:text;color:transparent}
+header .sub{font-size:14px;color:var(--muted);margin-top:2px}
+.hud{display:flex;gap:12px;align-items:center;font-weight:800}
+.pill{background:var(--panel);padding:8px 16px;border-radius:999px;font-size:16px;border:2px solid #3a4078}
+main{max-width:1140px;margin:0 auto;padding:10px 20px 60px}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.lv{background:var(--panel);border-radius:18px;padding:14px 12px;text-align:center;cursor:pointer;border:3px solid transparent;transition:.15s;position:relative}
+.lv:hover{transform:translateY(-4px)}.lv.active{border-color:var(--t)}
+.lv .ic{font-size:36px}.lv .nm{font-family:var(--fd);font-weight:800;font-size:17px;margin-top:4px}.lv .ds{font-size:12px;color:var(--muted);margin-top:2px}
+.lv .st{margin-top:6px;letter-spacing:2px;color:var(--t);font-size:14px}
+.lv.locked{opacity:.45;cursor:not-allowed}.lv.locked::after{content:'🔒';position:absolute;top:8px;right:10px}
+.stage{background:var(--panel);border-radius:24px;padding:26px 28px;min-height:460px;border:2px solid #3a4078;position:relative}
+.stage h2{font-family:var(--fd);font-size:28px;font-weight:800}
+.stage .rule{color:var(--muted);font-size:15px;margin:4px 0 18px}
+.progress{height:10px;background:#1b1f3b;border-radius:5px;overflow:hidden;margin-bottom:18px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--ok),var(--k));width:0;transition:.3s}
+.btn{border:none;border-radius:999px;padding:12px 26px;font-family:var(--fd);font-weight:800;font-size:18px;cursor:pointer;color:#1B1F3B;background:var(--t);box-shadow:0 6px 0 rgba(0,0,0,.25);transition:.12s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.btn.ghost{background:#3a4078;color:var(--ink)}.btn.ok{background:var(--ok)}.btn.no{background:var(--no);color:#fff}.btn.k{background:var(--k);color:#fff}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+.big{font-family:var(--fd);font-size:60px;font-weight:800;text-align:center}
+.ipa{font-family:var(--ipa)}
+.sound{display:inline-flex;align-items:center;justify-content:center;font-family:var(--ipa);font-size:34px;font-weight:700;width:72px;height:72px;border-radius:20px;color:#1B1F3B}
+.s-p{background:var(--p)}.s-b{background:var(--b)}.s-t{background:var(--t)}.s-d{background:var(--d)}.s-k{background:var(--k)}.s-g{background:var(--g)}
+.grid{display:grid;gap:14px}
+.card{background:#1B1F3B;border:3px solid #3a4078;border-radius:20px;padding:16px 10px;text-align:center;cursor:pointer;transition:.15s;font-weight:800;font-size:24px;user-select:none}
+.card .em{font-size:52px;display:block;line-height:1.1}
+.card:hover{border-color:var(--t);transform:translateY(-3px)}
+.card.ok{border-color:var(--ok);background:#1f3b34}.card.no{border-color:var(--no);animation:shake .3s}
+.card.dim{opacity:.35;pointer-events:none}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.popin{animation:pop .35s ease both}
+.fb{min-height:30px;text-align:center;font-weight:800;font-size:20px;margin-top:16px}
+.fb.ok{color:var(--ok)}.fb.no{color:var(--no)}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;align-items:center}
+.bins{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:14px}
+.bin{border:3px dashed #3a4078;border-radius:18px;padding:12px 6px;text-align:center;cursor:pointer;min-height:130px;transition:.15s;background:#1B1F3B}
+.bin:hover{border-color:var(--t)}.bin.ok{border-style:solid;border-color:var(--ok)}.bin.no{border-color:var(--no);animation:shake .3s}
+.bin .items{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px}
+.bin .items span{background:#2f3566;border-radius:8px;padding:2px 6px;font-size:13px}
+.throat{display:flex;gap:30px;justify-content:center;align-items:center;flex-wrap:wrap;margin:10px 0}
+.hand{font-size:110px;line-height:1}
+.timer{font-family:var(--fd);font-size:36px;font-weight:800;color:var(--t)}
+.whack{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:10px}
+.hole{height:120px;border-radius:20px;background:#1B1F3B;border:3px solid #3a4078;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;cursor:pointer;position:relative;overflow:hidden}
+.hole .mole{transform:translateY(130%);transition:transform .25s;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.hole .mole .em{font-size:44px}
+.hole.up .mole{transform:translateY(0)}
+.hole.hit{background:#1f3b34;border-color:var(--ok)}.hole.miss{background:#3b1f2a;border-color:var(--no)}
+.pairs{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:640px;margin:0 auto}
+.mem{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.mc{aspect-ratio:1;border-radius:16px;background:var(--k);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;cursor:pointer;transition:transform .3s;transform-style:preserve-3d;position:relative}
+.mc .f,.mc .bk{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:16px;backface-visibility:hidden}
+.mc .f{background:#3a4078;font-size:34px}.mc .bk{background:#1B1F3B;border:3px solid var(--t);transform:rotateY(180deg);flex-direction:column;font-size:22px}
+.mc.open{transform:rotateY(180deg)}.mc.done{opacity:.35;pointer-events:none}
+.result{text-align:center;padding:24px 10px}
+.result .emoji{font-size:80px}.result h3{font-family:var(--fd);font-size:30px;margin:10px 0}.result .stars{font-size:44px;color:var(--t);letter-spacing:6px}.result p{color:var(--muted)}
+.chart{background:var(--panel);border-radius:24px;padding:22px 26px;margin-top:22px;border:2px solid #3a4078}
+.chart h3{font-family:var(--fd);font-size:20px;margin-bottom:12px}
+.ref{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rf{background:#1B1F3B;border-radius:18px;padding:14px;display:flex;gap:14px;align-items:center}
+.rf .info b{display:block;font-size:16px}.rf .info span{font-size:13px;color:var(--muted)}
+.tt{background:#1B1F3B;border-radius:18px;padding:22px;font-size:26px;line-height:1.5;text-align:center;font-weight:800}
+.tt b{color:var(--t)}
+.hidden{display:none}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:18px}
+@media (max-width:700px){.bins{grid-template-columns:repeat(3,1fr)}.mem{grid-template-columns:repeat(4,1fr)}.whack{grid-template-columns:repeat(3,1fr)}.ref{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>💥 爆破音大冒险 · Plosive Party</h1><div class="sub">/p/ /b/ · /t/ /d/ · /k/ /g/ — 六个爆破音 · 七个游戏 · 老师读音、学生抢答</div></div>
+  <div class="hud"><div class="pill">⭐ <span id="score">0</span></div><div class="pill">🔥 连击 <span id="combo">0</span></div><button class="btn ghost" id="resetBtn" style="padding:8px 16px;font-size:15px">重置进度</button></div>
+</header>
+<main>
+  <section class="levels" id="levels"></section>
+  <section class="stage" id="stage"></section>
+  <section class="chart">
+    <h3>📚 六个爆破音速查（点击卡片看口型提示）</h3>
+    <div class="ref" id="ref"></div>
+  </section>
+</main>
+<footer>建议：由老师或学生真人发音，课件负责出题、计分和反馈。所有游戏翻回即可重玩。</footer>
+
+<script>
+/* ---------- data ---------- */
+const SOUNDS={
+ p:{ipa:'p',voiced:false,tip:'双唇紧闭→用力送气爆开，不振动声带。手放喉咙：不抖。',words:[['pig','🐷'],['pen','🖊️'],['pan','🍳'],['pizza','🍕'],['panda','🐼'],['pear','🍐'],['pink','🩷'],['park','🏞️']]},
+ b:{ipa:'b',voiced:true, tip:'双唇紧闭→轻轻爆开，声带振动。手放喉咙：抖！',words:[['bus','🚌'],['ball','⚽'],['bed','🛏️'],['bear','🐻'],['banana','🍌'],['book','📚'],['bird','🐦'],['boat','⛵']]},
+ t:{ipa:'t',voiced:false,tip:'舌尖抵上齿龈→弹开送气，不振动声带。',words:[['tiger','🐯'],['ten','🔟'],['tea','🍵'],['tomato','🍅'],['turtle','🐢'],['table','🪑'],['taxi','🚕'],['tooth','🦷']]},
+ d:{ipa:'d',voiced:true, tip:'舌尖抵上齿龈→弹开，声带振动。',words:[['dog','🐶'],['duck','🦆'],['door','🚪'],['dinosaur','🦕'],['drum','🥁'],['doll','🪆'],['desk','🖥️'],['dolphin','🐬']]},
+ k:{ipa:'k',voiced:false,tip:'舌后部抬起抵软腭→爆开送气，不振动声带。字母 c / k / ck 都可发 /k/。',words:[['cat','🐱'],['cake','🎂'],['key','🔑'],['car','🚗'],['king','🤴'],['kite','🪁'],['cow','🐄'],['candy','🍬']]},
+ g:{ipa:'g',voiced:true, tip:'舌后部抬起抵软腭→爆开，声带振动。',words:[['goat','🐐'],['girl','👧'],['gift','🎁'],['guitar','🎸'],['grapes','🍇'],['gorilla','🦍'],['game','🎮'],['garden','🌷']]}};
+const KEYS=['p','b','t','d','k','g'];
+const PAIRS=[['pin','bin','p','b'],['pat','bat','p','b'],['pea','bee','p','b'],['pig','big','p','b'],['park','bark','p','b'],
+ ['ten','den','t','d'],['tie','die','t','d'],['two','do','t','d'],['town','down','t','d'],['time','dime','t','d'],
+ ['coat','goat','k','g'],['cold','gold','k','g'],['class','glass','k','g'],['cap','gap','k','g'],['come','gum','k','g']];
+const FINALS=[['cap','cab','p','b'],['rope','robe','p','b'],['bat','bad','t','d'],['hat','had','t','d'],['back','bag','k','g'],['pick','pig','k','g'],['cat','cad','t','d'],['dock','dog','k','g']];
+const TWISTERS=[['Peter Piper picked a peck of pickled peppers.','p'],['Big brown bears bake blueberry bread.','b'],['Two tiny tigers take two taxis to town.','t'],['Dirty dogs dig deep in the dark.','d'],['Kind kings keep cool cats in the kitchen.','k'],['Good green grapes grow in Grandpa\'s garden.','g']];
+
+/* ---------- utils ---------- */
+const $=s=>document.querySelector(s);
+const shuffle=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+const pick=(a,n)=>shuffle(a).slice(0,n); const rand=a=>a[Math.floor(Math.random()*a.length)];
+const ctx=('AudioContext' in window)?new AudioContext():null;
+function beep(ok){if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=ok?'sine':'sawtooth';o.frequency.value=ok?880:180;g.gain.setValueAtTime(.12,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.25);o.start();o.stop(ctx.currentTime+.25);
+ if(ok){const o2=ctx.createOscillator(),g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.frequency.value=1320;g2.gain.setValueAtTime(.1,ctx.currentTime+.1);g2.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.35);o2.start(ctx.currentTime+.1);o2.stop(ctx.currentTime+.35);}}
+const state=JSON.parse(localStorage.getItem('plosiveParty')||'{}');state.score=state.score||0;state.stars=state.stars||{};
+let combo=0,cur=null;
+const save=()=>localStorage.setItem('plosiveParty',JSON.stringify(state));
+function addScore(n){state.score+=n;combo++;$('#score').textContent=state.score;$('#combo').textContent=combo;save();}
+function breakCombo(){combo=0;$('#combo').textContent=0;}
+const sndBtn=(k,extra='')=>`<button class="card ${extra}" data-k="${k}"><span class="sound s-${k}">/${SOUNDS[k].ipa}/</span></button>`;
+
+/* ---------- levels ---------- */
+const LEVELS=[
+ {id:1,ic:'🧺',nm:'首音分拣',ds:'把词放进对的音箩',rounds:12,build:bSort},
+ {id:2,ic:'✋',nm:'摸喉咙',ds:'清音还是浊音？',rounds:10,build:bVoice},
+ {id:3,ic:'⚔️',nm:'最小对立决斗',ds:'pin 还是 bin？',rounds:10,build:bPair},
+ {id:4,ic:'🔨',nm:'打地鼠',ds:'只打目标音的词',rounds:0,build:bWhack},
+ {id:5,ic:'🎯',nm:'尾音侦探',ds:'cap 还是 cab？',rounds:8,build:bFinal},
+ {id:6,ic:'🃏',nm:'记忆翻牌',ds:'词配音标',rounds:0,build:bMemory},
+ {id:7,ic:'🌪️',nm:'绕口令挑战',ds:'计时朗读',rounds:0,build:bTwister}];
+const unlocked=id=>id===1||state.stars[id-1]>=1;
+function renderLevels(){const el=$('#levels');el.innerHTML='';LEVELS.forEach(L=>{const d=document.createElement('div');d.className='lv'+(unlocked(L.id)?'':' locked')+(cur&&cur.id===L.id?' active':'');
+ d.innerHTML=`<div class="ic">${L.ic}</div><div class="nm">${L.id}. ${L.nm}</div><div class="ds">${L.ds}</div><div class="st">${'★'.repeat(state.stars[L.id]||0)}${'☆'.repeat(3-(state.stars[L.id]||0))}</div>`;
+ d.onclick=()=>{if(unlocked(L.id))start(L);else{const f=$('#fb');if(f){f.textContent='先拿到上一关至少 1 颗星！';f.className='fb no';}}};el.appendChild(d);});}
+function start(L){cur={id:L.id,L,round:0,ok:0,bad:0};renderLevels();L.build();}
+function frame(L,html,rule){const pct=L.rounds?Math.round(cur.round/L.rounds*100):0;
+ $('#stage').innerHTML=`<h2>${L.ic} 第 ${L.id} 关 · ${L.nm}</h2><div class="rule">${rule}</div>${L.rounds?`<div class="progress"><div style="width:${pct}%"></div></div>`:''}${html}<div class="fb" id="fb"></div>`;}
+function fb(ok,msg){const f=$('#fb');f.textContent=msg;f.className='fb '+(ok?'ok':'no');}
+function mark(ok,pts,msg){if(ok){beep(true);addScore(pts);cur.ok++;}else{beep(false);breakCombo();cur.bad++;}fb(ok,msg);}
+function next(build){cur.round++;if(cur.round>=cur.L.rounds)finish();else setTimeout(build,900);}
+function finish(custom){const tot=cur.ok+cur.bad,acc=tot?cur.ok/tot:0;const stars=custom!=null?custom:(acc>=.9?3:acc>=.7?2:acc>=.5?1:0);
+ state.stars[cur.id]=Math.max(state.stars[cur.id]||0,stars);save();
+ const words={3:'完美通关！爆破音小达人！',2:'很棒！再练练就满星了',1:'过关了，继续加油',0:'再挑战一次吧！'}[stars];
+ $('#stage').innerHTML=`<div class="result"><div class="emoji">${['💪','👍','🎉','🏆'][stars]}</div><h3>${words}</h3><div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div><p>正确 ${cur.ok} · 错误 ${cur.bad}${tot?` · 正确率 ${Math.round(acc*100)}%`:''}</p>
+ <div class="row"><button class="btn" onclick="start(LEVELS[${cur.id-1}])">🔁 再玩一次</button>${cur.id<7?`<button class="btn ghost" onclick="start(LEVELS[${cur.id}])">下一关 ➡️</button>`:''}</div></div>`;renderLevels();}
+const lock=()=>document.querySelectorAll('.card').forEach(b=>b.classList.add('dim'));
+
+/* 1 sort */
+function bSort(){const L=LEVELS[0];
+ if(cur.round===0){cur.queue=shuffle(KEYS.flatMap(k=>pick(SOUNDS[k].words,2).map(w=>[k,...w])));cur.done=[];}
+ const [k,w,em]=cur.queue[cur.round];
+ frame(L,`<div class="big popin"><span style="font-size:80px">${em}</span><br>${w}</div>
+  <div class="bins">${KEYS.map(x=>`<div class="bin" data-k="${x}"><span class="sound s-${x}">/${x}/</span><div class="items">${cur.done.filter(d=>d[0]===x).map(d=>`<span>${d[1]}</span>`).join('')}</div></div>`).join('')}</div>`,
+  '看图读词（老师先示范），点击这个词开头的爆破音箩筐。');
+ document.querySelectorAll('.bin').forEach(b=>b.onclick=()=>{document.querySelectorAll('.bin').forEach(x=>x.onclick=null);const ok=b.dataset.k===k;b.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.bin[data-k="${k}"]`).classList.add('ok');cur.done.push([k,w]);mark(ok,10,ok?`✔ ${w} → /${k}/`:`✘ ${w} 的首音是 /${k}/`);next(bSort);});}
+
+/* 2 voiced */
+function bVoice(){const L=LEVELS[1];const k=rand(KEYS),[w,em]=rand(SOUNDS[k].words);
+ frame(L,`<div class="throat"><div class="hand">🤚🗣️</div><div><div class="big popin">${em} ${w}</div><div style="text-align:center;color:var(--muted)">首音 <span class="ipa" style="font-size:28px;color:var(--ink)">/${k}/</span></div></div></div>
+  <div class="row"><button class="card" data-v="0" style="min-width:220px"><span class="em">🔇</span>清音 · 喉咙不抖<br><small style="color:var(--muted)">voiceless /p/ /t/ /k/</small></button><button class="card" data-v="1" style="min-width:220px"><span class="em">📢</span>浊音 · 喉咙抖<br><small style="color:var(--muted)">voiced /b/ /d/ /g/</small></button></div>`,
+  '把手放在喉咙上，读出这个词的首音。声带振动吗？');
+ document.querySelectorAll('.card').forEach(b=>b.onclick=()=>{lock();const ok=(b.dataset.v==='1')===SOUNDS[k].voiced;b.classList.add(ok?'ok':'no');mark(ok,10,ok?`✔ /${k}/ 是${SOUNDS[k].voiced?'浊音':'清音'}`:`✘ /${k}/ 是${SOUNDS[k].voiced?'浊音，喉咙会抖':'清音，喉咙不抖'}`);next(bVoice);});}
+
+/* 3 minimal pair duel */
+function bPair(){const L=LEVELS[2];const [a,b,ka,kb]=rand(PAIRS);const tIdx=Math.random()<.5?0:1;const target=[a,b][tIdx];
+ frame(L,`<div style="text-align:center;color:var(--muted);margin-bottom:8px">👩‍🏫 老师：按住"偷看"知道要读哪个词，然后大声读出来（只读一次！）</div>
+  <div class="row"><button class="btn ghost" id="peek">👀 老师偷看</button><span id="peekBox" class="ipa" style="font-size:26px;min-width:120px;text-align:center;color:var(--t)">·····</span></div>
+  <div class="pairs" style="margin-top:14px"><button class="card" data-w="${a}"><span class="em" style="font-size:24px;color:var(--muted)">/${ka}/</span>${a}</button><button class="card" data-w="${b}"><span class="em" style="font-size:24px;color:var(--muted)">/${kb}/</span>${b}</button></div>`,
+  '两个词只差一个爆破音。学生听老师读音后点击听到的词。');
+ const pk=$('#peek'),box=$('#peekBox');const show=()=>box.textContent=target,hide=()=>box.textContent='·····';
+ pk.onmousedown=pk.ontouchstart=e=>{e.preventDefault();show();};pk.onmouseup=pk.onmouseleave=pk.ontouchend=hide;
+ document.querySelectorAll('.card').forEach(c=>c.onclick=()=>{lock();const ok=c.dataset.w===target;c.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.card[data-w="${target}"]`).classList.add('ok');mark(ok,15,ok?`✔ 是 ${target}`:`✘ 老师读的是 ${target}`);next(bPair);});}
+
+/* 4 whack-a-mole */
+function bWhack(){const L=LEVELS[3];const target=rand(KEYS);cur.time=30;cur.ok=0;cur.bad=0;cur.rounds=Infinity;
+ frame(L,`<div class="row" style="justify-content:space-between"><div>目标音：<span class="sound s-${target}" style="font-size:30px">/${target}/</span></div><div class="timer">⏱ <span id="tm">30</span>s</div><div class="pill">击中 <span id="hits">0</span> · 误击 <span id="miss">0</span></div></div>
+  <div class="whack">${Array.from({length:8},(_,i)=>`<div class="hole" data-i="${i}"><div class="mole"><span class="em"></span><span class="w"></span></div></div>`).join('')}</div>`,
+  `30 秒内，只敲打以 /${target}/ 开头的词！其他词不要碰。`);
+ const holes=[...document.querySelectorAll('.hole')];let alive=true;
+ const others=KEYS.filter(k=>k!==target);
+ function popOne(){if(!alive)return;const free=holes.filter(h=>!h.classList.contains('up'));if(!free.length)return;const h=rand(free);const isT=Math.random()<.45;const k=isT?target:rand(others);const [w,em]=rand(SOUNDS[k].words);
+  h.dataset.t=isT?'1':'0';h.querySelector('.em').textContent=em;h.querySelector('.w').textContent=w;h.classList.remove('hit','miss');h.classList.add('up');
+  setTimeout(()=>{h.classList.remove('up');},1500+Math.random()*700);}
+ holes.forEach(h=>h.onclick=()=>{if(!h.classList.contains('up'))return;const ok=h.dataset.t==='1';h.classList.remove('up');h.classList.add(ok?'hit':'miss');if(ok){cur.ok++;addScore(5);beep(true);}else{cur.bad++;breakCombo();beep(false);}$('#hits').textContent=cur.ok;$('#miss').textContent=cur.bad;});
+ const pop=setInterval(popOne,650);const tick=setInterval(()=>{cur.time--;const t=$('#tm');if(!t){clearInterval(tick);clearInterval(pop);alive=false;return;}t.textContent=cur.time;if(cur.time<=0){clearInterval(tick);clearInterval(pop);alive=false;const net=cur.ok-cur.bad;finish(net>=14?3:net>=9?2:net>=5?1:0);}},1000);}
+
+/* 5 final sound */
+function bFinal(){const L=LEVELS[4];const [a,b,ka,kb]=rand(FINALS);const tIdx=Math.random()<.5?0:1;const target=[a,b][tIdx];
+ frame(L,`<div style="text-align:center;color:var(--muted);margin-bottom:8px">词尾的爆破音更难听清！老师偷看后读词，学生判断结尾是清音还是浊音。</div>
+  <div class="row"><button class="btn ghost" id="peek">👀 老师偷看</button><span id="peekBox" style="font-size:26px;min-width:120px;text-align:center;color:var(--t)">·····</span></div>
+  <div class="pairs" style="margin-top:14px"><button class="card" data-w="${a}">${a}<span class="em" style="font-size:22px;color:var(--muted)">结尾 /${ka}/</span></button><button class="card" data-w="${b}">${b}<span class="em" style="font-size:22px;color:var(--muted)">结尾 /${kb}/</span></button></div>
+  <div style="text-align:center;color:var(--muted);margin-top:10px;font-size:14px">小窍门：浊音结尾前的元音会稍微拉长 —— ca<b>b</b> 比 ca<b>p</b> 长一点。</div>`,
+  '尾音侦探：cap 还是 cab？');
+ const pk=$('#peek'),box=$('#peekBox');pk.onmousedown=pk.ontouchstart=e=>{e.preventDefault();box.textContent=target;};pk.onmouseup=pk.onmouseleave=pk.ontouchend=()=>box.textContent='·····';
+ document.querySelectorAll('.card').forEach(c=>c.onclick=()=>{lock();const ok=c.dataset.w===target;c.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.card[data-w="${target}"]`).classList.add('ok');mark(ok,15,ok?`✔ ${target}`:`✘ 是 ${target}`);next(bFinal);});}
+
+/* 6 memory */
+function bMemory(){const L=LEVELS[5];const ks=KEYS;const cards=shuffle(ks.flatMap(k=>{const [w,em]=rand(SOUNDS[k].words);return [{k,type:'s',txt:`/${k}/`},{k,type:'w',txt:w,em}];}));
+ cur.ok=0;cur.bad=0;cur.rounds=Infinity;let open=[],moves=0,found=0;
+ frame(L,`<div class="row" style="justify-content:space-between"><span>翻开两张：单词 + 它的首音音标</span><span class="pill">步数 <span id="mv">0</span></span></div>
+  <div class="mem" style="margin-top:12px">${cards.map((c,i)=>`<div class="mc" data-i="${i}"><div class="f">❓</div><div class="bk">${c.em?`<span style="font-size:30px">${c.em}</span>`:''}<span class="${c.type==='s'?'ipa':''}" style="font-size:${c.type==='s'?'30px':'18px'}">${c.txt}</span></div></div>`).join('')}</div>`,
+  '记忆翻牌：把每个单词和它开头的爆破音配成一对。步数越少星星越多。');
+ document.querySelectorAll('.mc').forEach(el=>el.onclick=()=>{if(el.classList.contains('open')||open.length===2)return;el.classList.add('open');open.push(el);
+  if(open.length===2){moves++;$('#mv').textContent=moves;const [a,b]=open.map(e=>cards[+e.dataset.i]);
+   if(a.k===b.k&&a.type!==b.type){setTimeout(()=>{open.forEach(e=>e.classList.add('done'));open=[];found++;cur.ok++;addScore(10);beep(true);if(found===ks.length){setTimeout(()=>finish(moves<=9?3:moves<=13?2:1),500);}},400);}
+   else{cur.bad++;beep(false);setTimeout(()=>{open.forEach(e=>e.classList.remove('open'));open=[];},800);}}});}
+
+/* 7 tongue twister */
+function bTwister(){const L=LEVELS[6];let idx=0,t0=null,tick=null;cur.ok=0;cur.bad=0;cur.rounds=Infinity;const done=[];
+ function render(){const [txt,k]=TWISTERS[idx];
+  frame(L,`<div class="row"><span class="sound s-${k}">/${k}/</span><span class="timer" id="sw">0.0s</span></div>
+   <div class="tt popin" style="margin-top:12px">${txt.replace(new RegExp(`\\b(${k==='k'?'[ckK]':k}\\w*)`,'gi'),'<b>$1</b>')}</div>
+   <div class="row"><button class="btn ok" id="go">▶ 开始计时</button><button class="btn" id="stop" disabled>⏹ 读完了！</button><button class="btn ghost" id="nx">下一条 ➡️</button></div>
+   <div style="text-align:center;color:var(--muted);margin-top:10px">已完成：${done.map(d=>`${d[0]} <b style="color:var(--t)">${d[1]}s</b>`).join(' · ')||'—'}</div>`,
+   '绕口令挑战：请一位同学清楚、快速地读出来，全班当裁判。读得清楚才算！');
+  $('#go').onclick=()=>{t0=performance.now();$('#go').disabled=true;$('#stop').disabled=false;tick=setInterval(()=>$('#sw').textContent=((performance.now()-t0)/1000).toFixed(1)+'s',100);};
+  $('#stop').onclick=()=>{clearInterval(tick);const s=((performance.now()-t0)/1000).toFixed(1);$('#stop').disabled=true;done.push([`/${k}/`,s]);cur.ok++;addScore(20);beep(true);fb(true,`⏱ ${s} 秒！${s<4?'快如闪电 ⚡':s<7?'很流利 👏':'再练一次会更快 💪'}`);};
+  $('#nx').onclick=()=>{clearInterval(tick);idx++;if(idx>=TWISTERS.length){finish(done.length>=6?3:done.length>=4?2:done.length>=2?1:0);}else render();};}
+ render();}
+
+/* ---------- reference ---------- */
+(()=>{const r=$('#ref');KEYS.forEach(k=>{const s=SOUNDS[k];const d=document.createElement('div');d.className='rf';d.style.cursor='pointer';
+ d.innerHTML=`<span class="sound s-${k}">/${k}/</span><div class="info"><b>${s.voiced?'浊音 voiced':'清音 voiceless'} · ${s.words.slice(0,3).map(w=>w[1]+w[0]).join(' ')}</b><span class="tip">点击看口型提示</span></div>`;
+ d.onclick=()=>{d.querySelector('.tip').textContent=s.tip;};r.appendChild(d);});})();
+
+/* ---------- init ---------- */
+$('#resetBtn').onclick=()=>{if(confirm('清空所有分数和星星？')){localStorage.removeItem('plosiveParty');location.reload();}};
+$('#score').textContent=state.score;renderLevels();
+$('#stage').innerHTML=`<div class="result"><div class="emoji">💥</div><h3>欢迎来到爆破音派对！</h3><p>六个爆破音分三对：/p/–/b/、/t/–/d/、/k/–/g/。每对口型相同，区别只在"喉咙抖不抖"。</p><p style="margin-top:6px">每关拿到 1 颗星解锁下一关。课件不带语音，请老师或学生真人发音，效果最好。</p><div class="row"><button class="btn" onclick="start(LEVELS[0])">🚀 开始第 1 关</button></div></div>`;
+</script>
+</body>
+</html>
