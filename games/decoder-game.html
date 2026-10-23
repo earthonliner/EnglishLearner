@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>音标解码局 · Phonetic Decoders</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F0FF;--card:#fff;--ink:#241E3A;--muted:#7A7493;--line:#DDD6F7;--p:#6C4DF6;--p2:#B59CFF;--ok:#2BB673;--no:#F0564A;--gold:#FFB703;--teal:#1EC2B0;--pink:#FF5D8F;--orange:#FF8A5B;
+--fd:'Fredoka','PingFang SC','Microsoft YaHei',sans-serif;--fb:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;--ipa:'Charis SIL','Doulos SIL','Gentium','Times New Roman',serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100vh}
+header{background:linear-gradient(135deg,var(--p),#9D7BFF);color:#fff;padding:22px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-family:var(--fd);font-size:32px;font-weight:700}
+header .sub{font-size:14px;opacity:.9;margin-top:4px}
+.hud{display:flex;gap:12px;align-items:center;font-weight:800;flex-wrap:wrap}
+.hud .pill{background:rgba(255,255,255,.22);padding:8px 16px;border-radius:999px;font-size:16px}
+.hud .pill.a{background:#FF8A5B}.hud .pill.b{background:#1EC2B0}
+main{max-width:1120px;margin:0 auto;padding:24px 20px 60px}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.lv{background:var(--card);border-radius:16px;padding:14px 10px;box-shadow:0 4px 12px rgba(36,30,58,.06);cursor:pointer;border:3px solid transparent;transition:.15s;text-align:center;position:relative}
+.lv:hover{transform:translateY(-3px)}.lv.active{border-color:var(--p)}
+.lv .icon{font-size:32px}.lv .name{font-family:var(--fd);font-weight:600;margin-top:6px;font-size:17px}
+.lv .desc{font-size:12px;color:var(--muted);margin-top:3px}.lv .stars{margin-top:6px;font-size:14px;letter-spacing:2px;color:var(--gold)}
+.lv.locked{opacity:.5;cursor:not-allowed}.lv.locked::after{content:'🔒';position:absolute;top:8px;right:10px}
+.stage{background:var(--card);border-radius:20px;padding:28px;box-shadow:0 6px 18px rgba(36,30,58,.07);min-height:460px}
+.stage h2{font-family:var(--fd);font-size:26px;font-weight:600;margin-bottom:4px}
+.stage .rule{color:var(--muted);font-size:15px;margin-bottom:18px;line-height:1.5}
+.progress{height:10px;background:#EAE5FB;border-radius:5px;overflow:hidden;margin-bottom:22px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--p),var(--teal));width:0;transition:.3s}
+.prompt{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin:6px 0 24px}
+.big{font-size:60px;font-weight:700;font-family:var(--ipa);background:#F6F3FF;border:3px solid var(--line);border-radius:18px;padding:10px 34px;color:var(--p);min-width:200px;text-align:center}
+.big.word{font-family:var(--fd);color:var(--ink);letter-spacing:.04em}
+.ipa{font-family:var(--ipa)}
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.opt{background:#fff;border:3px solid var(--line);border-radius:16px;padding:18px 12px;font-size:30px;font-weight:700;cursor:pointer;transition:.15s;text-align:center;font-family:var(--fd)}
+.opt.ipa{font-family:var(--ipa);color:var(--p)}
+.opt:hover{border-color:var(--p);transform:translateY(-2px)}
+.opt.correct{background:#E4F7EC;border-color:var(--ok)}.opt.wrong{background:#FDE8E4;border-color:var(--no);animation:shake .3s}
+.opt:disabled{cursor:default}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes popin{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+.popin{animation:popin .35s ease both}
+.btn{border:none;border-radius:999px;padding:12px 26px;font-size:17px;font-weight:800;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px;font-family:var(--fb)}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--p);color:#fff}.btn.ghost{background:#EAE5FB;color:var(--ink)}.btn.play{background:var(--teal);color:#fff}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.feedback{min-height:32px;text-align:center;font-size:20px;font-weight:800;margin-top:18px}
+.feedback.ok{color:var(--ok)}.feedback.no{color:var(--no)}
+.actions{display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+/* tiles */
+.tiles{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:10px 0}
+.tile{min-width:64px;height:72px;padding:0 18px;border-radius:14px;border:3px solid var(--line);background:#fff;font-size:34px;font-weight:700;font-family:var(--fd);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;user-select:none;position:relative}
+.tile.ipa{font-family:var(--ipa);color:var(--p)}
+.tile:hover{border-color:var(--p);transform:translateY(-2px)}
+.tile.used{opacity:.25;pointer-events:none}
+.tile.sel{background:#EAE5FB;border-color:var(--p)}
+.tile.ok{background:#E4F7EC;border-color:var(--ok)}.tile.no{background:#FDE8E4;border-color:var(--no)}
+.tile .n{position:absolute;top:-10px;right:-8px;width:26px;height:26px;border-radius:50%;background:var(--p);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:var(--fb)}
+.slotrow{display:flex;gap:10px;justify-content:center;min-height:84px;margin:6px 0 10px;flex-wrap:wrap}
+.slot{width:70px;height:76px;border-radius:14px;border:3px dashed var(--line);background:#FAF8FF;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:700;font-family:var(--fd)}
+.slot.ipa{font-family:var(--ipa);color:var(--p)}
+.slot.f{border-style:solid;border-color:var(--p2);background:#fff}
+.slot.ok{border-color:var(--ok);background:#E4F7EC}.slot.no{border-color:var(--no);background:#FDE8E4}
+/* word letters (x-ray) */
+.letters{display:flex;gap:8px;justify-content:center;margin:10px 0 16px;flex-wrap:wrap}
+.let{width:76px;height:90px;border-radius:14px;border:3px solid var(--line);background:#fff;font-size:44px;font-weight:700;font-family:var(--fd);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;user-select:none}
+.let:hover{border-color:var(--p)}.let.sel{background:#EAE5FB;border-color:var(--p);transform:translateY(-4px)}
+.let.ok{background:#E4F7EC;border-color:var(--ok)}.let.no{background:#FDE8E4;border-color:var(--no)}
+.let.silent{color:var(--muted)}
+/* multi-select */
+.grid8{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.pick{border:3px solid var(--line);border-radius:16px;padding:16px 10px;text-align:center;font-family:var(--fd);font-size:28px;font-weight:600;cursor:pointer;background:#fff;transition:.15s;user-select:none}
+.pick:hover{border-color:var(--p)}.pick.sel{background:#EAE5FB;border-color:var(--p)}
+.pick.ok{background:#E4F7EC;border-color:var(--ok)}.pick.no{background:#FDE8E4;border-color:var(--no)}.pick.miss{border-color:var(--gold);background:#FFF5D6}
+.pick small{display:block;font-family:var(--ipa);font-size:16px;color:var(--muted);margin-top:4px}
+/* real/fake */
+.rf{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.rf .opt{min-width:240px;font-size:26px}
+/* speed */
+.timer{font-family:var(--fd);font-size:30px;font-weight:700;color:var(--no)}
+.teams{display:flex;gap:14px;justify-content:center;margin:8px 0 14px;flex-wrap:wrap}
+.team{padding:10px 22px;border-radius:999px;font-weight:800;font-size:18px;color:#fff;cursor:pointer;opacity:.5;border:3px solid transparent}
+.team.a{background:var(--orange)}.team.b{background:var(--teal)}.team.on{opacity:1;border-color:var(--ink)}
+.result{text-align:center;padding:30px 10px}
+.result .emoji{font-size:80px}.result h3{font-family:var(--fd);font-size:30px;margin:12px 0}
+.result .stars{font-size:44px;color:var(--gold);letter-spacing:6px;margin:6px 0 14px}.result p{color:var(--muted);font-size:16px}
+.chart{background:var(--card);border-radius:20px;padding:24px;margin-top:24px;box-shadow:0 6px 18px rgba(36,30,58,.07)}
+.chart h3{font-family:var(--fd);font-weight:600;margin-bottom:12px}
+.chart .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px;margin-bottom:12px}
+.chip{background:#FAF8FF;border:2px solid var(--line);border-radius:12px;padding:8px 6px;text-align:center}
+.chip .ph{font-size:24px;font-weight:700;font-family:var(--ipa);color:var(--p)}.chip .ex{font-size:12px;color:var(--muted);margin-top:2px}
+.tag{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;color:#fff;margin-bottom:8px}
+.hidden{display:none}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:20px;line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>🕵️ 音标解码局 · Phonetic Decoders</h1>
+    <div class="sub">只用学过的音：20 个元音 + 6 个爆破音 + 9 个摩擦音 · 练拼读、练"音标 ↔ 拼写"对应 · 八关</div>
+  </div>
+  <div class="hud">
+    <div class="pill">⭐ 总分 <span id="score">0</span></div>
+    <div class="pill">🔥 连击 <span id="combo">0</span></div>
+    <div class="pill a">🟠 A 队 <span id="ta">0</span></div>
+    <div class="pill b">🟢 B 队 <span id="tb">0</span></div>
+    <button class="btn ghost" id="resetBtn" style="padding:8px 16px">重置进度</button>
+  </div>
+</header>
+
+<main>
+  <section class="levels" id="levels"></section>
+  <section class="stage" id="stage"></section>
+  <section class="chart">
+    <h3>📚 本局只出现这 35 个音（已学）</h3>
+    <span class="tag" style="background:var(--p)">单元音</span><div class="grid" id="cMono"></div>
+    <span class="tag" style="background:var(--pink)">双元音</span><div class="grid" id="cDiph"></div>
+    <span class="tag" style="background:var(--orange)">爆破音</span><div class="grid" id="cPlo"></div>
+    <span class="tag" style="background:var(--teal)">摩擦音</span><div class="grid" id="cFri"></div>
+    <p style="color:var(--muted);font-size:13px">未学的 /m n ŋ l r w j tʃ dʒ/ 不出现——所以词库里没有 man、run、lamp 这类词。词的读音采用英式（词尾 r 不发音：car /kɑː/）。</p>
+  </section>
+</main>
+<footer>🔊 按钮用浏览器英式语音朗读，仅供参考。老师也可以自己读。<br>建议：第 1–4 关全班齐答或个人抢答；第 5–6 关两人一组轮流上台；第 7 关"真词假词"全班举手；第 8 关分 A / B 两队计时对抗。</footer>
+
+<script>
+/* ===================== 音库 ===================== */
+const V_MONO=['iː','ɪ','e','æ','ɑː','ʌ','ɒ','ɔː','ʊ','uː','ɜː','ə'];
+const V_DIPH=['eɪ','aɪ','ɔɪ','aʊ','əʊ','ɪə','eə','ʊə'];
+const C_PLO=['p','b','t','d','k','g'];
+const C_FRI=['f','v','θ','ð','s','z','ʃ','ʒ','h'];
+const EX={'iː':'sheep','ɪ':'ship','e':'bed','æ':'cat','ɑː':'car','ʌ':'cup','ɒ':'dog','ɔː':'door','ʊ':'book','uː':'food','ɜː':'bird','ə':'sofa','eɪ':'cake','aɪ':'kite','ɔɪ':'boy','aʊ':'house','əʊ':'boat','ɪə':'ear','eə':'hair','ʊə':'tour','p':'pig','b':'bed','t':'tea','d':'dog','k':'cat','g':'goat','f':'fish','v':'five','θ':'teeth','ð':'this','s':'sea','z':'zoo','ʃ':'shop','ʒ':'beige','h':'hat'};
+const VOWELS=[...V_MONO,...V_DIPH],CONS=[...C_PLO,...C_FRI];
+
+/* 词库：每个词 = [grapheme, phoneme] 序列。'a_e' 表示分离二合字母（magic e）；phoneme '' 表示不发音；'ks' 表示 x 发两个音 */
+const W=(s)=>s.split(' ').map(g=>{const [gr,ph]=g.split(':');return [gr,ph===undefined?gr:ph]});
+const WORDS=[
+ // 短元音
+ W('c:k a:æ t'),W('b a:æ g'),W('h a:æ t'),W('b a:æ d'),W('d a:æ d'),W('f a:æ t'),W('s a:æ d'),W('t a:æ x:ks i:ɪ'),
+ W('e gg:g'),W('b e d'),W('p e t'),W('t e s t'),W('d e s k'),W('b e s t'),
+ W('p i:ɪ g'),W('b i:ɪ g'),W('d i:ɪ g'),W('f i:ɪ sh:ʃ'),W('s i:ɪ t'),W('k i:ɪ ck:k'),W('s i:ɪ x:ks'),W('th:θ i:ɪ ck:k'),W('d i:ɪ sh:ʃ'),
+ W('h o:ɒ t'),W('d o:ɒ g'),W('b o:ɒ x:ks'),W('s o:ɒ ck:k'),W('sh:ʃ o:ɒ p'),W('f o:ɒ x:ks'),W('p o:ɒ t'),W('g o:ɒ t'),
+ W('c:k u:ʌ p'),W('b u:ʌ s'),W('d u:ʌ ck:k'),W('b u:ʌ g'),W('h u:ʌ t'),W('b u:ʌ t'),W('d u:ʌ s t'),
+ W('b oo:ʊ k'),W('f oo:ʊ t'),W('g oo:ʊ d'),W('p u:ʊ t'),W('c:k oo:ʊ k'),
+ // 长元音
+ W('sh:ʃ ee:iː p'),W('f ee:iː t'),W('t ee:iː th:θ'),W('ea:iː t'),W('s ea:iː t'),W('s ea:iː'),W('t ea:iː'),W('th:ð e_e:iː s:z'),W('p ea:iː s:z'),W('b ea:iː d s:z'),
+ W('c:k ar:ɑː'),W('d ar:ɑː k'),W('p ar:ɑː k'),W('f a:ɑː s t'),W('b a:ɑː th:θ'),W('p a:ɑː th:θ'),W('s t ar:ɑː'),W('c:k ar:ɑː d'),
+ W('d oor:ɔː'),W('f our:ɔː'),W('h or:ɔː s e:'),W('s p or:ɔː t'),W('s aw:ɔː'),W('b ough:ɔː t'),W('c:k augh:ɔː t'),W('f or:ɔː k'),
+ W('f oo:uː d'),W('b oo:uː t'),W('sh:ʃ oe:uː'),W('z oo:uː'),W('t oo:uː'),W('t w:_ o:uː'),W('s ou:uː p'),W('t oo:uː th:θ'),
+ W('b ir:ɜː d'),W('sh:ʃ ir:ɜː t'),W('f ir:ɜː s t'),W('th:θ ir:ɜː d'),W('h ur:ɜː t'),W('s ir:ɜː'),
+ W('s o:əʊ f a:ə'),W('a:ə b ou:aʊ t'),W('p o:ə t a:eɪ t o:əʊ'),W('ph:f o:əʊ t o:əʊ'),W('d o:ɒ c:k t or:ə'),W('f a:ɑː th:ð er:ə'),W('t o:ə g e th:ð er:ə'),W('p o:ɒ ck:k e:ɪ t'),W('t i:ɪ ck:k e:ɪ t'),W('v i:ɪ s:z i:ɪ t'),W('b i:ɪ s c:k u:_ i:ɪ t'),W('b u:ʌ tt:t er:ə'),
+ // 双元音
+ W('c:k a_e:eɪ k'),W('g a_e:eɪ t'),W('d a_e:eɪ t'),W('f a_e:eɪ c:s'),W('s a_e:eɪ f'),W('d ay:eɪ'),W('s ay:eɪ'),W('p ay:eɪ'),W('eigh:eɪ t'),W('b a_e:eɪ k'),W('t a:eɪ s t e:'),
+ W('k i_e:aɪ t'),W('b i_e:aɪ k'),W('f i_e:aɪ v'),W('s i_e:aɪ z'),W('b uy:aɪ'),W('s k y:aɪ'),W('t i_e:aɪ d'),W('h i_e:aɪ d'),W('b i_e:aɪ t'),
+ W('b oy:ɔɪ'),W('t oy:ɔɪ'),W('v oi:ɔɪ c:s e:'),
+ W('h ou:aʊ s e:'),W('ou:aʊ t'),W('sh:ʃ ou:aʊ t'),W('c:k ow:aʊ'),W('d ou:aʊ b: t'),
+ W('b oa:əʊ t'),W('c:k oa:əʊ t'),W('g oa:əʊ t'),W('h o_e:əʊ p'),W('t oa:əʊ s t'),W('g o:əʊ'),W('s o:əʊ'),W('t oe:əʊ'),W('s oa:əʊ p'),
+ W('ear:ɪə'),W('h ere:ɪə'),W('d eer:ɪə'),W('b ear:ɪə d'),
+ W('h air:eə'),W('b ear:eə'),W('p ear:eə'),W('th:ð ere:eə'),
+ W('t our:ʊə'),W('p oor:ʊə'),W('s:ʃ ure:ʊə'),
+];
+// 辅助
+const spell=w=>{let out='',pend='';w.forEach(([g])=>{if(g.includes('_')){const [a,b]=g.split('_');out+=a;pend=b}else{out+=g;if(pend){out+=pend;pend=''}}});return out+pend};
+const ipaOf=w=>w.map(([,p])=>p==='_'?'':p).join('');
+const phonemes=w=>w.map(([,p])=>p).filter(p=>p&&p!=='_').flatMap(p=>p==='ks'?['k','s']:[p]);
+// 字母索引：返回 [{ch, idx, ph, gi}] 和 每个 grapheme 的字母索引数组
+const letterMap=w=>{const L=[],G=[];let pend=null;w.forEach(([g,p],gi)=>{G[gi]=[];if(g.includes('_')){const [a,b]=g.split('_');for(const ch of a){G[gi].push(L.length);L.push({ch,gi,ph:p})}pend={ch:b,gi,ph:p}}else{for(const ch of g){G[gi].push(L.length);L.push({ch,gi,ph:p})}if(pend){G[pend.gi].push(L.length);L.push(pend);pend=null}}});if(pend){G[pend.gi].push(L.length);L.push(pend)}return {L,G}};
+WORDS.forEach(w=>{w.word=spell(w);w.ipa=ipaOf(w);w.ph=phonemes(w)});
+const byWord=Object.fromEntries(WORDS.map(w=>[w.word,w]));
+// 易混音（用于造干扰项）
+const CONF={'iː':['ɪ','eɪ'],'ɪ':['iː','e'],'e':['æ','ɪ','eɪ'],'æ':['e','ʌ','ɑː'],'ɑː':['ʌ','æ','ɔː'],'ʌ':['æ','ɑː','ɒ'],'ɒ':['ɔː','ʌ','əʊ'],'ɔː':['ɒ','əʊ','ɑː'],'ʊ':['uː','ʌ'],'uː':['ʊ','əʊ'],'ɜː':['ɑː','ə','eə'],'ə':['ʌ','ɜː'],'eɪ':['e','aɪ','iː'],'aɪ':['eɪ','ɔɪ'],'ɔɪ':['aɪ','ɔː'],'aʊ':['əʊ','ɔː'],'əʊ':['ɔː','aʊ','ɒ'],'ɪə':['eə','iː'],'eə':['ɪə','e'],'ʊə':['ɔː','uː'],
+ 'p':['b'],'b':['p','d'],'t':['d','θ'],'d':['t','ð'],'k':['g'],'g':['k'],'f':['v','θ'],'v':['f','ð'],'θ':['s','t','ð'],'ð':['d','z','θ'],'s':['z','θ','ʃ'],'z':['s','ð'],'ʃ':['s','ʒ'],'ʒ':['ʃ','z'],'h':['f']};
+const shuffle=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+const pick=(a,n)=>shuffle(a).slice(0,n);
+const rand=a=>a[Math.floor(Math.random()*a.length)];
+const $=s=>document.querySelector(s);
+// 造一个"只改一个音"的假音标
+function mutate(ph){const i=Math.floor(Math.random()*ph.length);const alt=rand(CONF[ph[i]]||CONS);const out=[...ph];out[i]=alt;return out.join('')}
+function fakeIpas(w,n){const s=new Set();let guard=0;while(s.size<n&&guard++<60){const f=mutate(w.ph);if(f!==w.ipa&&!WORDS.some(x=>x.ipa===f))s.add(f)}return [...s]}
+// 近形词干扰：同首字母或同元音
+function nearWords(w,n){const v=w.ph.find(p=>VOWELS.includes(p));const pool=WORDS.filter(x=>x!==w&&(x.word[0]===w.word[0]||x.ph.includes(v)||Math.abs(x.word.length-w.word.length)<=1));return pick(pool.length>=n?pool:WORDS.filter(x=>x!==w),n)}
+
+/* ===================== 音频 ===================== */
+let voice=null;function pickVoice(){const vs=speechSynthesis.getVoices();voice=vs.find(v=>/en-GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+function say(t){if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-GB';if(voice)u.voice=voice;u.rate=.85;speechSynthesis.speak(u)}
+const ctx=('AudioContext' in window)?new AudioContext():null;
+function ding(ok){if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=ok?'sine':'triangle';o.frequency.value=ok?880:180;g.gain.setValueAtTime(.1,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.3);o.start();o.stop(ctx.currentTime+.3);if(ok){const o2=ctx.createOscillator(),g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.frequency.value=1320;g2.gain.setValueAtTime(.1,ctx.currentTime+.12);g2.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);o2.start(ctx.currentTime+.12);o2.stop(ctx.currentTime+.4)}}
+
+/* ===================== 状态 ===================== */
+const state=JSON.parse(localStorage.getItem('decoders')||'{}');state.stars=state.stars||{};state.score=state.score||0;
+const save=()=>localStorage.setItem('decoders',JSON.stringify(state));
+let combo=0,cur=null,teams={a:0,b:0},team='a';
+function hud(){$('#score').textContent=state.score;$('#combo').textContent=combo;$('#ta').textContent=teams.a;$('#tb').textContent=teams.b}
+$('#resetBtn').onclick=()=>{if(confirm('清空所有星星和分数？')){localStorage.removeItem('decoders');location.reload()}};
+
+const LEVELS=[
+ {id:1,ic:'🧩',nm:'拼读接龙',ds:'看音标 → 选单词',rounds:12,build:bDecode},
+ {id:2,ic:'🔁',nm:'反向编码',ds:'看单词 → 选音标',rounds:12,build:bEncode},
+ {id:3,ic:'🔍',nm:'字母透视',ds:'哪些字母在发这个音？',rounds:12,build:bXray},
+ {id:4,ic:'🧲',nm:'同音异形',ds:'找出所有含目标音的词',rounds:8,build:bSameSound},
+ {id:5,ic:'🏗️',nm:'拼写工坊',ds:'按音标拼出单词',rounds:10,build:bBuildWord},
+ {id:6,ic:'🔧',nm:'音标装配',ds:'给单词拼出音标',rounds:10,build:bBuildIpa},
+ {id:7,ic:'👻',nm:'真词假词',ds:'拼读出来：这是个词吗？',rounds:14,build:bRealFake},
+ {id:8,ic:'⚡',nm:'极速解码',ds:'60 秒 A/B 队对抗',rounds:0,build:bSpeed}];
+const unlocked=id=>id===1||(state.stars[id-1]||0)>=1;
+function renderLevels(){const el=$('#levels');el.innerHTML='';LEVELS.forEach(L=>{const d=document.createElement('div');d.className='lv'+(unlocked(L.id)?'':' locked')+(cur&&cur.L.id===L.id?' active':'');d.innerHTML=`<div class="icon">${L.ic}</div><div class="name">${L.id}. ${L.nm}</div><div class="desc">${L.ds}</div><div class="stars">${'★'.repeat(state.stars[L.id]||0)}${'☆'.repeat(3-(state.stars[L.id]||0))}</div>`;d.onclick=()=>{if(unlocked(L.id))start(L)};el.appendChild(d)})}
+function start(L){cur={L,round:0,ok:0,bad:0};combo=0;hud();renderLevels();L.build()}
+function frame(L,inner,rule){const pct=L.rounds?Math.round(cur.round/L.rounds*100):0;$('#stage').innerHTML=`<h2>${L.ic} 第 ${L.id} 关 · ${L.nm}</h2><div class="rule">${rule||L.ds}</div>${L.rounds?`<div class="progress"><div style="width:${pct}%"></div></div>`:''}${inner}<div class="feedback" id="fb"></div>`}
+function mark(ok,pts,msg){if(ok){cur.ok++;combo++;state.score+=pts+Math.min(combo-1,5)*2;teams[team]+=pts}else{cur.bad++;combo=0}save();hud();const f=$('#fb');f.textContent=msg;f.className='feedback '+(ok?'ok':'no');ding(ok)}
+function next(build){cur.round++;if(cur.round>=cur.L.rounds)finish();else setTimeout(build,1000)}
+function finish(custom){const tot=cur.ok+cur.bad,acc=tot?cur.ok/tot:0;const stars=custom!=null?custom:(acc>=.9?3:acc>=.7?2:acc>=.5?1:0);state.stars[cur.L.id]=Math.max(state.stars[cur.L.id]||0,stars);save();renderLevels();const em=stars===3?'🏆':stars===2?'🎉':stars===1?'👍':'💪';const w={3:'满星！解码高手！',2:'很棒，再练一次就满星',1:'过关了，再磨一磨',0:'再来一次，你可以的'}[stars];const nx=LEVELS.find(l=>l.id===cur.L.id+1);$('#stage').innerHTML=`<div class="result"><div class="emoji">${em}</div><h3>${w}</h3><div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div><p>正确 ${cur.ok} / ${tot}　准确率 ${Math.round(acc*100)}%</p><div class="actions"><button class="btn ghost" onclick="start(LEVELS[${cur.L.id-1}])">再玩一次</button>${nx?`<button class="btn primary" onclick="start(LEVELS[${nx.id-1}])">下一关 →</button>`:''}</div></div>`}
+const speakBtn=w=>`<button class="btn play" onclick="say('${w}')">🔊</button>`;
+
+/* 1 看音标选词 */
+function bDecode(){const L=cur.L;const w=rand(WORDS);const opts=shuffle([w,...nearWords(w,3)]);
+ frame(L,`<div class="prompt"><div class="big popin">/${w.ipa}/</div></div><div class="options">${opts.map(o=>`<button class="opt" data-w="${o.word}">${o.word}</button>`).join('')}</div>`,'先在心里把音标"滑"着拼出来，再找对应的单词。拼读是技能：读出声来，不要只看。');
+ document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{document.querySelectorAll('.opt').forEach(x=>x.disabled=true);const ok=b.dataset.w===w.word;b.classList.add(ok?'correct':'wrong');if(!ok)document.querySelector(`.opt[data-w="${w.word}"]`).classList.add('correct');mark(ok,10,ok?`✔ /${w.ipa}/ = ${w.word}`:`✘ /${w.ipa}/ 是 ${w.word}（${b.dataset.w} 读 /${byWord[b.dataset.w].ipa}/）`);say(w.word);next(bDecode)})}
+
+/* 2 看词选音标 */
+function bEncode(){const L=cur.L;const w=rand(WORDS);const fakes=fakeIpas(w,3);const opts=shuffle([w.ipa,...fakes]);
+ frame(L,`<div class="prompt"><div class="big word popin">${w.word}</div>${speakBtn(w.word)}</div><div class="options">${opts.map(o=>`<button class="opt ipa" data-i="${o}">/${o}/</button>`).join('')}</div>`,'四个音标只差一个音。先自己读单词，再逐个音对照——哪一个音被偷换了？');
+ document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{document.querySelectorAll('.opt').forEach(x=>x.disabled=true);const ok=b.dataset.i===w.ipa;b.classList.add(ok?'correct':'wrong');if(!ok)document.querySelector(`.opt[data-i="${w.ipa}"]`).classList.add('correct');mark(ok,10,ok?`✔ ${w.word} = /${w.ipa}/`:`✘ ${w.word} 是 /${w.ipa}/`);next(bEncode)})}
+
+/* 3 字母透视：哪些字母发这个音 */
+function bXray(){const L=cur.L;
+ const cands=WORDS.filter(w=>w.some(([g,p])=>p&&p!=='_'&&p!=='ks'&&(g.length>=2||g.includes('_')||VOWELS.includes(p))));
+ const w=rand(cands);const {L:Ls,G}=letterMap(w);
+ const targets=w.map((x,gi)=>gi).filter(gi=>{const [g,p]=w[gi];return p&&p!=='_'&&p!=='ks'&&(g.length>=2||g.includes('_')||VOWELS.includes(p))});
+ const gi=rand(targets),[g,p]=w[gi];const want=new Set(G[gi]);const sel=new Set();
+ frame(L,`<div class="prompt"><div style="text-align:center;color:var(--muted);font-size:16px">在 <b style="font-family:var(--fd);font-size:28px;color:var(--ink)">${w.word}</b> /${w.ipa}/ 里，哪些字母合起来发</div><div class="big popin">/${p}/</div></div><div class="letters">${Ls.map((l,i)=>`<div class="let ${l.ph===''||l.ph==='_'?'silent':''}" data-i="${i}">${l.ch}</div>`).join('')}</div><div class="actions"><button class="btn primary" id="chk" disabled>确定</button></div>`,'点亮所有发这个音的字母（可能是 1 个、2 个、3 个，也可能被别的字母隔开——比如 cake 里的 a 和 e）。灰色字母是不发音的。');
+ document.querySelectorAll('.let').forEach(el=>el.onclick=()=>{const i=+el.dataset.i;sel.has(i)?sel.delete(i):sel.add(i);el.classList.toggle('sel');$('#chk').disabled=sel.size===0});
+ $('#chk').onclick=()=>{document.querySelectorAll('.let').forEach(el=>{el.onclick=null;const i=+el.dataset.i;if(want.has(i))el.classList.add(sel.has(i)?'ok':'no');else if(sel.has(i))el.classList.add('no')});const ok=sel.size===want.size&&[...sel].every(i=>want.has(i));mark(ok,10,ok?`✔ ${g.replace('_','…')} → /${p}/`:`✘ 发 /${p}/ 的是 ${g.replace('_','…')}`);say(w.word);next(bXray)}}
+
+/* 4 同音异形：找出所有含目标音的词 */
+function bSameSound(){const L=cur.L;
+ const vs=VOWELS.filter(v=>WORDS.filter(w=>w.ph.includes(v)).length>=4);const v=rand(vs);
+ const yes=pick(WORDS.filter(w=>w.ph.includes(v)),rand([3,4]));const conf=CONF[v]||[];const noPool=WORDS.filter(w=>!w.ph.includes(v));const no=pick([...pick(noPool.filter(w=>w.ph.some(p=>conf.includes(p))),3),...pick(noPool,5)].filter((x,i,a)=>a.indexOf(x)===i),8-yes.length);
+ const items=shuffle([...yes,...no]);const sel=new Set();
+ frame(L,`<div class="prompt"><div style="color:var(--muted);font-size:16px">哪些词里有</div><div class="big popin">/${v}/</div><div style="color:var(--muted);font-size:16px">？（有 ${yes.length} 个）</div></div><div class="grid8">${items.map(w=>`<div class="pick" data-w="${w.word}">${w.word}</div>`).join('')}</div><div class="actions"><button class="btn primary" id="chk">确定</button></div>`,'同一个音可以有好几种拼法：/iː/ 可以写成 ee、ea、e_e…。看词、读词、听自己嘴里的元音——不要只看字母。');
+ document.querySelectorAll('.pick').forEach(el=>el.onclick=()=>{const w=el.dataset.w;sel.has(w)?sel.delete(w):sel.add(w);el.classList.toggle('sel')});
+ $('#chk').onclick=()=>{let good=0;document.querySelectorAll('.pick').forEach(el=>{el.onclick=null;const w=byWord[el.dataset.w];const has=w.ph.includes(v);el.innerHTML=`${w.word}<small>/${w.ipa}/</small>`;if(has&&sel.has(w.word)){el.classList.add('ok');good++}else if(has)el.classList.add('miss');else if(sel.has(w.word))el.classList.add('no')});const ok=good===yes.length&&sel.size===yes.length;mark(ok,15,ok?`✔ /${v}/ 的拼法：${yes.map(w=>w.find(([,p])=>p===v)[0].replace('_','…')).join(' · ')}`:`✘ 应选 ${yes.map(w=>w.word).join(', ')}`);next(bSameSound)}}
+
+/* 5 拼写工坊：按音标拼单词 */
+function bBuildWord(){const L=cur.L;const w=rand(WORDS.filter(x=>x.word.length>=3&&x.word.length<=6));const letters=w.word.split('');const extra=pick('abcdefghiklopstuvxyz'.split('').filter(c=>!letters.includes(c)),2);const tiles=shuffle([...letters,...extra]);const picked=[];
+ frame(L,`<div class="prompt"><div class="big popin">/${w.ipa}/</div>${speakBtn(w.word)}</div><div class="slotrow" id="slots">${letters.map(()=>'<div class="slot"></div>').join('')}</div><div class="tiles">${tiles.map((c,i)=>`<div class="tile" data-i="${i}" data-c="${c}">${c}</div>`).join('')}</div><div class="actions"><button class="btn ghost" id="undo">← 退一格</button><button class="btn primary" id="chk" disabled>确定</button></div>`,`按音标把单词拼出来：${letters.length} 个字母，多给了 2 个干扰字母。注意 /k/ 可能是 c、k 或 ck；/iː/ 可能是 ee 或 ea……`);
+ const slots=[...document.querySelectorAll('.slot')];const upd=()=>{slots.forEach((s,i)=>{s.textContent=picked[i]?picked[i].c:'';s.classList.toggle('f',!!picked[i])});$('#chk').disabled=picked.length!==letters.length};
+ document.querySelectorAll('.tile').forEach(t=>t.onclick=()=>{if(picked.length>=letters.length)return;picked.push({c:t.dataset.c,el:t});t.classList.add('used');upd()});
+ $('#undo').onclick=()=>{const p=picked.pop();if(p){p.el.classList.remove('used');upd()}};
+ $('#chk').onclick=()=>{const got=picked.map(p=>p.c).join('');const ok=got===w.word;slots.forEach((s,i)=>s.classList.add(letters[i]===picked[i].c?'ok':'no'));document.querySelectorAll('.tile').forEach(t=>t.onclick=null);$('#undo').disabled=true;$('#chk').disabled=true;mark(ok,15,ok?`✔ /${w.ipa}/ → ${w.word}`:`✘ 正确拼写：${w.word}`);say(w.word);next(bBuildWord)}}
+
+/* 6 音标装配：给单词拼音标 */
+function bBuildIpa(){const L=cur.L;const w=rand(WORDS.filter(x=>x.ph.length>=3&&x.ph.length<=6));const ph=w.ph;const extra=pick([...new Set(ph.flatMap(p=>CONF[p]||[]))].filter(p=>!ph.includes(p)),2);const tiles=shuffle([...ph,...extra]);const picked=[];
+ frame(L,`<div class="prompt"><div class="big word popin">${w.word}</div>${speakBtn(w.word)}</div><div class="slotrow" id="slots">${ph.map(()=>'<div class="slot ipa"></div>').join('')}</div><div class="tiles">${tiles.map((p,i)=>`<div class="tile ipa" data-i="${i}" data-p="${p}">${p}</div>`).join('')}</div><div class="actions"><button class="btn ghost" id="undo">← 退一格</button><button class="btn primary" id="chk" disabled>确定</button></div>`,`把这个词的音标按顺序装配出来：${ph.length} 个音，多给了 2 个易混音。先慢慢读词，一个音一个音地数。`);
+ const slots=[...document.querySelectorAll('.slot')];const upd=()=>{slots.forEach((s,i)=>{s.textContent=picked[i]?picked[i].p:'';s.classList.toggle('f',!!picked[i])});$('#chk').disabled=picked.length!==ph.length};
+ document.querySelectorAll('.tile').forEach(t=>t.onclick=()=>{if(picked.length>=ph.length)return;picked.push({p:t.dataset.p,el:t});t.classList.add('used');upd()});
+ $('#undo').onclick=()=>{const p=picked.pop();if(p){p.el.classList.remove('used');upd()}};
+ $('#chk').onclick=()=>{const ok=picked.every((p,i)=>p.p===ph[i]);slots.forEach((s,i)=>s.classList.add(ph[i]===picked[i].p?'ok':'no'));document.querySelectorAll('.tile').forEach(t=>t.onclick=null);$('#undo').disabled=true;$('#chk').disabled=true;mark(ok,15,ok?`✔ ${w.word} = /${w.ipa}/`:`✘ ${w.word} = /${w.ipa}/`);say(w.word);next(bBuildIpa)}}
+
+/* 7 真词假词 */
+const FAKES=['gɪb','bæf','tʊg','zɒp','θɪg','faʊd','veɪk','hɔɪs','dɜːb','saʊf','pɒθ','kuːb','ʃaɪp','bəʊf','deək','tɪəg','gʌʃ','fɔːb','hʊək','zeɪt','θuːd','vɒk','daɪʃ','pɪəf','tɔɪd','gæʃ','ðʌp','siːg'];
+function bRealFake(){const L=cur.L;if(cur.round===0){cur.queue=shuffle([...pick(WORDS,7).map(w=>[w.ipa,true,w.word]),...pick(FAKES,7).map(f=>[f,false,null])])}
+ const [ipa,real,word]=cur.queue[cur.round];
+ frame(L,`<div class="prompt"><div class="big popin">/${ipa}/</div></div><div class="rf"><button class="opt" data-r="1">✅ 真词<br><small style="font-size:15px;color:var(--muted);font-family:var(--fb)">我知道这个词</small></button><button class="opt" data-r="0">👻 假词<br><small style="font-size:15px;color:var(--muted);font-family:var(--fb)">拼得出来，但英语里没有</small></button></div>`,'全班一起把它拼读出来——出声！然后判断：这是一个真的英语单词，还是一个"长得像单词"的假词？假词考的是纯拼读能力：不认识也要读得出。');
+ document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{document.querySelectorAll('.opt').forEach(x=>x.disabled=true);const ok=(b.dataset.r==='1')===real;b.classList.add(ok?'correct':'wrong');mark(ok,10,real?`${ok?'✔':'✘'} /${ipa}/ 是真词：${word}`:`${ok?'✔':'✘'} /${ipa}/ 是假词——但你读出来了吗？`);if(real)say(word);next(bRealFake)})}
+
+/* 8 极速解码 A/B 对抗 */
+function bSpeed(){const L=cur.L;teams={a:0,b:0};team='a';hud();let t=60,iv=null,n=0,right=0;
+ frame(L,`<div class="teams"><div class="team a on" data-t="a">🟠 A 队</div><div class="team b" data-t="b">🟢 B 队</div></div><div style="text-align:center"><span class="timer" id="tm">60</span></div><div id="arena" style="margin-top:14px"><div class="actions"><button class="btn primary" id="go">▶ 开始 60 秒</button></div></div>`,'点选当前答题的队伍（每题可切换，建议两队轮流）。看音标选词，答对 +10，连对加成。时间到后比总分。');
+ document.querySelectorAll('.team').forEach(el=>el.onclick=()=>{team=el.dataset.t;document.querySelectorAll('.team').forEach(x=>x.classList.toggle('on',x===el))});
+ function q(){const w=rand(WORDS);const opts=shuffle([w,...nearWords(w,3)]);$('#arena').innerHTML=`<div class="prompt"><div class="big popin">/${w.ipa}/</div></div><div class="options">${opts.map(o=>`<button class="opt" data-w="${o.word}">${o.word}</button>`).join('')}</div>`;
+  document.querySelectorAll('#arena .opt').forEach(b=>b.onclick=()=>{document.querySelectorAll('#arena .opt').forEach(x=>x.disabled=true);const ok=b.dataset.w===w.word;b.classList.add(ok?'correct':'wrong');if(!ok)document.querySelector(`#arena .opt[data-w="${w.word}"]`).classList.add('correct');n++;if(ok)right++;mark(ok,10,ok?`✔ ${w.word}`:`✘ ${w.word}`);setTimeout(q,450)})}
+ $('#go').onclick=()=>{$('#go').disabled=true;q();iv=setInterval(()=>{t--;$('#tm').textContent=t;if(t<=0){clearInterval(iv);const win=teams.a===teams.b?'平局！':teams.a>teams.b?'🟠 A 队获胜！':'🟢 B 队获胜！';cur.ok=right;cur.bad=n-right;$('#arena').innerHTML=`<div class="result"><div class="emoji">⏰</div><h3>${win}</h3><p>A 队 ${teams.a} 分 · B 队 ${teams.b} 分 · 共答 ${n} 题，对 ${right} 题</p><div class="actions"><button class="btn primary" onclick="finish(${right>=12?3:right>=8?2:right>=5?1:0})">结算 → 领星星</button></div></div>`}},1000)}}
+
+/* ===================== 速查表 ===================== */
+const chip=p=>`<div class="chip"><div class="ph">/${p}/</div><div class="ex">${EX[p]||''}</div></div>`;
+$('#cMono').innerHTML=V_MONO.map(chip).join('');$('#cDiph').innerHTML=V_DIPH.map(chip).join('');$('#cPlo').innerHTML=C_PLO.map(chip).join('');$('#cFri').innerHTML=C_FRI.map(chip).join('');
+renderLevels();hud();
+$('#stage').innerHTML=`<div class="result"><div class="emoji">🕵️</div><h3>欢迎来到音标解码局</h3><p>这里不检查单个音的发音，只做两件事：<b>把音标拼成词</b>，<b>把词还原成音标</b>。<br>每一关都只用学过的 35 个音。从第 1 关开始，拿到 ★ 解锁下一关。</p><div class="actions"><button class="btn primary" onclick="start(LEVELS[0])">开始第 1 关 →</button></div></div>`;
+</script>
+</body>
+</html>
