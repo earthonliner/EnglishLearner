@@ -94,18 +94,20 @@ h2.t u{text-decoration:none;background:linear-gradient(transparent 60%,var(--mus
 .vc .b .w{font-family:var(--fh);font-size:38px}.vc .b .ex{font-size:17px;margin-top:10px;line-height:1.4;opacity:.92}.vc .b .ex i{color:var(--mus)}
 
 /* TED */
-.ted{position:absolute;left:120px;right:120px;top:270px;display:grid;grid-template-columns:1fr 620px;gap:40px}
+.ted{position:absolute;left:120px;right:120px;top:270px;display:grid;grid-template-columns:1fr 760px;gap:40px}
+.ted .chunks .card{max-height:760px;overflow:auto}
 .steps{display:flex;flex-direction:column;gap:14px}
 .st{display:flex;align-items:center;gap:18px;padding:18px 22px;border-radius:16px;background:var(--card);border:2px solid var(--line);font-size:26px;cursor:grab;user-select:none;transition:.15s}
 .st .num{width:48px;height:48px;border-radius:50%;background:var(--ink);color:var(--mus);font-family:var(--fm);font-weight:700;font-size:24px;display:flex;align-items:center;justify-content:center;flex:none}
 .st.drag{opacity:.4}.st.over{outline:4px solid var(--green)}
 .st.ok{border-color:var(--green);background:var(--green2)}.st.bad{border-color:var(--red);background:var(--red2)}
 .chunks .card{padding:26px 30px}
-.chunks h3{font-family:var(--fh);font-weight:400;font-size:34px;margin-bottom:10px}
-.ch{padding:12px 16px;border-radius:12px;background:var(--cream2);margin-top:10px;font-size:22px;line-height:1.4;cursor:pointer;border:2px solid transparent}
+.chunks h3{font-family:var(--fh);font-weight:400;font-size:32px;margin-bottom:6px}
+#chunks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.ch{padding:10px 14px;border-radius:12px;background:var(--cream2);font-size:20px;line-height:1.35;cursor:pointer;border:2px solid transparent}
 .ch:hover{border-color:var(--green)}
 .ch b{color:var(--red)}
-.ch .m{display:none;margin-top:6px;color:var(--ink)}
+.ch .m{display:none;margin-top:4px;color:var(--ink);font-size:18px}
 .ch.on .m{display:block}
 .ch .m .zh{margin-left:8px}
 
@@ -174,6 +176,12 @@ h2.t u{text-decoration:none;background:linear-gradient(transparent 60%,var(--mus
 .gapside .rules{margin-top:14px;font-size:21px;line-height:1.5;color:var(--dim)}
 .gapside .rules b{color:var(--ink)}
 
+/* signal words slide */
+.sigbig{position:absolute;left:120px;right:120px;top:290px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.sigbig .sig{padding:24px 28px;font-size:27px;line-height:1.4;min-height:170px;background:var(--card);border:2px solid var(--line)}
+.sigbig .sig b{font-size:18px;margin-bottom:6px}
+.sigbig .sig .a{font-size:26px;margin-top:10px}
+.sigbig .sig.on{background:var(--green2);border-color:var(--green)}
 /* book practice */
 .bk .card{padding:30px 34px}
 .bk h3{font-family:var(--fh);font-weight:400;font-size:38px;margin-bottom:12px}
@@ -189,22 +197,24 @@ h2.t u{text-decoration:none;background:linear-gradient(transparent 60%,var(--mus
 .sig.on .a{display:block}
 
 /* pitch */
-.pitch{position:absolute;left:120px;right:120px;top:270px;display:grid;grid-template-columns:1.2fr 1fr;gap:40px}
+.pitch{position:absolute;left:120px;right:120px;top:270px;display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:start}
+.pitch .card{max-height:760px;overflow:auto}
 .pitch .card{padding:30px 34px}
 .pitch h3{font-family:var(--fh);font-weight:400;font-size:36px;margin-bottom:8px}
-.frame{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px dashed var(--line);font-size:24px;line-height:1.45}
+.frame{display:flex;gap:16px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line);font-size:22px;line-height:1.4}
 .frame:last-child{border:0}
 .frame .tg{font-family:var(--fm);font-size:15px;color:#fff;background:var(--green);padding:3px 9px;border-radius:5px;letter-spacing:.06em;min-width:130px;text-align:center;margin-top:6px}
 .frame .tg.r{background:var(--red)}.frame .tg.b{background:var(--blue)}.frame .tg.m{background:var(--mus);color:var(--ink)}
 .frame i{color:var(--dim)}
 .ck{display:flex;flex-direction:column;gap:10px;margin-top:10px}
-.ck .c{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:12px;background:var(--cream2);font-size:23px;cursor:pointer;border:2px solid transparent}
+.ck{gap:8px}
+.ck .c{display:flex;align-items:center;gap:12px;padding:9px 14px;border-radius:12px;background:var(--cream2);font-size:21px;cursor:pointer;border:2px solid transparent}
 .ck .c:hover{border-color:var(--green)}
 .ck .c .bx{width:34px;height:34px;border:3px solid var(--ink);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
 .ck .c.on .bx{background:var(--green);border-color:var(--green);color:#fff}
 .ck .c.on{text-decoration:line-through;color:var(--dim)}
 .ideas{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-.ideas span{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:8px 18px;font-size:21px}
+.ideas{margin-top:8px}.ideas span{background:var(--cream2);border:2px solid var(--line);border-radius:999px;padding:6px 16px;font-size:20px}
 
 /* end */
 .endg .card{padding:32px 36px}
@@ -282,6 +292,12 @@ h2.t u{text-decoration:none;background:linear-gradient(transparent 60%,var(--mus
   </div>
 </section>
 
+<!-- 5b signal words -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub r">Tense Detective · the clues</span><h2 class="t">Signal words: see the <u>clue</u>, name the tense</h2><p class="lead">Read the signal words aloud, say the tense, then click to check. Then close your eyes – your partner reads a group, you answer.</p></div>
+  <div class="sigbig rise d2" id="sigbig"></div>
+</section>
+
 <!-- 6 spot the error -->
 <section class="slide">
   <div class="head rise d1"><span class="stub r">Tense Detective · round 2</span><h2 class="t">Six sentences. Six <u>mistakes</u>.</h2><p class="lead">Find the mistake and fix it out loud. Click the card to check. These are the mistakes we made last lesson.</p></div>
@@ -352,11 +368,11 @@ h2.t u{text-decoration:none;background:linear-gradient(transparent 60%,var(--mus
       <div class="frame"><span class="tg m">PRES CONT</span><span>Right now, more and more people are …<br><i>These days even grandparents are posting recipes.</i></span></div>
       <div class="frame"><span class="tg">PRESENT</span><span>It passes the three tests: it makes money, it links to …, it appeals to …</span></div>
       <div class="frame"><span class="tg r">FUTURE</span><span>Look at the numbers – it's going to … / I think it will … / Our company is going to …</span></div>
+      <h3 style="margin-top:14px;font-size:26px">Need an idea?</h3>
+      <div class="ideas"><span>AI tutors</span><span>second-hand fashion</span><span>e-sports</span><span>city camping</span><span>silent discos</span><span>home robots</span><span>your own idea</span></div>
     </div>
     <div class="card rise d3"><h3>Partner's checklist</h3>
       <div class="ck" id="ck"></div>
-      <h3 style="margin-top:18px;font-size:28px">Need an idea?</h3>
-      <div class="ideas"><span>AI tutors</span><span>second-hand fashion</span><span>e-sports</span><span>city camping</span><span>silent discos</span><span>home robots</span><span>your own idea</span></div>
     </div>
   </div>
 </section>
@@ -393,7 +409,7 @@ addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(['ArrowRi
 /* scoreboard – one per slide (slides 2,4,5,6,8,10,11,12) */
 const score={A:0,B:0,nA:'Player A',nB:'Player B'};
 function sbHtml(){return `<div class="sb"><div class="pl a"><input value="${score.nA}" data-k="nA"><span class="n" data-n="A">${score.A}</span><button data-d="-1" data-k="A">−</button><button data-d="1" data-k="A">+</button></div><div class="pl b"><input value="${score.nB}" data-k="nB"><span class="n" data-n="B">${score.B}</span><button data-d="-1" data-k="B">−</button><button data-d="1" data-k="B">+</button></div></div>`}
-[1,3,4,5,7,9,10,11].forEach(i=>deck.s[i].insertAdjacentHTML('beforeend',sbHtml()));
+[1,3,4,5,6,8,10,11,12].forEach(i=>deck.s[i].insertAdjacentHTML('beforeend',sbHtml()));
 document.addEventListener('click',e=>{const b=e.target.closest('.sb button');if(!b)return;score[b.dataset.k]=Math.max(0,score[b.dataset.k]+ +b.dataset.d);$$(`.sb .n[data-n="${b.dataset.k}"]`).forEach(n=>n.textContent=score[b.dataset.k]);if(+b.dataset.d>0)ding(true)});
 document.addEventListener('input',e=>{const i=e.target.closest('.sb input');if(!i)return;score[i.dataset.k]=i.value;$$(`.sb input[data-k="${i.dataset.k}"]`).forEach(x=>{if(x!==i)x.value=i.value})});
 /* zh toggles */
@@ -420,12 +436,12 @@ const VOC=[
  ['v.','to be liked by someone; to attract them','appeal to','Trends usually <i>appeal to</i> a wide range of people.'],
  ['n.','the buying and selling of goods and services','commerce','… the rise of electronic <i>commerce</i>.'],
  ['v.','to use a situation or chance to get a benefit','take advantage of','… see how they can <i>take advantage of</i> a new trend.'],
- ['n.','a person paid to give expert advice','consultant','… from individual trend <i>consultants</i> to entire teams …'],
- ['v.','to watch something carefully over time','monitor','Kevin spends his day <i>monitoring</i> news headlines.'],
+ ['v.','to say what will happen in the future','predict','Businesses need to <i>predict</i> change and spot emerging trends.'],
+ ['v.','to notice something that is not easy to see','spot','The importance of <i>spotting</i> trends has led to a growing industry.'],
  ['adj.','starting to appear or become known','emerging','… spot <i>emerging</i> trends in order to stay relevant.'],
  ['v.','to stay important and useful; not out of date','stay relevant','Businesses need to … <i>stay relevant</i> and beat the competition.'],
- ['n.','a person who studies data and explains what it means','analyst','Social media <i>analysts</i> – a job title that didn\'t exist before the mid-2000s.'],
- ['v.','to cut something up to study it closely','dissect','… and <i>dissect</i> some lessons from it. (TED)']];
+ ['n.','a very large company','corporation','… to entire teams of people in large <i>corporations</i>.'],
+ ['v.','to be something in the end, often a surprise','turn out (to be)','This <i>turned out</i> to be nothing more than a fad.']];
 $('#vg').innerHTML=VOC.map(v=>`<div class="vc"><div class="in"><div class="f"><div class="pos">${v[0]}</div>${v[1]}</div><div class="b"><div class="w">${v[2]}</div><div class="ex">${v[3]}</div></div></div></div>`).join('');
 $$('.vc').forEach(c=>c.addEventListener('click',()=>{c.classList.toggle('on');ding(true)}));
 $('#vg').style.gridTemplateColumns='repeat(4,1fr)';$$('.vc').forEach(c=>c.style.height='228px');
@@ -516,6 +532,8 @@ $('#gapAll').addEventListener('click',()=>$$('.b',box).forEach(reveal));$('#gapR
 
 /* 11 signal words */
 const SIG=[['in 2011 · ago · yesterday · last year','PAST SIMPLE'],['since · for · already · yet · ever · never · just','PRESENT PERFECT'],['every day · usually · always · on Mondays','PRESENT SIMPLE'],['now · right now · look! · these days · more and more','PRESENT CONTINUOUS'],['I think · probably · maybe · promise · offer','WILL'],['look at … ! · I\'ve decided · plan · intention','BE GOING TO'],['by 2012 · when I was ten · in the past','PAST SIMPLE'],['so far · recently · this week (still going) · how long…?','PRESENT PERFECT']];
+const SIG2=[['in 2011 · ago · yesterday · last year · when I was ten','PAST SIMPLE'],['since · for · already · yet · just','PRESENT PERFECT'],['ever · never · so far · recently · how long…?','PRESENT PERFECT'],['every day · usually · always · on Mondays · facts','PRESENT SIMPLE'],['now · right now · look! · listen!','PRESENT CONTINUOUS'],['these days · more and more · nowadays (a trend)','PRESENT CONTINUOUS'],['I think · probably · maybe · promise · offer','FUTURE SIMPLE – will'],['look at…! · I\'ve decided · plan · intention','FUTURE SIMPLE – be going to'],['tomorrow · next year · in 2030 · soon','FUTURE SIMPLE – will / be going to']];
+$('#sigbig').innerHTML=shuffle(SIG2).map(s=>`<div class="sig"><b>SIGNAL</b>${s[0]}<div class="a">→ ${s[1]}</div></div>`).join('');
 $('#sigs').innerHTML=SIG.map(s=>`<div class="sig"><b>SIGNAL</b>${s[0]}<div class="a">→ ${s[1]}</div></div>`).join('');
 $$('.sig').forEach(s=>s.addEventListener('click',()=>s.classList.toggle('on')));
 
