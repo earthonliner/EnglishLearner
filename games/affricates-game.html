@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>破擦音实验室 · Affricate Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF7EE;--panel:#FFFFFF;--ink:#2E2418;--muted:#8A7560;--line:#F1DFC8;--ok:#2BB673;--no:#F0564A;--gold:#FFB703;
+--tʃ:#FF8A5B;--dʒ:#FF5D8F;--tr:#4FC3F7;--dr:#2979FF;--ts:#8E6BFF;--dz:#C55CFF;--plo:#FFD166;--fri:#7FD8BE;
+--fd:'Fredoka','PingFang SC','Microsoft YaHei',sans-serif;--fb:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;--ipa:'Charis SIL','Doulos SIL','Noto Sans','Segoe UI',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100vh;background-image:radial-gradient(circle at 10% 0%,#FFE4CC 0,transparent 35%),radial-gradient(circle at 95% 100%,#FFD6E4 0,transparent 35%)}
+header{padding:22px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-family:var(--fd);font-size:34px;font-weight:700;background:linear-gradient(90deg,var(--tʃ),var(--dʒ),var(--dr));-webkit-background-clip:text;background-clip:text;color:transparent}
+header .sub{font-size:14px;color:var(--muted);margin-top:2px}
+.hud{display:flex;gap:12px;align-items:center;font-weight:800}
+.pill{background:var(--panel);padding:8px 16px;border-radius:999px;font-size:16px;border:2px solid var(--line)}
+main{max-width:1140px;margin:0 auto;padding:10px 20px 60px}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:12px;margin-bottom:22px}
+.lv{background:var(--panel);border-radius:18px;padding:14px 10px;text-align:center;cursor:pointer;border:3px solid transparent;transition:.15s;position:relative;box-shadow:0 4px 14px rgba(46,36,24,.06)}
+.lv:hover{transform:translateY(-4px)}.lv.active{border-color:var(--gold)}
+.lv .ic{font-size:34px}.lv .nm{font-family:var(--fd);font-weight:700;font-size:16px;margin-top:4px}.lv .ds{font-size:12px;color:var(--muted);margin-top:2px}
+.lv .st{margin-top:6px;letter-spacing:2px;color:var(--gold);font-size:14px}
+.lv.locked{opacity:.45;cursor:not-allowed}.lv.locked::after{content:'🔒';position:absolute;top:8px;right:10px}
+.stage{background:var(--panel);border-radius:24px;padding:26px 28px;min-height:460px;border:2px solid var(--line);position:relative;box-shadow:0 10px 30px rgba(46,36,24,.06)}
+.stage h2{font-family:var(--fd);font-size:28px;font-weight:700}
+.stage .rule{color:var(--muted);font-size:15px;margin:4px 0 18px}
+.progress{height:10px;background:#FBEFE0;border-radius:5px;overflow:hidden;margin-bottom:18px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--tʃ),var(--dʒ));width:0;transition:.3s}
+.btn{border:none;border-radius:999px;padding:12px 26px;font-family:var(--fd);font-weight:700;font-size:18px;cursor:pointer;color:var(--ink);background:var(--gold);box-shadow:0 6px 0 rgba(46,36,24,.18);transition:.12s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(46,36,24,.18)}
+.btn.ghost{background:#FBEFE0;color:var(--ink)}.btn.ok{background:var(--ok);color:#fff}.btn.no{background:var(--no);color:#fff}.btn.k{background:var(--dr);color:#fff}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+.big{font-family:var(--fd);font-size:60px;font-weight:700;text-align:center}
+.ipa{font-family:var(--ipa)}
+.sound{display:inline-flex;align-items:center;justify-content:center;font-family:var(--ipa);font-size:28px;font-weight:700;min-width:68px;height:68px;padding:0 10px;border-radius:20px;color:var(--ink)}
+.s-tʃ{background:var(--tʃ)}.s-dʒ{background:var(--dʒ);color:#fff}.s-tr{background:var(--tr)}.s-dr{background:var(--dr);color:#fff}.s-ts{background:var(--ts);color:#fff}.s-dz{background:var(--dz);color:#fff}
+.card{background:#FFFBF5;border:3px solid var(--line);border-radius:20px;padding:16px 10px;text-align:center;cursor:pointer;transition:.15s;font-weight:800;font-size:24px;user-select:none;color:var(--ink);font-family:var(--fb)}
+.card .em{font-size:52px;display:block;line-height:1.1}
+.card small{display:block;font-size:13px;color:var(--muted);font-weight:700;margin-top:4px}
+.card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.card.ok{border-color:var(--ok);background:#E4F7EC}.card.no{border-color:var(--no);background:#FDE7E5;animation:shake .3s}
+.card.dim{opacity:.4;pointer-events:none}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.popin{animation:pop .35s ease both}
+.fb{min-height:30px;text-align:center;font-weight:800;font-size:20px;margin-top:16px}
+.fb.ok{color:var(--ok)}.fb.no{color:var(--no)}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;align-items:center}
+.bins{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:14px}
+.bin{border:3px dashed var(--line);border-radius:18px;padding:10px 4px;text-align:center;cursor:pointer;min-height:130px;transition:.15s;background:#FFFBF5}
+.bin:hover{border-color:var(--gold)}.bin.ok{border-style:solid;border-color:var(--ok)}.bin.no{border-color:var(--no);animation:shake .3s}
+.bin .sound{min-width:58px;height:54px;font-size:22px;border-radius:14px}
+.bin .items{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px}
+.bin .items span{background:#FBEFE0;border-radius:8px;padding:2px 6px;font-size:12px}
+.throat{display:flex;gap:30px;justify-content:center;align-items:center;flex-wrap:wrap;margin:10px 0}
+.hand{font-size:110px;line-height:1}
+.pairs{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:640px;margin:0 auto}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:820px;margin:14px auto 0}
+.xword{font-family:var(--fd);font-size:64px;font-weight:700;text-align:center;letter-spacing:.04em;margin:6px 0 10px}
+.xword .seg{display:inline-block;padding:0 6px;border-radius:12px;border:3px solid transparent;cursor:pointer;transition:.15s}
+.xword .seg:hover{border-color:var(--gold);background:#FFF6DE}
+.xword .seg.ok{background:#E4F7EC;border-color:var(--ok)}.xword .seg.no{background:#FDE7E5;border-color:var(--no);animation:shake .3s}
+/* lab */
+.lab{display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:6px}
+.eq{display:flex;align-items:center;gap:14px;font-family:var(--fd);font-size:40px;font-weight:700}
+.slot{width:92px;height:92px;border-radius:22px;border:4px dashed var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--ipa);font-size:40px;background:#FFFBF5;transition:.15s}
+.slot.plo{border-color:var(--plo)}.slot.fri{border-color:var(--fri)}
+.slot.filled{border-style:solid}
+.slot.ok{border-color:var(--ok);background:#E4F7EC}.slot.no{border-color:var(--no);background:#FDE7E5;animation:shake .3s}
+.tiles{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.tile{width:74px;height:74px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:var(--ipa);font-size:32px;font-weight:700;cursor:pointer;border:3px solid transparent;transition:.15s;color:var(--ink)}
+.tile.plo{background:var(--plo)}.tile.fri{background:var(--fri)}
+.tile:hover{transform:translateY(-3px);border-color:var(--gold)}.tile.used{opacity:.3;pointer-events:none}
+.legend{display:flex;gap:16px;justify-content:center;font-size:14px;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:16px;height:16px;border-radius:5px;vertical-align:-3px;margin-right:4px}
+/* workshop */
+.ws{display:flex;flex-direction:column;align-items:center;gap:14px}
+.ws .word{font-family:var(--fd);font-size:68px;font-weight:700;letter-spacing:.03em;display:flex;align-items:baseline}
+.ws .word .gapb{display:inline-flex;align-items:center;justify-content:center;min-width:120px;height:80px;border-bottom:6px solid var(--ink);margin:0 6px;color:var(--dr);border-radius:8px 8px 0 0;transition:.15s}
+.ws .word .gapb.ok{background:#E4F7EC;border-color:var(--ok);color:var(--ok)}.ws .word .gapb.no{background:#FDE7E5;border-color:var(--no);animation:shake .3s}
+.ws .chips{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.ws .chip{min-width:110px;padding:14px 22px;border-radius:18px;background:#FFFBF5;border:3px solid var(--line);font-family:var(--fd);font-size:34px;font-weight:700;cursor:pointer;transition:.15s;text-align:center}
+.ws .chip:hover{border-color:var(--gold);transform:translateY(-3px)}
+.ws .chip.ok{border-color:var(--ok);background:#E4F7EC}.ws .chip.no{border-color:var(--no);background:#FDE7E5;animation:shake .3s}
+.ws .chip.dim{opacity:.4;pointer-events:none}
+.rulebox{background:#FFF6DE;border:2px solid #F3DFA5;border-radius:16px;padding:12px 18px;font-size:16px;max-width:760px;text-align:center;line-height:1.5}
+.rulebox b{color:var(--dr)}
+.result{text-align:center;padding:24px 10px}
+.result .emoji{font-size:80px}.result h3{font-family:var(--fd);font-size:30px;margin:10px 0}.result .stars{font-size:44px;color:var(--gold);letter-spacing:6px}.result p{color:var(--muted)}
+.chart{background:var(--panel);border-radius:24px;padding:22px 26px;margin-top:22px;border:2px solid var(--line)}
+.chart h3{font-family:var(--fd);font-size:20px;margin-bottom:12px}
+.ref{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rf{background:#FFFBF5;border-radius:18px;padding:14px;display:flex;gap:14px;align-items:center;border:2px solid var(--line)}
+.rf .info b{display:block;font-size:15px}.rf .info span{font-size:13px;color:var(--muted)}
+.sp{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.sp .box{background:#FFFBF5;border:2px solid var(--line);border-radius:18px;padding:14px 16px;font-size:14px;line-height:1.6}
+.sp .box h4{font-family:var(--fd);font-size:17px;margin-bottom:6px}
+.sp .box code{font-family:var(--fd);background:#FFF6DE;padding:1px 7px;border-radius:6px;font-size:14px}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:18px}
+@media (max-width:760px){.bins{grid-template-columns:repeat(3,1fr)}.ref{grid-template-columns:1fr}.tri{grid-template-columns:1fr}.sp{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>🧪 破擦音实验室 · Affricate Lab</h1><div class="sub">/tʃ/ /dʒ/ · /tr/ /dr/ · /ts/ /dz/ — 爆破音 + 摩擦音 = 破擦音 · 八个游戏 · 重点：听辨 + 拼写对应</div></div>
+  <div class="hud"><div class="pill">⭐ <span id="score">0</span></div><div class="pill">🔥 连击 <span id="combo">0</span></div><button class="btn ghost" id="resetBtn" style="padding:8px 16px;font-size:15px">重置进度</button></div>
+</header>
+<main>
+  <section class="levels" id="levels"></section>
+  <section class="stage" id="stage"></section>
+  <section class="chart">
+    <h3>📚 六个破擦音速查（点击卡片看口型提示）</h3>
+    <div class="ref" id="ref"></div>
+    <h3 style="margin-top:18px">✏️ /tʃ/ 和 /dʒ/ 的拼写地图</h3>
+    <div class="sp">
+      <div class="box"><h4>/tʃ/ 怎么写</h4><code>ch</code> 词首、辅音后、长元音后：chair · lunch · teach<br><code>tch</code> 短元音后的词尾：watch · catch · kitchen（例外：much, such, rich, which）<br><code>t + ure / ion</code>：picture · nature · question</div>
+      <div class="box"><h4>/dʒ/ 怎么写</h4><code>j</code> 几乎只在词首：jam · juice · jump<br><code>g + e / i / y</code>：giant · gym · page · energy（例外：get, give, girl, gift）<br><code>dge</code> 短元音后的词尾：bridge · judge · badge<br><code>ge</code> 长元音/辅音后的词尾：age · large · orange</div>
+    </div>
+  </section>
+</main>
+<footer>建议：由老师或学生真人发音，课件负责出题、计分和反馈。每关拿到 1 颗星解锁下一关，所有游戏可重玩。</footer>
+
+<script>
+/* ---------- data ---------- */
+const SOUNDS={
+ 'tʃ':{voiced:false,parts:['t','ʃ'],tip:'先像 /t/ 一样把舌尖顶在上齿龈堵住气，再松开直接滑进 /ʃ/，嘴唇撅圆。一个动作完成，不是 t 和 ʃ 分开读。不振动声带。',words:[['chair','🪑'],['cheese','🧀'],['chicken','🐔'],['watch','⌚'],['teacher','👩‍🏫'],['peach','🍑'],['kitchen','🍳'],['picture','🖼️'],['lunch','🍱'],['church','⛪']]},
+ 'dʒ':{voiced:true, parts:['d','ʒ'],tip:'口型同 /tʃ/，声带振动。常见错误：读成汉语"宙"的 zh 或者读成 /j/（jet→yet）。舌尖一定先顶住齿龈再放开。',words:[['jam','🍓'],['juice','🧃'],['jeans','👖'],['orange','🍊'],['bridge','🌉'],['giraffe','🦒'],['cabbage','🥬'],['jump','🤸'],['judge','👨‍⚖️'],['page','📄']]},
+ 'tr':{voiced:false,parts:['t','r'],tip:'舌尖顶住齿龈，松开时舌头卷起进入 /r/，嘴唇略圆。听起来接近"戳"但更轻、更短。',words:[['tree','🌳'],['train','🚆'],['truck','🚚'],['trousers','👖'],['strawberry','🍓'],['triangle','🔺'],['trumpet','🎺'],['country','🏞️']]},
+ 'dr':{voiced:true, parts:['d','r'],tip:'口型同 /tr/，声带振动。听起来接近"桌"但要卷舌、要短促。',words:[['dress','👗'],['drum','🥁'],['dragon','🐉'],['drink','🥤'],['draw','✏️'],['hundred','💯'],['drive','🚗'],['drop','💧']]},
+ 'ts':{voiced:false,parts:['t','s'],tip:'/t/ 后紧接 /s/，像汉语"次"的声母但更短。几乎只出现在词尾：清音后的复数 -ts。',words:[['cats','🐱'],['hats','🎩'],['boots','👢'],['rabbits','🐰'],['sweets','🍬'],['pets','🐶'],['students','🎓'],['lights','💡']]},
+ 'dz':{voiced:true, parts:['d','z'],tip:'/d/ 后紧接 /z/，声带振动，像汉语"字"的声母但更短。几乎只出现在词尾：-ds。',words:[['beds','🛏️'],['birds','🐦'],['friends','👫'],['hands','🙌'],['clouds','☁️'],['kids','🧒'],['words','📝'],['heads','🙂']]}};
+const KEYS=['tʃ','dʒ','tr','dr','ts','dz'];
+const PAIRS=[
+ ['chain','Jane','tʃ','dʒ'],['cheap','jeep','tʃ','dʒ'],['choke','joke','tʃ','dʒ'],['rich','ridge','tʃ','dʒ'],['cheer','jeer','tʃ','dʒ'],['batch','badge','tʃ','dʒ'],['chin','gin','tʃ','dʒ'],['larch','large','tʃ','dʒ'],
+ ['ship','chip','ʃ','tʃ'],['sheep','cheap','ʃ','tʃ'],['wash','watch','ʃ','tʃ'],['cash','catch','ʃ','tʃ'],['share','chair','ʃ','tʃ'],['mash','match','ʃ','tʃ'],['shoes','choose','ʃ','tʃ'],
+ ['jet','yet','dʒ','j'],['jam','yam','dʒ','j'],['juice','use','dʒ','j'],['major','mayor','dʒ','j'],['jail','Yale','dʒ','j'],
+ ['chain','train','tʃ','tr'],['chip','trip','tʃ','tr'],['cheat','treat','tʃ','tr'],['chew','true','tʃ','tr'],
+ ['jaw','draw','dʒ','dr'],['jug','drug','dʒ','dr'],['jive','drive','dʒ','dr'],['Jew','drew','dʒ','dr'],
+ ['cats','cards','ts','dz'],['bats','beds','ts','dz'],['hats','heads','ts','dz'],['seats','seeds','ts','dz']];
+const XRAY=[['chair',['ch','air'],0,'tʃ'],['watch',['w','a','tch'],2,'tʃ'],['picture',['pic','t','ure'],1,'tʃ'],['kitchen',['ki','tch','en'],1,'tʃ'],['question',['ques','t','ion'],1,'tʃ'],['cheese',['ch','ee','se'],0,'tʃ'],['lunch',['l','u','n','ch'],3,'tʃ'],['nature',['na','t','ure'],1,'tʃ'],['teacher',['tea','ch','er'],1,'tʃ'],['much',['m','u','ch'],2,'tʃ'],
+ ['jam',['j','am'],0,'dʒ'],['bridge',['bri','dge'],1,'dʒ'],['giraffe',['g','i','raffe'],0,'dʒ'],['orange',['o','ran','ge'],2,'dʒ'],['soldier',['sol','d','ier'],1,'dʒ'],['gym',['g','ym'],0,'dʒ'],['judge',['ju','dge'],1,'dʒ'],['cabbage',['cabba','ge'],1,'dʒ'],['energy',['ener','g','y'],1,'dʒ'],['jeans',['j','eans'],0,'dʒ'],['large',['lar','ge'],1,'dʒ'],['giant',['g','iant'],0,'dʒ']];
+const CH=[['chair','tʃ'],['school','k'],['machine','ʃ'],['chemist','k'],['chef','ʃ'],['cheese','tʃ'],['Christmas','k'],['Chicago','ʃ'],['stomach','k'],['teacher','tʃ'],['character','k'],['parachute','ʃ'],['kitchen','tʃ'],['chorus','k'],['chocolate','tʃ'],['echo','k'],['champagne','ʃ'],['lunch','tʃ'],['chemistry','k'],['child','tʃ']];
+const GW=[['gem','dʒ'],['giant','dʒ'],['gym','dʒ'],['giraffe','dʒ'],['page','dʒ'],['age','dʒ'],['cage','dʒ'],['large','dʒ'],['energy','dʒ'],['ginger','dʒ'],['orange','dʒ'],['magic','dʒ'],['gentle','dʒ'],['get','g'],['give','g'],['girl','g'],['gift','g'],['go','g'],['bag','g'],['big','g'],['begin','g'],['tiger','g'],['hungry','g'],['game','g'],['gold','g'],['forget','g']];
+/* spelling workshop: [ipa, before, after, answer, options, rule] */
+const WS=[
+ ['wɒtʃ','wa','','tch',['ch','tch','t'],'短元音后的词尾 → <b>tch</b>'],
+ ['tʃeə','','air','ch',['ch','tch','j'],'词首只能是 <b>ch</b>'],
+ ['brɪdʒ','bri','','dge',['dge','ge','j'],'短元音后的词尾 → <b>dge</b>'],
+ ['eɪdʒ','a','','ge',['ge','dge','j'],'长元音后 → <b>ge</b>（a_e 结构）'],
+ ['dʒæm','','am','j',['j','g','dge'],'词首的 /dʒ/ 多数是 <b>j</b>'],
+ ['lɑːdʒ','lar','','ge',['ge','dge','j'],'辅音后的词尾 → <b>ge</b>，不用 dge'],
+ ['ˈpɪktʃə','pic','ure','t',['ch','t','tch'],'<b>t + ure</b> 读 /tʃ/：picture, nature, future'],
+ ['ˈɒrɪndʒ','oran','','ge',['ge','dge','j'],'辅音 n 后 → <b>ge</b>'],
+ ['ˈdʒaɪənt','','iant','g',['g','j','dge'],'<b>g + i</b> 读 /dʒ/：giant, giraffe, ginger'],
+ ['kætʃ','ca','','tch',['ch','tch','t'],'短元音 /æ/ 后的词尾 → <b>tch</b>'],
+ ['tʃiːz','','eese','ch',['ch','tch','sh'],'词首 → <b>ch</b>'],
+ ['dʒʌdʒ','ju','','dge',['dge','ge','j'],'短元音 /ʌ/ 后的词尾 → <b>dge</b>'],
+ ['mætʃ','ma','','tch',['ch','tch','ge'],'短元音后的词尾 → <b>tch</b>'],
+ ['rɪtʃ','ri','','ch',['ch','tch','t'],'例外四兄弟：<b>much, such, rich, which</b> 只用 ch'],
+ ['ˈneɪtʃə','na','ure','t',['t','ch','tch'],'<b>t + ure</b> 读 /tʃ/'],
+ ['dʒʌmp','','ump','j',['j','g','dge'],'词首 → <b>j</b>'],
+ ['dʒɪm','','ym','g',['g','j','dge'],'<b>g + y</b> 读 /dʒ/：gym, energy, gypsy'],
+ ['lʌntʃ','lun','','ch',['ch','tch','t'],'辅音 n 后 → <b>ch</b>，不用 tch'],
+ ['ˈkæbɪdʒ','cabba','','ge',['ge','dge','j'],'<b>-age</b> 结尾：cabbage, village, message'],
+ ['ˈkwestʃən','ques','ion','t',['t','ch','tch'],'<b>t + ion</b> 在 s 后读 /tʃ/：question, suggestion'],
+ ['ˈtiːtʃə','tea','er','ch',['ch','tch','t'],'长元音 /iː/ 后 → <b>ch</b>'],
+ ['bædʒ','ba','','dge',['dge','ge','j'],'短元音后的词尾 → <b>dge</b>']];
+
+/* ---------- utils ---------- */
+const $=s=>document.querySelector(s);
+const shuffle=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+const pick=(a,n)=>shuffle(a).slice(0,n); const rand=a=>a[Math.floor(Math.random()*a.length)];
+const ctx=('AudioContext' in window)?new AudioContext():null;
+function beep(ok){if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=ok?'sine':'sawtooth';o.frequency.value=ok?880:180;g.gain.setValueAtTime(.12,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.25);o.start();o.stop(ctx.currentTime+.25);
+ if(ok){const o2=ctx.createOscillator(),g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.frequency.value=1320;g2.gain.setValueAtTime(.1,ctx.currentTime+.1);g2.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.35);o2.start(ctx.currentTime+.1);o2.stop(ctx.currentTime+.35);}}
+const state=JSON.parse(localStorage.getItem('affricateLab')||'{}');state.score=state.score||0;state.stars=state.stars||{};
+let combo=0,cur=null;
+const save=()=>localStorage.setItem('affricateLab',JSON.stringify(state));
+function addScore(n){state.score+=n;combo++;$('#score').textContent=state.score;$('#combo').textContent=combo;save();}
+function breakCombo(){combo=0;$('#combo').textContent=0;}
+const snd=k=>`<span class="sound s-${k}">/${k}/</span>`;
+
+/* ---------- levels ---------- */
+const LEVELS=[
+ {id:1,ic:'🧪',nm:'合成实验',ds:'爆破 + 摩擦 = 破擦',rounds:6,build:bLab},
+ {id:2,ic:'🧺',nm:'找音分拣',ds:'这个词里藏着哪个破擦音？',rounds:12,build:bSort},
+ {id:3,ic:'✋',nm:'摸喉咙',ds:'清音还是浊音？',rounds:10,build:bVoice},
+ {id:4,ic:'⚔️',nm:'最小对立决斗',ds:'cheap 还是 jeep？',rounds:12,build:bPair},
+ {id:5,ic:'🔍',nm:'拼写透视',ds:'哪几个字母在发 /tʃ/ /dʒ/？',rounds:10,build:bXray},
+ {id:6,ic:'🎭',nm:'ch 的三张脸',ds:'/tʃ/ /k/ 还是 /ʃ/？',rounds:10,build:bCh},
+ {id:7,ic:'🪨',nm:'g 的软硬',ds:'/g/ 还是 /dʒ/？',rounds:12,build:bG},
+ {id:8,ic:'🏗️',nm:'拼写工坊',ds:'看音标，选对拼写',rounds:12,build:bWs}];
+const unlocked=id=>id===1||state.stars[id-1]>=1;
+function renderLevels(){const el=$('#levels');el.innerHTML='';LEVELS.forEach(L=>{const d=document.createElement('div');d.className='lv'+(unlocked(L.id)?'':' locked')+(cur&&cur.id===L.id?' active':'');
+ d.innerHTML=`<div class="ic">${L.ic}</div><div class="nm">${L.id}. ${L.nm}</div><div class="ds">${L.ds}</div><div class="st">${'★'.repeat(state.stars[L.id]||0)}${'☆'.repeat(3-(state.stars[L.id]||0))}</div>`;
+ d.onclick=()=>{if(unlocked(L.id))start(L);else{const f=$('#fb');if(f){f.textContent='先拿到上一关至少 1 颗星！';f.className='fb no';}}};el.appendChild(d);});}
+function start(L){if(cur&&cur.stop)cur.stop();cur={id:L.id,L,round:0,ok:0,bad:0};renderLevels();L.build();}
+function frame(L,html,rule){const pct=L.rounds?Math.round(cur.round/L.rounds*100):0;
+ $('#stage').innerHTML=`<h2>${L.ic} 第 ${L.id} 关 · ${L.nm}</h2><div class="rule">${rule}</div>${L.rounds?`<div class="progress"><div style="width:${pct}%"></div></div>`:''}${html}<div class="fb" id="fb"></div>`;}
+function fb(ok,msg){const f=$('#fb');if(!f)return;f.innerHTML=msg;f.className='fb '+(ok?'ok':'no');}
+function mark(ok,pts,msg){if(ok){beep(true);addScore(pts);cur.ok++;}else{beep(false);breakCombo();cur.bad++;}fb(ok,msg);}
+function next(build){cur.round++;if(cur.round>=cur.L.rounds)finish();else setTimeout(build,1000);}
+function finish(custom){const tot=cur.ok+cur.bad,acc=tot?cur.ok/tot:0;const stars=custom!=null?custom:(acc>=.9?3:acc>=.7?2:acc>=.5?1:0);
+ state.stars[cur.id]=Math.max(state.stars[cur.id]||0,stars);save();
+ const words={3:'完美通关！破擦音小达人！',2:'很棒！再练练就满星了',1:'过关了，继续加油',0:'再挑战一次吧！'}[stars];
+ $('#stage').innerHTML=`<div class="result"><div class="emoji">${['💪','👍','🎉','🏆'][stars]}</div><h3>${words}</h3><div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div><p>正确 ${cur.ok} · 错误 ${cur.bad}${tot?` · 正确率 ${Math.round(acc*100)}%`:''}</p>
+ <div class="row"><button class="btn" onclick="start(LEVELS[${cur.id-1}])">🔁 再玩一次</button>${cur.id<LEVELS.length?`<button class="btn ghost" onclick="start(LEVELS[${cur.id}])">下一关 ➡️</button>`:''}</div></div>`;renderLevels();}
+const lock=()=>document.querySelectorAll('.card').forEach(b=>b.classList.add('dim'));
+function peekBtn(target){const pk=$('#peek'),box=$('#peekBox');const show=e=>{e.preventDefault();box.textContent=target;},hide=()=>box.textContent='·····';pk.onmousedown=pk.ontouchstart=show;pk.onmouseup=pk.onmouseleave=pk.ontouchend=hide;}
+
+/* 1 lab: build the affricate from a plosive + a fricative */
+function bLab(){const L=LEVELS[0];
+ if(cur.round===0)cur.queue=shuffle(KEYS);
+ const k=cur.queue[cur.round];const [p,f]=SOUNDS[k].parts;const [w,em]=rand(SOUNDS[k].words);let sel=[];
+ frame(L,`<div class="lab"><div style="text-align:center;color:var(--muted)">目标：${snd(k)} &nbsp; 如 ${em} <b>${w}</b></div>
+  <div class="eq"><div class="slot plo" id="s0">?</div><span>+</span><div class="slot fri" id="s1">?</div><span>=</span>${snd(k)}</div>
+  <div class="legend"><span><i style="background:var(--plo)"></i>爆破音：舌头先把气堵住</span><span><i style="background:var(--fri)"></i>摩擦音：再从缝里挤出去</span></div>
+  <div class="tiles">${shuffle(['t','d']).map(x=>`<div class="tile plo" data-x="${x}">${x}</div>`).join('')}${shuffle(['ʃ','ʒ','r','s','z']).map(x=>`<div class="tile fri" data-x="${x}">${x}</div>`).join('')}</div></div>`,
+  '破擦音 = 一个爆破音 + 一个摩擦音，黏在一起一口气发出来。先选爆破音，再选摩擦音，拼出目标音。全班跟读：先慢（t——ʃ），再快（tʃ）。');
+ document.querySelectorAll('.tile').forEach(t=>t.onclick=()=>{const x=t.dataset.x;const isP=t.classList.contains('plo');const slot=$(isP?'#s0':'#s1');if(slot.classList.contains('filled'))return;slot.textContent=x;slot.classList.add('filled');t.classList.add('used');sel[isP?0:1]=x;
+  if(sel[0]&&sel[1]){document.querySelectorAll('.tile').forEach(z=>z.classList.add('used'));const ok=sel[0]===p&&sel[1]===f;$('#s0').classList.add(sel[0]===p?'ok':'no');$('#s1').classList.add(sel[1]===f?'ok':'no');mark(ok,15,ok?`✔ /${p}/ + /${f}/ = /${k}/，一口气读：${w}`:`✘ /${k}/ = /${p}/ + /${f}/`);next(bLab);}});}
+
+/* 2 sort */
+function bSort(){const L=LEVELS[1];
+ if(cur.round===0){cur.queue=shuffle([...KEYS,...KEYS].map(k=>[k,...rand(SOUNDS[k].words)]));cur.done=[];}
+ const [k,w,em]=cur.queue[cur.round];
+ frame(L,`<div class="big popin"><span style="font-size:80px">${em}</span><br>${w}</div>
+  <div class="bins">${KEYS.map(x=>`<div class="bin" data-k="${x}">${snd(x)}<div class="items">${cur.done.filter(d=>d[0]===x).map(d=>`<span>${d[1]}</span>`).join('')}</div></div>`).join('')}</div>`,
+  '看图读词（老师先示范）。这个词里有一个破擦音——点对应的音箩。注意 -ts / -ds 都在词尾。');
+ document.querySelectorAll('.bin').forEach(b=>b.onclick=()=>{document.querySelectorAll('.bin').forEach(x=>x.onclick=null);const ok=b.dataset.k===k;b.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.bin[data-k="${k}"]`).classList.add('ok');cur.done.push([k,w]);mark(ok,10,ok?`✔ ${w} → /${k}/`:`✘ ${w} 里的破擦音是 /${k}/`);next(bSort);});}
+
+/* 3 voiced */
+function bVoice(){const L=LEVELS[2];const k=rand(KEYS),[w,em]=rand(SOUNDS[k].words);const partner=KEYS[KEYS.indexOf(k)^1];
+ frame(L,`<div class="throat"><div class="hand">🤚🗣️</div><div><div class="big popin">${em} ${w}</div><div style="text-align:center;color:var(--muted)">目标音 <span class="ipa" style="font-size:28px;color:var(--ink)">/${k}/</span>　它的孪生兄弟是 /${partner}/，口型一模一样</div></div></div>
+  <div class="row"><button class="card" data-v="0" style="min-width:230px"><span class="em">💨</span>清音 · 只有风<small>voiceless /tʃ/ /tr/ /ts/</small></button><button class="card" data-v="1" style="min-width:230px"><span class="em">🐝</span>浊音 · 喉咙嗡嗡<small>voiced /dʒ/ /dr/ /dz/</small></button></div>`,
+  '破擦音不能拖长，所以要"连读三遍"再摸喉咙：tʃ-tʃ-tʃ 还是 dʒ-dʒ-dʒ？抖不抖？');
+ document.querySelectorAll('.card').forEach(b=>b.onclick=()=>{lock();const ok=(b.dataset.v==='1')===SOUNDS[k].voiced;b.classList.add(ok?'ok':'no');mark(ok,10,ok?`✔ /${k}/ 是${SOUNDS[k].voiced?'浊音':'清音'}`:`✘ /${k}/ 是${SOUNDS[k].voiced?'浊音，喉咙会抖':'清音，只有气流'}`);next(bVoice);});}
+
+/* 4 minimal pair duel */
+function bPair(){const L=LEVELS[3];
+ if(cur.round===0)cur.queue=pick(PAIRS,12);
+ const [a,b,ka,kb]=cur.queue[cur.round];const tIdx=Math.random()<.5?0:1;const target=[a,b][tIdx];
+ frame(L,`<div style="text-align:center;color:var(--muted);margin-bottom:8px">👩‍🏫 老师：按住"偷看"知道要读哪个词，然后大声读出来（只读一次！）</div>
+  <div class="row"><button class="btn ghost" id="peek">👀 老师偷看</button><span id="peekBox" class="ipa" style="font-size:26px;min-width:120px;text-align:center;color:var(--dr)">·····</span></div>
+  <div class="pairs" style="margin-top:14px"><button class="card" data-w="${a}"><span class="em" style="font-size:24px;color:var(--muted)">/${ka}/</span>${a}</button><button class="card" data-w="${b}"><span class="em" style="font-size:24px;color:var(--muted)">/${kb}/</span>${b}</button></div>`,
+  '两个词只差一个音：/tʃ/ vs /dʒ/、/ʃ/ vs /tʃ/、/dʒ/ vs /j/、/tʃ/ vs /tr/、/dʒ/ vs /dr/……学生听老师读音后点击听到的词。');
+ peekBtn(target);
+ document.querySelectorAll('.card').forEach(c=>c.onclick=()=>{lock();const ok=c.dataset.w===target;c.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.card[data-w="${target}"]`).classList.add('ok');mark(ok,15,ok?`✔ 是 ${target}`:`✘ 老师读的是 ${target}`);next(bPair);});}
+
+/* 5 spelling x-ray */
+function bXray(){const L=LEVELS[4];
+ if(cur.round===0)cur.queue=pick(XRAY,10);
+ const [w,segs,ans,k]=cur.queue[cur.round];
+ frame(L,`<div style="text-align:center;color:var(--muted)">目标音 ${snd(k)}</div>
+  <div class="xword popin">${segs.map((s,i)=>`<span class="seg" data-i="${i}">${s}</span>`).join('')}</div>
+  <div style="text-align:center;color:var(--muted);font-size:15px">提示：/tʃ/ 常见拼写 ch · tch · t(ure) · t(ion)；/dʒ/ 常见拼写 j · g(e/i/y) · dge · ge · d(ier)</div>`,
+  '拼写透视：全班一起读这个词，然后点出正在发目标音的那一段字母。');
+ document.querySelectorAll('.seg').forEach(s=>s.onclick=()=>{document.querySelectorAll('.seg').forEach(x=>x.onclick=null);const ok=+s.dataset.i===ans;s.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.seg[data-i="${ans}"]`).classList.add('ok');mark(ok,15,ok?`✔ ${segs[ans]} → /${k}/`:`✘ 是 "${segs[ans]}" 在发 /${k}/`);next(bXray);});}
+
+/* 6 ch three faces */
+function bCh(){const L=LEVELS[5];
+ if(cur.round===0)cur.queue=pick(CH,10);
+ const [w,a]=cur.queue[cur.round];
+ const F={'tʃ':'本地英语词：ch 读 /tʃ/（chair, cheese, lunch）','k':'来自希腊语的词：ch 读 /k/（school, Christmas, chemist, stomach）','ʃ':'来自法语的词：ch 读 /ʃ/（machine, chef, Chicago）'};
+ frame(L,`<div class="big popin" style="font-size:84px">${w.replace(/ch/i,m=>`<span style="color:var(--dr)">${m}</span>`)}</div>
+  <div class="tri"><button class="card" data-a="tʃ"><span class="em">🪑</span><span class="ipa">/tʃ/</span><small>chair · lunch</small></button><button class="card" data-a="k"><span class="em">🏫</span><span class="ipa">/k/</span><small>school · Christmas</small></button><button class="card" data-a="ʃ"><span class="em">👨‍🍳</span><span class="ipa">/ʃ/</span><small>machine · chef</small></button></div>`,
+  'ch 有三张脸。先猜再读：这个词里的 ch 读哪个音？（提示：绝大多数读 /tʃ/，来自希腊语的读 /k/，来自法语的读 /ʃ/。）');
+ document.querySelectorAll('.card').forEach(c=>c.onclick=()=>{lock();const ok=c.dataset.a===a;c.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.card[data-a="${a}"]`).classList.add('ok');mark(ok,10,(ok?'✔ ':'✘ ')+F[a]);next(bCh);});}
+
+/* 7 soft / hard g */
+function bG(){const L=LEVELS[6];
+ if(cur.round===0)cur.queue=pick(GW,12);
+ const [w,a]=cur.queue[cur.round];const after=(w.match(/g(.)/i)||['',''])[1];
+ const why=a==='dʒ'?`g 后面是 ${after||'e/i/y'} → 软音 /dʒ/`:(/[eiy]/.test(after)?`g 后面虽然是 ${after}，但 ${w} 是常用例外，读硬音 /g/`:`g 后面是 ${after||'词尾'}（不是 e/i/y）→ 硬音 /g/`);
+ frame(L,`<div class="big popin" style="font-size:84px">${w.replace(/g/i,m=>`<span style="color:var(--dr)">${m}</span>`)}</div>
+  <div class="pairs" style="margin-top:14px"><button class="card" data-a="g"><span class="em">🪨</span><span class="ipa">/g/</span><small>硬音 · get, bag</small></button><button class="card" data-a="dʒ"><span class="em">🧃</span><span class="ipa">/dʒ/</span><small>软音 · gem, page</small></button></div>`,
+  '规则：g + e / i / y → 通常读软音 /dʒ/；其他情况读硬音 /g/。但有几个超常用的例外（get, give, girl, gift, begin）。先说规则再选！');
+ document.querySelectorAll('.card').forEach(c=>c.onclick=()=>{lock();const ok=c.dataset.a===a;c.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.card[data-a="${a}"]`).classList.add('ok');mark(ok,10,(ok?'✔ ':'✘ ')+why);next(bG);});}
+
+/* 8 spelling workshop */
+function bWs(){const L=LEVELS[7];
+ if(cur.round===0)cur.queue=pick(WS,12);
+ const [ipa,pre,post,ans,opts,rule]=cur.queue[cur.round];
+ frame(L,`<div class="ws"><div class="big ipa popin" style="font-size:54px;color:var(--dr)">/${ipa}/</div>
+  <div class="word"><span>${pre}</span><span class="gapb" id="gapb">&nbsp;</span><span>${post}</span></div>
+  <div class="chips">${shuffle(opts).map(o=>`<div class="chip" data-o="${o}">${o}</div>`).join('')}</div>
+  <div class="rulebox" id="rb" style="visibility:hidden">·</div></div>`,
+  '先拼读音标，说出单词，再选：这个 /tʃ/ 或 /dʒ/ 在这个词里写成什么？选完会告诉你规则。');
+ document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.add('dim'));const ok=c.dataset.o===ans;c.classList.add(ok?'ok':'no');const g=$('#gapb');g.textContent=ans;g.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.chip[data-o="${ans}"]`).classList.add('ok');const rb=$('#rb');rb.innerHTML=rule;rb.style.visibility='visible';mark(ok,15,ok?`✔ ${pre}<u>${ans}</u>${post}`:`✘ 正确拼写：${pre}<u>${ans}</u>${post}`);next(bWs);});}
+
+/* ---------- reference ---------- */
+(()=>{const r=$('#ref');KEYS.forEach(k=>{const s=SOUNDS[k];const d=document.createElement('div');d.className='rf';d.style.cursor='pointer';
+ d.innerHTML=`${snd(k)}<div class="info"><b>${s.voiced?'浊音 voiced':'清音 voiceless'} · /${s.parts[0]}/ + /${s.parts[1]}/ · ${s.words.slice(0,3).map(w=>w[1]+w[0]).join(' ')}</b><span class="tip">点击看口型提示</span></div>`;
+ d.onclick=()=>{d.querySelector('.tip').textContent=s.tip;};r.appendChild(d);});})();
+
+/* ---------- init ---------- */
+$('#resetBtn').onclick=()=>{if(confirm('清空所有分数和星星？')){localStorage.removeItem('affricateLab');location.reload();}};
+$('#score').textContent=state.score;renderLevels();
+$('#stage').innerHTML=`<div class="result"><div class="emoji">🧪</div><h3>欢迎来到破擦音实验室！</h3><p>破擦音 = 爆破音 + 摩擦音，先堵住气、再从缝里挤出去，一口气完成。三对清浊 /tʃ dʒ/ /tr dr/ /ts dz/ 口型相同，只差喉咙抖不抖。重点是 /tʃ/ 和 /dʒ/：既要和 /ʃ/ /ʒ/ /j/ 区分，也要认得它们的几种拼法。</p><p style="margin-top:6px">每关拿到 1 颗星解锁下一关。课件不带语音，请老师或学生真人发音，效果最好。</p><div class="row"><button class="btn" onclick="start(LEVELS[0])">🚀 开始第 1 关</button></div></div>`;
+</script>
+</body>
+</html>
