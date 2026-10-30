@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 2 Review · Tenses &amp; the Future</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Courier+Prime:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#F7F1E3;--cream2:#EFE6D2;--card:#FFFDF7;--ink:#1E2A22;--dim:#6B7468;--green:#1F5E3C;--green2:#DCEBDF;--red:#C8322B;--red2:#F6DBD8;--mus:#D9A52B;--mus2:#F7E9C2;--blue:#2B5C8A;--blue2:#DCE7F2;--line:#D8CFBB;
+--fh:'DM Serif Display','PingFang SC','Microsoft YaHei',serif;--fb:'DM Sans','PingFang SC','Microsoft YaHei',sans-serif;--fm:'Courier Prime',monospace;--fc:'Patrick Hand','Comic Sans MS','PingFang SC',cursive;--ease:cubic-bezier(.2,.9,.3,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#2A3A2F}
+.stage{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;transform-origin:0 0;background:var(--cream)}
+.slide{position:absolute;inset:0;overflow:hidden;visibility:hidden;opacity:0;pointer-events:none;font-family:var(--fb);color:var(--ink);background:var(--cream)}
+.slide.active{visibility:visible;opacity:1;pointer-events:auto;z-index:1}
+.rise{opacity:0;transform:translateY(22px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.slide.active .rise{opacity:1;transform:none}
+.slide.active .d1{transition-delay:.05s}.slide.active .d2{transition-delay:.18s}.slide.active .d3{transition-delay:.3s}.slide.active .d4{transition-delay:.42s}
+.head{position:absolute;top:60px;left:120px;right:120px}
+.stub{display:inline-flex;align-items:center;gap:14px;font-family:var(--fm);font-weight:700;font-size:19px;letter-spacing:.12em;text-transform:uppercase;color:var(--cream);background:var(--green);padding:8px 18px;border-radius:4px}
+.stub.r{background:var(--red)}.stub.m{background:var(--mus);color:var(--ink)}.stub.b{background:var(--blue)}
+h2.t{font-family:var(--fh);font-weight:400;font-size:70px;line-height:1.02;margin-top:16px;letter-spacing:-.01em}
+h2.t i{color:var(--red)}
+h2.t u{text-decoration:none;background:linear-gradient(transparent 60%,var(--mus2) 60%)}
+.lead{font-size:26px;color:var(--dim);margin-top:10px;max-width:1500px;line-height:1.45}
+.lead b{color:var(--ink)}
+.pn{position:absolute;bottom:28px;right:60px;font-family:var(--fm);font-size:20px;color:var(--dim)}
+.btn{font-family:var(--fb);font-weight:700;font-size:22px;border:2px solid var(--ink);border-radius:999px;padding:12px 26px;cursor:pointer;color:var(--ink);background:var(--card);transition:.15s}
+.btn:hover{background:var(--mus2)}.btn.g{background:var(--green);color:#fff;border-color:var(--green)}.btn.r{background:var(--red);color:#fff;border-color:var(--red)}.btn.sm{font-size:18px;padding:7px 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 32px rgba(30,42,34,.08)}
+.shake{animation:shake .35s}@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes popin{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+.popin{animation:popin .45s var(--ease) both}
+#toast{position:absolute;left:50%;top:36px;transform:translate(-50%,-30px);background:var(--ink);color:var(--mus);font-family:var(--fm);font-weight:700;font-size:22px;padding:12px 30px;border-radius:10px;opacity:0;transition:.3s;z-index:50;pointer-events:none}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.nav{position:fixed;right:18px;bottom:16px;display:flex;gap:8px;z-index:9}
+.nav button{width:46px;height:46px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.15);color:#fff;font-size:24px;cursor:pointer}
+.prog{position:fixed;left:0;top:0;height:5px;background:var(--red);z-index:9;transition:width .3s}
+/* scoreboard */
+.sb{position:absolute;right:120px;top:64px;display:flex;gap:14px;z-index:5}
+.sb .pl{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--ink);border-radius:999px;padding:6px 8px 6px 18px;font-weight:700;font-size:22px}
+.sb .pl .n{font-family:var(--fm);font-size:30px;min-width:40px;text-align:center}
+.sb .pl button{width:36px;height:36px;border-radius:50%;border:2px solid var(--ink);background:var(--card);font-size:20px;cursor:pointer;font-weight:700}
+.sb .pl.a{border-color:var(--red)}.sb .pl.a .n{color:var(--red)}.sb .pl.b{border-color:var(--blue)}.sb .pl.b .n{color:var(--blue)}
+.sb .pl input{width:110px;border:0;background:transparent;font:inherit;color:inherit;outline:0}
+/* zh toggles */
+.zh{display:none;color:var(--green);font-weight:700}
+.zhon .zh{display:inline}
+.zb{font-family:var(--fb);font-size:17px;border:1px solid var(--ink);border-radius:999px;padding:3px 12px;background:var(--card);cursor:pointer}
+.zb:hover{background:var(--mus2)}
+
+/* cover */
+.rep{position:absolute;left:120px;top:140px;width:1050px;height:800px;background:var(--card);border-radius:8px;border:2px solid var(--ink);padding:56px 66px;box-shadow:16px 16px 0 var(--green)}
+.rep .row1{display:flex;justify-content:space-between;font-family:var(--fm);font-size:22px;letter-spacing:.1em;color:var(--dim);border-bottom:3px double var(--ink);padding-bottom:20px}
+.rep h1{font-family:var(--fh);font-weight:400;font-size:112px;line-height:.95;margin-top:40px;letter-spacing:-.02em}
+.rep h1 i{color:var(--red)}
+.rep .sub{font-size:34px;color:var(--green);margin-top:22px;font-weight:500}
+.rep .agenda{margin-top:40px;font-size:25px;line-height:1.9}
+.rep .agenda b{display:inline-block;width:70px;font-family:var(--fm);color:var(--dim);font-weight:400}
+.rep .stamp{position:absolute;right:50px;bottom:60px;font-family:var(--fm);font-weight:700;font-size:34px;letter-spacing:.1em;color:var(--red);border:5px solid var(--red);border-radius:12px;padding:8px 20px;transform:rotate(-12deg);opacity:.8}
+.graph{position:absolute;right:120px;top:160px;width:580px;height:760px;padding:40px}
+.graph h3{font-family:var(--fh);font-weight:400;font-size:36px}
+.graph svg{width:100%;height:560px;margin-top:20px}
+.graph .lg{display:flex;flex-direction:column;gap:8px;font-size:21px;margin-top:10px}
+.graph .lg span::before{content:'';display:inline-block;width:28px;height:6px;border-radius:3px;margin-right:8px;vertical-align:middle}
+.graph .lg .f::before{background:var(--red)}.graph .lg .tr::before{background:var(--green)}
+
+/* generic grids */
+.g2{position:absolute;left:120px;right:120px;top:280px;display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.g3{position:absolute;left:120px;right:120px;top:280px;display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.g4{position:absolute;left:120px;right:120px;top:280px;display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+
+/* trend or fad */
+.tf{height:300px;cursor:pointer;padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;transition:.2s}
+.tf:hover{transform:translateY(-4px)}
+.tf .em{font-size:72px}.tf .nm{font-family:var(--fh);font-size:34px;margin-top:10px}
+.tf .ans{display:none;margin-top:12px}
+.tf.on .ans{display:block}
+.tf .v{font-family:var(--fm);font-weight:700;font-size:22px;letter-spacing:.1em;padding:4px 14px;border-radius:6px;display:inline-block}
+.tf.on.trend{background:var(--green2)}.tf.on.fad{background:var(--red2)}.tf.on.hmm{background:var(--mus2)}
+.tf .v.trend{background:var(--green);color:#fff}.tf .v.fad{background:var(--red);color:#fff}.tf .v.hmm{background:var(--mus)}
+.tf .signs{margin-top:10px;font-size:24px;letter-spacing:.2em}
+.tf .why{font-size:18px;color:var(--dim);margin-top:6px;line-height:1.35}
+.tests{position:absolute;left:120px;right:120px;top:945px;display:flex;gap:24px;justify-content:center;font-size:24px}
+.tests span{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:8px 22px}
+
+/* flip cards */
+.vc{height:330px;perspective:1200px;cursor:pointer}
+.vc .in{position:relative;width:100%;height:100%;transition:transform .6s var(--ease);transform-style:preserve-3d}
+.vc.on .in{transform:rotateY(180deg)}
+.vc .f,.vc .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;padding:26px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.vc .f{background:var(--card);border:2px solid var(--line);font-size:22px;line-height:1.35}
+.vc .f .pos{font-family:var(--fm);color:var(--dim);font-size:17px;margin-bottom:6px;letter-spacing:.1em}
+.vc .b{background:var(--green);color:#fff;transform:rotateY(180deg)}
+.vc .b .w{font-family:var(--fh);font-size:38px}.vc .b .ex{font-size:17px;margin-top:10px;line-height:1.4;opacity:.92}.vc .b .ex i{color:var(--mus)}
+
+/* TED */
+.ted{position:absolute;left:120px;right:120px;top:270px;display:grid;grid-template-columns:1fr 760px;gap:40px}
+.ted .chunks .card{max-height:760px;overflow:auto}
+.steps{display:flex;flex-direction:column;gap:14px}
+.st{display:flex;align-items:center;gap:18px;padding:18px 22px;border-radius:16px;background:var(--card);border:2px solid var(--line);font-size:26px;cursor:grab;user-select:none;transition:.15s}
+.st .num{width:48px;height:48px;border-radius:50%;background:var(--ink);color:var(--mus);font-family:var(--fm);font-weight:700;font-size:24px;display:flex;align-items:center;justify-content:center;flex:none}
+.st.drag{opacity:.4}.st.over{outline:4px solid var(--green)}
+.st.ok{border-color:var(--green);background:var(--green2)}.st.bad{border-color:var(--red);background:var(--red2)}
+.chunks .card{padding:26px 30px}
+.chunks h3{font-family:var(--fh);font-weight:400;font-size:32px;margin-bottom:6px}
+#chunks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.ch{padding:10px 14px;border-radius:12px;background:var(--cream2);font-size:20px;line-height:1.35;cursor:pointer;border:2px solid transparent}
+.ch:hover{border-color:var(--green)}
+.ch b{color:var(--red)}
+.ch .m{display:none;margin-top:4px;color:var(--ink);font-size:18px}
+.ch.on .m{display:block}
+.ch .m .zh{margin-left:8px}
+
+/* tense detective */
+.det{position:absolute;left:120px;right:120px;top:260px}
+.det .q{padding:40px 50px;min-height:220px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--fh);font-size:50px;line-height:1.25}
+.det .q .sig{background:linear-gradient(transparent 60%,var(--mus2) 60%)}
+.opts{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:26px}
+.opt{height:120px;border-radius:18px;border:2px solid var(--line);background:var(--card);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:700;font-size:25px;transition:.15s;text-align:center}
+.opt small{font-family:var(--fm);font-size:16px;color:var(--dim);font-weight:400;letter-spacing:.05em}
+.opt:hover{border-color:var(--green);transform:translateY(-3px)}
+.opt.ok{background:var(--green);color:#fff;border-color:var(--green)}.opt.ok small{color:#fff}
+.opt.no{background:var(--red2);border-color:var(--red)}
+.fb{margin-top:22px;min-height:70px;font-size:26px;line-height:1.45;text-align:center;color:var(--ink)}
+.fb b{color:var(--green)}
+.detbar{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-family:var(--fm);font-size:20px;color:var(--dim)}
+
+/* spot the error */
+.err{padding:26px 30px;cursor:pointer;min-height:240px;position:relative;transition:.2s}
+.err:hover{transform:translateY(-3px)}
+.err .s{font-family:var(--fh);font-size:38px;line-height:1.3}
+.err .s .x{text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:4px;color:var(--dim);display:none}
+.err .s .ok{color:var(--green);display:none}
+.err.on .s .bad{display:none}.err.on .s .x,.err.on .s .ok{display:inline}
+.err .w{display:none;margin-top:14px;font-size:21px;line-height:1.45;padding:12px 16px;border-radius:12px;background:var(--green2)}
+.err.on .w{display:block}.err.on .tag{display:block}
+.err .tag{display:none;position:absolute;top:-14px;right:20px;font-family:var(--fm);font-size:17px;letter-spacing:.1em;background:var(--mus);padding:3px 12px;border-radius:6px}
+
+/* future rules */
+.fr .card{padding:28px 32px;cursor:pointer;transition:.2s;min-height:380px}
+.fr .card:hover{transform:translateY(-3px)}
+.fr h3{font-family:var(--fh);font-weight:400;font-size:38px;line-height:1.1}
+.fr h3 small{display:block;font-family:var(--fm);font-size:18px;letter-spacing:.12em;color:var(--dim);margin-bottom:10px}
+.fr .ans{display:none;margin-top:18px}
+.fr .card.on .ans{display:block}
+.fr .form{font-family:var(--fm);font-weight:700;font-size:34px;padding:8px 18px;border-radius:10px;display:inline-block}
+.fr .form.g{background:var(--green2);color:var(--green)}.fr .form.r{background:var(--red2);color:var(--red)}.fr .form.m{background:var(--mus2)}
+.fr .ex{margin-top:14px;font-size:23px;line-height:1.55}
+.fr .ex i{color:var(--red);font-style:normal;font-weight:700}
+.fr .hint{margin-top:12px;font-size:20px;color:var(--dim);line-height:1.45}
+.fr .zh{display:block;margin-top:8px;font-size:20px}
+.frbar{position:absolute;left:120px;right:120px;top:960px;display:flex;justify-content:center;gap:20px;align-items:center;font-size:22px;color:var(--dim)}
+
+/* sort game */
+.sort{position:absolute;left:120px;right:120px;top:250px}
+.sort .q{padding:36px 50px;min-height:200px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--fh);font-size:48px;line-height:1.3}
+.sort .q .bl{display:inline-block;min-width:200px;border-bottom:4px solid var(--ink);margin:0 10px;color:var(--green);font-family:var(--fm);font-size:40px}
+.sort .opts{grid-template-columns:repeat(3,1fr)}
+.sort .opt{height:110px;font-size:30px;font-family:var(--fm)}
+
+/* gap fill */
+.gap{position:absolute;left:120px;top:235px;width:1090px;height:800px;padding:30px 44px;font-size:27px;line-height:1.7;overflow:hidden}
+.gap h3{font-family:var(--fh);font-weight:400;font-size:36px;margin-bottom:8px}
+.gap .b{display:inline-block;border-bottom:3px solid var(--ink);min-width:130px;padding:0 8px;margin:0 3px;cursor:pointer;color:var(--dim);font-family:var(--fm);font-size:21px;text-align:center;line-height:1.3;vertical-align:baseline;transition:.15s;border-radius:6px 6px 0 0}
+.gap .b:hover{background:var(--mus2)}
+.gap .b.on{color:var(--green);font-weight:700;font-family:var(--fb);font-size:27px;border-bottom-color:var(--green)}
+.gap .b.on .tg{display:inline-block}
+.gap .b .tg{display:none;font-family:var(--fm);font-size:14px;font-weight:400;letter-spacing:.06em;color:#fff;background:var(--green);padding:1px 7px;border-radius:5px;margin-left:6px;vertical-align:middle}
+.gapside{position:absolute;right:120px;top:250px;width:560px}
+.gapside .card{padding:26px 30px}
+.gapside h3{font-family:var(--fh);font-weight:400;font-size:32px}
+.gapside .leg{margin-top:14px;display:flex;flex-direction:column;gap:8px;font-size:21px}
+.gapside .leg span{display:flex;align-items:center;gap:10px}
+.gapside .leg i{font-family:var(--fm);font-style:normal;font-size:14px;color:#fff;background:var(--green);padding:2px 8px;border-radius:5px;letter-spacing:.06em;min-width:92px;text-align:center}
+.gapside .cnt{font-family:var(--fm);font-size:60px;text-align:center;color:var(--green);margin-top:10px}
+.gapside .rules{margin-top:14px;font-size:21px;line-height:1.5;color:var(--dim)}
+.gapside .rules b{color:var(--ink)}
+
+/* signal words slide */
+.sigbig{position:absolute;left:120px;right:120px;top:290px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.sigbig .sig{padding:24px 28px;font-size:27px;line-height:1.4;min-height:170px;background:var(--card);border:2px solid var(--line)}
+.sigbig .sig b{font-size:18px;margin-bottom:6px}
+.sigbig .sig .a{font-size:26px;margin-top:10px}
+.sigbig .sig.on{background:var(--green2);border-color:var(--green)}
+/* book practice */
+.bk .card{padding:30px 34px}
+.bk h3{font-family:var(--fh);font-weight:400;font-size:38px;margin-bottom:12px}
+.bk li{font-size:24px;line-height:1.5;margin:10px 0 10px 26px}
+.bk .step{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px dashed var(--line);font-size:24px;line-height:1.45}
+.bk .step .n{font-family:var(--fm);font-weight:700;font-size:28px;color:var(--red);min-width:40px}
+.bk .step:last-child{border:0}
+.sigs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sig{padding:10px 14px;border-radius:12px;background:var(--cream2);font-size:21px;line-height:1.35;cursor:pointer;border:2px solid transparent}
+.sig:hover{border-color:var(--green)}
+.sig b{font-family:var(--fm);color:var(--green);display:block;font-size:17px;letter-spacing:.08em}
+.sig .a{display:none;color:var(--red);font-weight:700}
+.sig.on .a{display:block}
+
+/* pitch */
+.pitch{position:absolute;left:120px;right:120px;top:270px;display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:start}
+.pitch .card{max-height:760px;overflow:auto}
+.pitch .card{padding:30px 34px}
+.pitch h3{font-family:var(--fh);font-weight:400;font-size:36px;margin-bottom:8px}
+.frame{display:flex;gap:16px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line);font-size:22px;line-height:1.4}
+.frame:last-child{border:0}
+.frame .tg{font-family:var(--fm);font-size:15px;color:#fff;background:var(--green);padding:3px 9px;border-radius:5px;letter-spacing:.06em;min-width:130px;text-align:center;margin-top:6px}
+.frame .tg.r{background:var(--red)}.frame .tg.b{background:var(--blue)}.frame .tg.m{background:var(--mus);color:var(--ink)}
+.frame i{color:var(--dim)}
+.ck{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.ck{gap:8px}
+.ck .c{display:flex;align-items:center;gap:12px;padding:9px 14px;border-radius:12px;background:var(--cream2);font-size:21px;cursor:pointer;border:2px solid transparent}
+.ck .c:hover{border-color:var(--green)}
+.ck .c .bx{width:34px;height:34px;border:3px solid var(--ink);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.ck .c.on .bx{background:var(--green);border-color:var(--green);color:#fff}
+.ck .c.on{text-decoration:line-through;color:var(--dim)}
+.ideas{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.ideas{margin-top:8px}.ideas span{background:var(--cream2);border:2px solid var(--line);border-radius:999px;padding:6px 16px;font-size:20px}
+
+/* end */
+.endg .card{padding:32px 36px}
+.endg h3{font-family:var(--fh);font-weight:400;font-size:38px;margin-bottom:12px}
+.endg li{font-size:24px;line-height:1.5;margin:8px 0 8px 24px}
+.endg .big{font-size:28px;line-height:1.55;padding:18px 22px;border-radius:14px;background:var(--mus2);margin-top:10px;font-family:var(--fc)}
+</style>
+</head>
+<body>
+<div id="stage" class="stage"><div id="toast"></div>
+
+<!-- 1 cover -->
+<section class="slide">
+  <div class="rep rise d1">
+    <div class="row1"><span>UNIT 2 · IDENTIFYING TRENDS</span><span>REVIEW + GRAMMAR</span></div>
+    <h1>What's <i>next?</i></h1>
+    <div class="sub">Trends, tenses and the future</div>
+    <div class="agenda">
+      <div><b>01</b>Trend or fad? — Unit 2 in 10 minutes</div>
+      <div><b>02</b>Tense Detective — four tenses, one quiz</div>
+      <div><b>03</b>The future: <i>will</i> vs <i>be going to</i></div>
+      <div><b>04</b>Mixed-tense passages — screen, then book</div>
+      <div><b>05</b>Pitch the next big thing</div>
+    </div>
+    <div class="stamp">TREND REPORT</div>
+  </div>
+  <div class="card graph rise d2">
+    <h3>Two curves. Which is the fad?</h3>
+    <svg viewBox="0 0 500 480">
+      <line x1="40" y1="430" x2="480" y2="430" stroke="#1E2A22" stroke-width="3"/><line x1="40" y1="430" x2="40" y2="30" stroke="#1E2A22" stroke-width="3"/>
+      <text x="455" y="465" font-family="Courier Prime" font-size="18" fill="#6B7468">time</text>
+      <text x="48" y="48" font-family="Courier Prime" font-size="18" fill="#6B7468">popularity</text>
+      <path d="M40 420 C 120 410, 160 90, 200 80 C 240 70, 280 410, 480 425" fill="none" stroke="#C8322B" stroke-width="7" stroke-linecap="round"/>
+      <path d="M40 425 C 150 420, 250 380, 320 300 C 380 230, 430 150, 480 90" fill="none" stroke="#1F5E3C" stroke-width="7" stroke-linecap="round"/>
+      <text x="150" y="60" font-family="Patrick Hand" font-size="30" fill="#C8322B">2011: planking</text>
+      <text x="300" y="150" font-family="Patrick Hand" font-size="30" fill="#1F5E3C">online shopping</text>
+    </svg>
+    <div class="lg"><span class="f">fad – up fast, down fast</span><span class="tr">trend – keeps growing</span></div>
+  </div>
+</section>
+
+<!-- 2 trend or fad -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub">Warm-up · Unit 2</span><h2 class="t">Trend or <u>fad</u>? You decide.</h2><p class="lead">Before you click: use the <b>three tests</b> from the text. Does it make money? Does it link to a bigger trend? Does it appeal to many kinds of people?</p></div>
+  <div class="g4 rise d2" id="tfgrid"></div>
+  <div class="tests rise d3"><span>💰 makes money</span><span>🔗 links to a bigger trend</span><span>👥 appeals to a wide range of people</span></div>
+</section>
+
+<!-- 3 vocab flip -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub">Unit 2 words</span><h2 class="t">Say the word, <u>then</u> flip</h2><p class="lead">Read the definition, say the word from the text. Flip to check – and read the sentence it came from.</p></div>
+  <div class="g4 rise d2" id="vg" style="top:290px"></div>
+</section>
+
+<!-- 4 TED first follower -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub b">TED Talk · Part 1</span><h2 class="t">How to start a <u>movement</u></h2><p class="lead">Drag the five steps into order. Then retell it in one breath – no notes.</p></div>
+  <div class="ted">
+    <div class="steps rise d2" id="steps"></div>
+    <div class="chunks rise d3"><div class="card"><h3>Language from the talk</h3>
+      <div id="chunks"></div>
+      <div style="margin-top:14px;display:flex;gap:10px;justify-content:space-between;align-items:center"><button class="btn g sm" id="stepsCheck">Check order</button><button class="btn sm zb" data-zh="#chunks">中文 ▸</button></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 5 tense detective -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub r">Tense Detective · round 1</span><h2 class="t">Which <u>tense</u>, and what's the clue?</h2><p class="lead">Buzz in, name the tense, then point to the <b>signal</b>. The clue is highlighted after you answer.</p></div>
+  <div class="det rise d2">
+    <div class="card q" id="detQ"></div>
+    <div class="opts" id="detOpts"></div>
+    <div class="fb" id="detFb"></div>
+    <div class="detbar"><span id="detN"></span><span><button class="btn sm" id="detSkip">skip</button> <button class="btn sm" id="detReset">restart</button></span></div>
+  </div>
+</section>
+
+<!-- 5b signal words -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub r">Tense Detective · the clues</span><h2 class="t">Signal words: see the <u>clue</u>, name the tense</h2><p class="lead">Read the signal words aloud, say the tense, then click to check. Then close your eyes – your partner reads a group, you answer.</p></div>
+  <div class="sigbig rise d2" id="sigbig"></div>
+</section>
+
+<!-- 6 spot the error -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub r">Tense Detective · round 2</span><h2 class="t">Six sentences. Six <u>mistakes</u>.</h2><p class="lead">Find the mistake and fix it out loud. Click the card to check. These are the mistakes we made last lesson.</p></div>
+  <div class="g3 rise d2" id="errs" style="row-gap:40px"></div>
+</section>
+
+<!-- 7 future rules -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub m">Grammar focus</span><h2 class="t">The future: <i>will</i> or <i>be going to</i>?</h2><p class="lead">You know both forms. Today: <b>three questions</b> that tell you which one to use. Click a card to open it.</p></div>
+  <div class="g3 fr rise d2" id="frules"></div>
+  <div class="frbar rise d3"><span>Both forms are fine for a simple opinion: <b>I think it'll be / it's going to be popular.</b></span><button class="btn sm zb" data-zh="#frules">中文 ▸</button></div>
+</section>
+
+<!-- 8 sort game -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub m">Speed round</span><h2 class="t"><i>will</i>, <i>going to</i>, or <u>both</u>?</h2><p class="lead">Read the situation, choose, and say <b>why</b> in three words: evidence / plan / deciding now / promise / opinion.</p></div>
+  <div class="det sort rise d2">
+    <div class="card q" id="sortQ"></div>
+    <div class="opts" id="sortOpts"></div>
+    <div class="fb" id="sortFb"></div>
+    <div class="detbar"><span id="sortN"></span><span><button class="btn sm" id="sortSkip">skip</button> <button class="btn sm" id="sortReset">restart</button></span></div>
+  </div>
+</section>
+
+<!-- 9 two more futures -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub m">Going deeper</span><h2 class="t">Two <u>more</u> ways to talk about the future</h2><p class="lead">School taught you <i>will</i> and <i>going to</i>. Real English uses two more all the time. Click to open.</p></div>
+  <div class="g2 fr rise d2" id="frules2" style="top:300px"></div>
+  <div class="frbar rise d3"><span>Try it: tell your partner three things in your diary for this week – without <i>will</i> or <i>going to</i>.</span><button class="btn sm zb" data-zh="#frules2">中文 ▸</button></div>
+</section>
+
+<!-- 10 gap fill -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub">Mixed tenses · on screen</span><h2 class="t">Fill the <u>passage</u> – say it before you click</h2></div>
+  <div class="card gap rise d2" id="gap"></div>
+  <div class="gapside rise d3"><div class="card">
+    <h3>Blanks revealed</h3>
+    <div class="cnt" id="gapCnt">0 / 15</div>
+    <div class="leg"><span><i>PRESENT</i> habits, facts, now-in-general</span><span><i>PAST</i> finished time: ago, in 2011</span><span><i>PRES CONT</i> right now · trends these days</span><span><i>PRES PERF</i> since / for / yet / already / ever</span><span><i>WILL</i> opinion · deciding now · promise</span><span><i>GOING TO</i> evidence · decision already made</span></div>
+    <div class="rules"><b>Rule of the game:</b> say the verb, name the tense, point to the clue. One point each. A wrong tense with a right reason gets half a point.</div>
+    <div style="margin-top:14px;text-align:center"><button class="btn sm" id="gapAll">Reveal all</button> <button class="btn sm" id="gapReset">reset</button></div>
+  </div></div>
+</section>
+
+<!-- 11 book practice -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub">Mixed tenses · in the book</span><h2 class="t">Now the <u>book</u>: Unit 1 &amp; Unit 2 passages</h2><p class="lead">Same game, paper version. Pencil first, then defend every answer with a signal word.</p></div>
+  <div class="g2 bk rise d2">
+    <div class="card"><h3>How we play</h3>
+      <div class="step"><span class="n">1</span><span><b>Solo, 4 minutes.</b> Fill the Unit 2 passage in pencil. Underline the signal word for every blank.</span></div>
+      <div class="step"><span class="n">2</span><span><b>Compare.</b> Where you disagree, each of you argues for 20 seconds. Then we check.</span></div>
+      <div class="step"><span class="n">3</span><span><b>Score.</b> Right verb + right reason = 2 points. Right verb, no reason = 1 point.</span></div>
+      <div class="step"><span class="n">4</span><span><b>Unit 1 passage:</b> swap roles – one reads a blank aloud, the other answers without looking.</span></div>
+    </div>
+    <div class="card"><h3>Signal-word cheat sheet – click to test yourself</h3>
+      <div class="sigs" id="sigs"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 pitch -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub b">Speaking · 2 min each</span><h2 class="t">Pitch the <u>next big thing</u></h2><p class="lead">You are a trend consultant. Pick a trend (or invent one) and pitch it to the class in 60 seconds – using <b>all five</b> tenses. Your partner ticks the boxes.</p></div>
+  <div class="pitch">
+    <div class="card rise d2"><h3>Your script</h3>
+      <div class="frame"><span class="tg">PAST</span><span>It started in … when …<br><i>In 2020, people started sharing short cooking videos.</i></span></div>
+      <div class="frame"><span class="tg b">PRES PERF</span><span>Since then, it has … / It has already …<br><i>Since then it has spread to every country.</i></span></div>
+      <div class="frame"><span class="tg m">PRES CONT</span><span>Right now, more and more people are …<br><i>These days even grandparents are posting recipes.</i></span></div>
+      <div class="frame"><span class="tg">PRESENT</span><span>It passes the three tests: it makes money, it links to …, it appeals to …</span></div>
+      <div class="frame"><span class="tg r">FUTURE</span><span>Look at the numbers – it's going to … / I think it will … / Our company is going to …</span></div>
+      <h3 style="margin-top:14px;font-size:26px">Need an idea?</h3>
+      <div class="ideas"><span>AI tutors</span><span>second-hand fashion</span><span>e-sports</span><span>city camping</span><span>silent discos</span><span>home robots</span><span>your own idea</span></div>
+    </div>
+    <div class="card rise d3"><h3>Partner's checklist</h3>
+      <div class="ck" id="ck"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 wrap-up -->
+<section class="slide">
+  <div class="head rise d1"><span class="stub m">Wrap-up</span><h2 class="t">Three things to <u>take away</u></h2></div>
+  <div class="g2 endg">
+    <div class="card rise d1"><h3>📌 Remember</h3>
+      <ul><li><b>Finished time → past simple.</b> <i>In 2011, ago, yesterday</i> never go with <i>have done</i>.</li><li><b>Since / for / already / yet / ever → present perfect.</b> It connects then to now.</li><li><b>Evidence or a decision already made → going to.</b> Deciding right now, a promise or an opinion → <b>will</b>.</li></ul>
+      <div class="big">Exit ticket: tell me one thing you're going to do this week, and one thing you think will happen in 2030.</div>
+    </div>
+    <div class="card rise d2"><h3>📝 Homework</h3>
+      <ul><li>Finish the Unit 1 passage; write the signal word next to every blank.</li><li>Write your trend pitch (80–100 words) with all five tenses. Underline each verb and label it.</li><li>Watch TED Part 1 again. Write down three sentences and name their tenses.</li></ul>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="nav"><button onclick="deck.prev()">‹</button><button onclick="deck.next()">›</button></div>
+<div class="prog" id="prog"></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=(s,c=document)=>[...c.querySelectorAll(s)];
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800)}
+let actx;function ding(ok){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.connect(g);g.connect(actx.destination);o.type=ok?'sine':'triangle';o.frequency.value=ok?880:180;g.gain.setValueAtTime(.08,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.3);o.start();o.stop(actx.currentTime+.3)}catch(e){}}
+const shuffle=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const deck={i:0,s:$$('.slide'),go(n){this.i=Math.max(0,Math.min(this.s.length-1,n));this.s.forEach((x,k)=>x.classList.toggle('active',k===this.i));$('#prog').style.width=((this.i+1)/this.s.length*100)+'%';$$('.pn').forEach(p=>p.remove());const pn=document.createElement('div');pn.className='pn';pn.textContent=(this.i+1)+' / '+this.s.length;this.s[this.i].appendChild(pn);location.hash=this.i+1},next(){this.go(this.i+1)},prev(){this.go(this.i-1)}};
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);const st=$('#stage');st.style.transform=`scale(${s})`;st.style.left=((innerWidth-1920*s)/2)+'px';st.style.top=((innerHeight-1080*s)/2)+'px'}
+addEventListener('resize',fit);fit();
+addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();deck.next()}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();deck.prev()}});
+
+/* scoreboard – one per slide (slides 2,4,5,6,8,10,11,12) */
+const score={A:0,B:0,nA:'Player A',nB:'Player B'};
+function sbHtml(){return `<div class="sb"><div class="pl a"><input value="${score.nA}" data-k="nA"><span class="n" data-n="A">${score.A}</span><button data-d="-1" data-k="A">−</button><button data-d="1" data-k="A">+</button></div><div class="pl b"><input value="${score.nB}" data-k="nB"><span class="n" data-n="B">${score.B}</span><button data-d="-1" data-k="B">−</button><button data-d="1" data-k="B">+</button></div></div>`}
+[1,3,4,5,6,8,10,11,12].forEach(i=>deck.s[i].insertAdjacentHTML('beforeend',sbHtml()));
+document.addEventListener('click',e=>{const b=e.target.closest('.sb button');if(!b)return;score[b.dataset.k]=Math.max(0,score[b.dataset.k]+ +b.dataset.d);$$(`.sb .n[data-n="${b.dataset.k}"]`).forEach(n=>n.textContent=score[b.dataset.k]);if(+b.dataset.d>0)ding(true)});
+document.addEventListener('input',e=>{const i=e.target.closest('.sb input');if(!i)return;score[i.dataset.k]=i.value;$$(`.sb input[data-k="${i.dataset.k}"]`).forEach(x=>{if(x!==i)x.value=i.value})});
+/* zh toggles */
+$$('.zb').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const t=$(b.dataset.zh);t.classList.toggle('zhon');b.textContent=t.classList.contains('zhon')?'中文 ▾':'中文 ▸'}));
+
+/* 2 trend or fad */
+const TF=[
+ ['🧍','Planking','fad','—','A craze in 2011; by 2012 it had lost popularity. No money, no bigger trend.'],
+ ['🛒','Online shopping','trend','💰🔗👥','Linked to the rise of e-commerce; everyone uses it; still growing.'],
+ ['🌀','Fidget spinners','fad','💰','Made money for a few months in 2017 – then disappeared.'],
+ ['📱','Short videos','trend','💰🔗👥','Linked to the smartphone / mobile internet trend; all ages; huge business.'],
+ ['🧊','Ice Bucket Challenge','fad','👥','Everyone did it in summer 2014 – and nobody in 2015. One summer = fad.'],
+ ['🔌','Electric cars','trend','💰🔗👥','Linked to the bigger green-energy trend; sales keep rising.'],
+ ['🧋','Bubble tea','hmm','💰👥','Makes money and appeals widely – but is it linked to a bigger trend? Discuss.'],
+ ['🕶️','3D TVs','fad','💰','Companies pushed them around 2010; people did not want them at home. Gone by 2017.']];
+$('#tfgrid').innerHTML=TF.map((t,i)=>`<div class="card tf" data-i="${i}"><div class="em">${t[0]}</div><div class="nm">${t[1]}</div><div class="ans"><span class="v ${t[2]}">${t[2]==='hmm'?'DISCUSS':t[2].toUpperCase()}</span><div class="signs">${t[3]}</div><div class="why">${t[4]}</div></div></div>`).join('');
+$$('.tf').forEach(c=>c.addEventListener('click',()=>{const t=TF[+c.dataset.i];c.classList.add('on',t[2]);ding(t[2]!=='fad')}));
+
+/* 3 vocab */
+const VOC=[
+ ['v.','to notice the difference between two things','distinguish','… to <i>distinguish</i> them from fads, which don\'t last long.'],
+ ['n.','something very popular for a short time – it won\'t last','fad','This turned out to be nothing more than a <i>fad</i>.'],
+ ['n.','a sudden, very strong enthusiasm for something','craze','In 2011, a <i>craze</i> called "planking" became popular.'],
+ ['v.','to be liked by someone; to attract them','appeal to','Trends usually <i>appeal to</i> a wide range of people.'],
+ ['n.','the buying and selling of goods and services','commerce','… the rise of electronic <i>commerce</i>.'],
+ ['v.','to use a situation or chance to get a benefit','take advantage of','… see how they can <i>take advantage of</i> a new trend.'],
+ ['v.','to say what will happen in the future','predict','Businesses need to <i>predict</i> change and spot emerging trends.'],
+ ['v.','to notice something that is not easy to see','spot','The importance of <i>spotting</i> trends has led to a growing industry.'],
+ ['adj.','starting to appear or become known','emerging','… spot <i>emerging</i> trends in order to stay relevant.'],
+ ['v.','to stay important and useful; not out of date','stay relevant','Businesses need to … <i>stay relevant</i> and beat the competition.'],
+ ['n.','a very large company','corporation','… to entire teams of people in large <i>corporations</i>.'],
+ ['v.','to be something in the end, often a surprise','turn out (to be)','This <i>turned out</i> to be nothing more than a fad.']];
+$('#vg').innerHTML=VOC.map(v=>`<div class="vc"><div class="in"><div class="f"><div class="pos">${v[0]}</div>${v[1]}</div><div class="b"><div class="w">${v[2]}</div><div class="ex">${v[3]}</div></div></div></div>`).join('');
+$$('.vc').forEach(c=>c.addEventListener('click',()=>{c.classList.toggle('on');ding(true)}));
+$('#vg').style.gridTemplateColumns='repeat(4,1fr)';$$('.vc').forEach(c=>c.style.height='228px');
+
+/* 4 TED */
+const STEPS=['A leader has the guts to stand out alone – and gets ridiculed.','The first follower joins in. He shows everyone else how to follow.','The leader embraces him as an equal – now it\'s not about the leader any more.','The first follower calls to his friends. Being first takes guts too.','Two becomes three, three becomes a crowd. A lone nut has become a leader.'];
+(()=>{const box=$('#steps');let drag=null;
+function render(order){box.innerHTML=order.map((i,k)=>`<div class="st" draggable="true" data-i="${i}"><span class="num">${k+1}</span><span>${STEPS[i]}</span></div>`).join('');
+ $$('.st',box).forEach(el=>{el.addEventListener('dragstart',()=>{drag=el;el.classList.add('drag')});el.addEventListener('dragend',()=>{el.classList.remove('drag');$$('.st',box).forEach(x=>x.classList.remove('over'))});el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('over')});el.addEventListener('dragleave',()=>el.classList.remove('over'));el.addEventListener('drop',e=>{e.preventDefault();if(!drag||drag===el)return;const kids=$$('.st',box);if(kids.indexOf(drag)<kids.indexOf(el))el.after(drag);else el.before(drag);$$('.st',box).forEach((x,k)=>{x.classList.remove('ok','bad');x.querySelector('.num').textContent=k+1})})})}
+render(shuffle([0,1,2,3,4]));
+$('#stepsCheck').addEventListener('click',()=>{let ok=0;$$('.st',box).forEach((el,i)=>{const g=+el.dataset.i===i;el.classList.toggle('ok',g);el.classList.toggle('bad',!g);ok+=g});ding(ok===5);toast(ok===5?'A movement! Now retell it.':`${ok} / 5 in place`)})})();
+const CH=[['have the guts to do sth','be brave enough to do it','有勇气做某事'],['stand out','be different from everyone around you','突出，显眼'],['be ridiculed','be laughed at','被嘲笑'],['embrace sb as an equal','accept sb as someone at your level','把某人当作平等的伙伴接纳'],['a lone nut','one strange person doing something alone (informal)','一个孤独的"怪人"'],['underestimated','people think it is less important than it really is','被低估的'],['transform A into B','change A completely so it becomes B','把 A 彻底变成 B'],['dissect some lessons','take the lessons apart to study them','仔细剖析经验教训']];
+$('#chunks').innerHTML=CH.map(c=>`<div class="ch"><b>${c[0]}</b><div class="m">${c[1]}<span class="zh">${c[2]}</span></div></div>`).join('');
+$$('.ch').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('on')));
+
+/* 5 tense detective */
+const TENSES=[['Present simple','PRESENT'],['Past simple','PAST'],['Present continuous','PRES CONT'],['Present perfect','PRES PERF'],['Future','WILL / GOING TO']];
+const DET=[
+ ['Businesses <sig>need</sig> to predict change to stay relevant.',0,'A general truth about businesses – always true, no time word needed.'],
+ ['<sig>In 2011</sig>, a craze called "planking" became popular.',1,'A finished time – <b>in 2011</b>. Finished time = past simple, never present perfect.'],
+ ['The importance of spotting trends <sig>has led</sig> to a growing industry.',3,'It started in the past and the result is here now: the industry exists today.'],
+ ['Kevin Allocca <sig>spends his day</sig> monitoring news headlines.',0,'His routine, his job – what he does every working day.'],
+ ['<sig>These days</sig>, more and more people are sharing short videos.',2,'A trend happening around now – <b>these days, more and more</b> → present continuous.'],
+ ['Social media analysts <sig>didn\'t exist before the mid-2000s</sig>.',1,'Before the mid-2000s – a finished period in the past.'],
+ ['He\'s <sig>going to show</sig> everyone else how to follow.',4,'From the TED talk: the speaker can see what the first follower is about to do – evidence now.'],
+ ['Planking has lost popularity <sig>since 2012</sig>.',3,'<b>since</b> + a starting point → present perfect, from then until now.'],
+ ['<sig>Look!</sig> The leader is dancing alone on the hill.',2,'Happening right now, in front of our eyes.'],
+ ['I\'ve <sig>never</sig> heard of planking.',3,'Life experience up to now – <b>never / ever</b> → present perfect.'],
+ ['By 2012, planking <sig>turned out</sig> to be nothing more than a fad.',1,'A finished event; the text says "by 2012".'],
+ ['I think short videos <sig>will</sig> still be here in 2030.',4,'An opinion about the future – <b>I think</b> + will (going to also possible).']];
+function quiz(cfg){let order=[],k=0,done=false;const Q=$(cfg.q),O=$(cfg.o),F=$(cfg.f),N=$(cfg.n);
+ function show(){if(k>=order.length){Q.innerHTML='🏁 Round complete!';O.innerHTML='';F.innerHTML='Who got more? Check the scoreboard.';N.textContent='';return}const it=cfg.data[order[k]];done=false;Q.innerHTML=cfg.render(it);O.innerHTML=cfg.opts.map((o,i)=>`<div class="opt" data-i="${i}">${o[0]}${o[1]?`<small>${o[1]}</small>`:''}</div>`).join('');F.innerHTML='';N.textContent=`${k+1} / ${order.length}`;
+  $$('.opt',O).forEach(el=>el.addEventListener('click',()=>{if(done)return;const i=+el.dataset.i;const ok=cfg.ok(it,i);if(ok){done=true;el.classList.add('ok');ding(true);Q.innerHTML=cfg.reveal(it);F.innerHTML=cfg.fb(it);setTimeout(()=>{k++;show()},cfg.wait||3800)}else{el.classList.add('no','shake');ding(false)}}))}
+ function reset(){order=shuffle(cfg.data.map((_,i)=>i));k=0;show()}
+ $(cfg.skip).addEventListener('click',()=>{k++;show()});$(cfg.reset).addEventListener('click',reset);reset()}
+quiz({data:DET,q:'#detQ',o:'#detOpts',f:'#detFb',n:'#detN',skip:'#detSkip',reset:'#detReset',opts:TENSES,
+ render:it=>it[0].replace(/<\/?sig>/g,''),reveal:it=>it[0].replace('<sig>','<span class="sig">').replace('</sig>','</span>'),ok:(it,i)=>i===it[1],fb:it=>`<b>${TENSES[it[1]][0]}.</b> ${it[2]}`});
+
+/* 6 spot the error */
+const ERR=[
+ ['Planking','has become','became','popular in 2011.','Finished time (<b>in 2011</b>) → past simple. "Has become" needs a link to now.','PAST vs PRES PERF'],
+ ['I','am knowing','know','this trend – everyone does.','<b>know</b> is a state verb (know, like, believe, understand, want). No -ing.','STATE VERBS'],
+ ['She','works','has worked','as a trend consultant since 2015.','<b>since 2015</b> → from then until now → present perfect.','SINCE / FOR'],
+ ['','Did you ever hear','Have you ever heard','of planking?','Life experience up to now (<b>ever</b>) → present perfect.','EVER / NEVER'],
+ ['Kevin','is spending','spends','his day monitoring headlines every day.','<b>every day</b> = routine → present simple, not continuous.','ROUTINE'],
+ ['Short videos','are','have been','popular for six years now.','<b>for six years</b> up to now → present perfect. "Are" would need no time period.','FOR + NOW']];
+$('#errs').innerHTML=ERR.map(e=>`<div class="card err"><span class="tag">${e[5]}</span><div class="s">${e[0]} <span class="bad">${e[1]}</span><span class="x">${e[1]}</span> <span class="ok">${e[2]}</span> ${e[3]}</div><div class="w">${e[4]}</div></div>`).join('');
+$$('.err').forEach(c=>c.addEventListener('click',()=>{c.classList.add('on');ding(true)}));
+
+/* 7 future rules */
+const FR=[
+ ['Q1','Can you <u>see</u> it coming?','going to','g','Look at those clouds. It\'s <i>going to</i> rain.<br>Sales are up 300% – this is <i>going to</i> be big.<br>Watch out! That shelf is <i>going to</i> fall!','Evidence in front of you now → <b>be going to</b>.','有现成的证据、眼看就要发生 → be going to'],
+ ['Q2','Did you <u>decide before</u> you spoke?','going to','g','I\'ve decided – I\'m <i>going to</i> start a channel this year.<br>Our company is <i>going to</i> open three new stores.<br>She\'s bought a camera. She\'s <i>going to</i> be a vlogger.','A plan or intention that already exists → <b>be going to</b>.','说话前已经做好的打算、计划 → be going to'],
+ ['Q3','Are you deciding <u>right now</u>?','will','r','It\'s cold in here. – <i>I\'ll</i> close the window.<br>Don\'t worry, I <i>won\'t</i> tell anyone.<br>Hmm… <i>I\'ll</i> have the pasta, please.','Deciding at the moment of speaking, promises, offers, refusals → <b>will</b>.<br>Opinions with <i>I think / probably / maybe</i> → usually <b>will</b>.','说话当下临时决定、承诺、主动提议、拒绝 → will；带 I think / probably 的看法多用 will']];
+$('#frules').innerHTML=FR.map(f=>`<div class="card"><h3><small>${f[0]}</small>${f[1]}</h3><div class="ans"><span class="form ${f[3]}">${f[2]}</span><div class="ex">${f[4]}</div><div class="hint">${f[5]}<span class="zh">${f[6]}</span></div></div></div>`).join('');
+$$('#frules .card').forEach(c=>c.addEventListener('click',()=>{c.classList.toggle('on');ding(true)}));
+const FR2=[
+ ['+1','A fixed <u>arrangement</u> with other people','present continuous','m','I\'m <i>meeting</i> the consultant at three.<br>We\'re <i>flying</i> to Shanghai on Friday.<br>What are you <i>doing</i> this weekend?','Time and place agreed, often with another person – it\'s in your diary. Very common in speech, more natural than "going to" here.','已和他人约好、写进日程的安排 → 现在进行时（口语中最常用）'],
+ ['+2','A <u>timetable</u> or schedule','present simple','g','The TED talk <i>starts</i> at nine.<br>The train <i>leaves</i> at 6:40 tomorrow.<br>The new term <i>begins</i> in September.','Official schedules: trains, classes, films, shops. The time is fixed by someone else, not by you.','火车、课程、电影等官方时刻表 → 一般现在时']];
+$('#frules2').innerHTML=FR2.map(f=>`<div class="card"><h3><small>${f[0]}</small>${f[1]}</h3><div class="ans"><span class="form ${f[3]}">${f[2]}</span><div class="ex">${f[4]}</div><div class="hint">${f[5]}<span class="zh">${f[6]}</span></div></div></div>`).join('');
+$$('#frules2 .card').forEach(c=>c.addEventListener('click',()=>{c.classList.toggle('on');ding(true)}));
+
+/* 8 sort game */
+const SORT=[
+ ['Look at the queue outside that shop! It ___ be the next big thing.','is going to',1,'Evidence – you can see the queue.'],
+ ['A: It\'s cold in here. B: OK, I ___ close the window.','\'ll',0,'Deciding right now, as a reaction.'],
+ ['I\'ve made up my mind. I ___ start a YouTube channel this year.','\'m going to',1,'The decision was made before speaking.'],
+ ['Don\'t worry, I ___ tell anyone your idea.','won\'t',0,'A promise → will / won\'t.'],
+ ['I think robots ___ do most boring jobs by 2050.','will / are going to',2,'A personal opinion – both are fine. With "I think", <i>will</i> is more common.'],
+ ['She\'s just bought a professional camera. She ___ become a vlogger.','\'s going to',1,'Evidence (the camera) + her intention.'],
+ ['Those bags look heavy. Wait, I ___ help you.','\'ll',0,'An offer made on the spot.'],
+ ['Our company ___ open three new stores next year – it\'s in the plan.','is going to',1,'A plan that already exists.'],
+ ['Maybe this fad ___ last until the summer. Who knows?','will',0,'Uncertain opinion – <i>maybe</i>, <i>who knows</i> → will.'],
+ ['Watch out! That shelf ___ fall!','is going to',1,'You can see it happening – evidence now.'],
+ ['Hmm… I ___ have the pasta, please.','\'ll',0,'Deciding at this moment.'],
+ ['Analysts say electric cars ___ be everywhere soon.','will / are going to',2,'A prediction – both work. <i>Going to</i> sounds a little more certain.']];
+quiz({data:SORT,q:'#sortQ',o:'#sortOpts',f:'#sortFb',n:'#sortN',skip:'#sortSkip',reset:'#sortReset',opts:[['will',''],['be going to',''],['both','']],wait:3400,
+ render:it=>it[0].replace('___','<span class="bl">&nbsp;</span>'),reveal:it=>it[0].replace('___',`<span class="bl">${it[1]}</span>`),ok:(it,i)=>i===it[2],fb:it=>`<b>${['will','be going to','both are fine'][it[2]]}.</b> ${it[3]}`});
+
+/* 10 gap fill */
+const GAP=[
+ 'Ten years ago, most people ',['watch','watched','PAST'],' TV in the evening. Today, things ',['be','are','PRESENT'],' different. Since 2018, short videos ',['become','have become','PRES PERF'],' one of the biggest trends in the world. Right now, millions of people ',['share','are sharing','PRES CONT'],' clips of their lives every day.<br>Is this a trend or a fad? Trend consultants ',['believe','believe','PRESENT'],' it is a real trend, because it passes all three tests: it ',['make','makes','PRESENT'],' money, it ',['link','links','PRESENT'],' to a bigger trend – the mobile internet – and it ',['appeal','appeals','PRESENT'],' to people of all ages.<br>In 2011, planking ',['die','died','PAST'],' within a year, but short videos ',['not / disappear','haven\'t disappeared','PRES PERF'],' yet. "They ',['still / be','will still be','WILL'],' here in 2030," says analyst Jo Lee. "In fact, I think they ',['change','will change','WILL'],' how we learn." Many companies ',['already / start','have already started','PRES PERF'],' to use them, and next month my school ',['open','is going to open','GOING TO'],' its own channel – we decided last week. So, which trend ',['you / follow','are you going to follow','GOING TO'],' next year?'];
+(()=>{const box=$('#gap');let n=0;const total=GAP.filter(x=>Array.isArray(x)).length;
+function render(){n=0;box.innerHTML='<h3>The Rise of Short Videos</h3>'+GAP.map((x,i)=>typeof x==='string'?x:`<span class="b" data-i="${i}">(${x[0]})</span>`).join('');$('#gapCnt').textContent=`0 / ${total}`;
+ $$('.b',box).forEach(b=>b.addEventListener('click',()=>reveal(b)))}
+function reveal(b){if(b.classList.contains('on'))return;const x=GAP[+b.dataset.i];b.classList.add('on');b.innerHTML=`${x[1]}<span class="tg">${x[2]}</span>`;n++;$('#gapCnt').textContent=`${n} / ${total}`;ding(true);if(n===total)toast('All 15 – well read!')}
+$('#gapAll').addEventListener('click',()=>$$('.b',box).forEach(reveal));$('#gapReset').addEventListener('click',render);render()})();
+
+/* 11 signal words */
+const SIG=[['in 2011 · ago · yesterday · last year','PAST SIMPLE'],['since · for · already · yet · ever · never · just','PRESENT PERFECT'],['every day · usually · always · on Mondays','PRESENT SIMPLE'],['now · right now · look! · these days · more and more','PRESENT CONTINUOUS'],['I think · probably · maybe · promise · offer','WILL'],['look at … ! · I\'ve decided · plan · intention','BE GOING TO'],['by 2012 · when I was ten · in the past','PAST SIMPLE'],['so far · recently · this week (still going) · how long…?','PRESENT PERFECT']];
+const SIG2=[['in 2011 · ago · yesterday · last year · when I was ten','PAST SIMPLE'],['since · for · already · yet · just','PRESENT PERFECT'],['ever · never · so far · recently · how long…?','PRESENT PERFECT'],['every day · usually · always · on Mondays · facts','PRESENT SIMPLE'],['now · right now · look! · listen!','PRESENT CONTINUOUS'],['these days · more and more · nowadays (a trend)','PRESENT CONTINUOUS'],['I think · probably · maybe · promise · offer','FUTURE SIMPLE – will'],['look at…! · I\'ve decided · plan · intention','FUTURE SIMPLE – be going to'],['tomorrow · next year · in 2030 · soon','FUTURE SIMPLE – will / be going to']];
+$('#sigbig').innerHTML=shuffle(SIG2).map(s=>`<div class="sig"><b>SIGNAL</b>${s[0]}<div class="a">→ ${s[1]}</div></div>`).join('');
+$('#sigs').innerHTML=SIG.map(s=>`<div class="sig"><b>SIGNAL</b>${s[0]}<div class="a">→ ${s[1]}</div></div>`).join('');
+$$('.sig').forEach(s=>s.addEventListener('click',()=>s.classList.toggle('on')));
+
+/* 12 checklist */
+const CK=['Past simple – how it started','Present perfect – how far it has come','Present continuous – what people are doing now','Present simple – the three tests','Future – will AND going to, used correctly','Three Unit 2 words (trend, fad, appeal, emerging…)','Finished in 60 seconds'];
+$('#ck').innerHTML=CK.map(c=>`<div class="c"><span class="bx"></span><span>${c}</span></div>`).join('');
+$$('.ck .c').forEach(c=>c.addEventListener('click',()=>{c.classList.toggle('on');c.querySelector('.bx').textContent=c.classList.contains('on')?'✓':'';ding(true)}));
+
+deck.go((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body>
+</html>
