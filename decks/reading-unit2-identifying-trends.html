@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Unit 2 · Identifying Trends — Trend Report Reading Lab</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F6FB;--navy:#0F1B3D;--ink:#1E2A4A;--mute:#6B7690;--line:#E1E6F0;--coral:#FF5A5F;--mint:#19C6A5;--yellow:#FFC857;--lav:#8A7CFF;--sky:#3DA5FF;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0B1430;overflow:hidden;font-family:Manrope,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink)}
+.stage{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;transform-origin:0 0;background:var(--bg)}
+.stage::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#D5DBE8 1.2px,transparent 1.2px);background-size:28px 28px;opacity:.55;pointer-events:none}
+.slide{position:absolute;inset:0;display:none;padding:112px 72px 50px}
+.slide.active{display:block}
+/* top bar */
+#bar{position:absolute;left:0;top:0;width:1920px;height:84px;background:var(--navy);color:#fff;display:flex;align-items:center;padding:0 48px;gap:36px;z-index:9}
+#bar .logo{font-weight:800;letter-spacing:.14em;font-size:19px;white-space:nowrap;display:flex;align-items:center;gap:14px}
+#bar .logo i{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--coral),var(--yellow));display:inline-block}
+#bar .steps{display:flex;gap:10px;margin-left:auto}
+#bar .step{padding:8px 15px;white-space:nowrap;border-radius:999px;border:1.5px solid rgba(255,255,255,.25);font-size:15px;font-weight:600;color:rgba(255,255,255,.6);display:flex;gap:8px;align-items:center}
+#bar .step b{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.12);display:inline-grid;place-items:center;font-size:12px}
+#bar .step.on{background:#fff;color:var(--navy);border-color:#fff}
+#bar .step.on b{background:var(--coral);color:#fff}
+#bar .step.done{border-color:var(--mint);color:var(--mint)}
+#bar .step.done b{background:var(--mint);color:#fff}
+#xp{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.08);padding:8px 16px 8px 10px;border-radius:999px;font-weight:800;font-size:18px}
+#xp .ring{width:40px;height:40px;border-radius:50%;background:conic-gradient(var(--yellow) var(--p,0%),rgba(255,255,255,.15) 0);display:grid;place-items:center}
+#xp .ring span{width:30px;height:30px;border-radius:50%;background:var(--navy);display:grid;place-items:center;font-size:15px}
+#badges{display:flex;gap:6px}
+#badges span{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:18px;opacity:.25;transition:.4s}
+#badges span.got{opacity:1;background:#fff;transform:scale(1.08)}
+#prog{position:absolute;left:0;top:84px;height:4px;background:var(--coral);width:0;transition:width .4s;z-index:9}
+.pn{position:absolute;right:40px;bottom:18px;font-size:15px;color:var(--mute);font-weight:600}
+/* typography */
+h1{font-family:Newsreader,serif;font-weight:600;font-size:84px;line-height:1.02;color:var(--navy);letter-spacing:-.01em}
+h2{font-family:Newsreader,serif;font-weight:600;font-size:52px;color:var(--navy);line-height:1.08;letter-spacing:-.01em}
+.kicker{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--coral)}
+.kicker::before{content:"";width:28px;height:3px;background:var(--coral);border-radius:2px}
+.sub{font-size:22px;color:var(--mute);margin-top:12px;line-height:1.5}
+.skill{display:inline-flex;gap:10px;align-items:center;background:#fff;border:1.5px solid var(--line);border-left:6px solid var(--lav);padding:10px 18px;border-radius:12px;font-size:17px;font-weight:600;color:var(--ink);margin-top:14px}
+.skill b{color:var(--lav);letter-spacing:.1em;font-size:13px;text-transform:uppercase}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:22px;box-shadow:0 10px 30px rgba(15,27,61,.06)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;background:var(--navy);color:#fff;font:800 17px Manrope,sans-serif;padding:13px 24px;border-radius:12px;transition:.15s}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.btn.coral{background:var(--coral)}.btn.mint{background:var(--mint)}.btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+.hint{font-size:15px;color:var(--mute);line-height:1.5}
+.zh{display:none;font-size:15px;color:#9A5B00;background:#FFF5DC;border-left:4px solid var(--yellow);padding:8px 12px;border-radius:0 10px 10px 0;margin-top:10px;line-height:1.5}
+body.teach .zh{display:block}
+.rise>*{opacity:0;transform:translateY(18px);animation:up .6s forwards}
+.rise>.d1{animation-delay:.1s}.rise>.d2{animation-delay:.25s}.rise>.d3{animation-delay:.4s}.rise>.d4{animation-delay:.55s}.rise>.d5{animation-delay:.7s}
+@keyframes up{to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.shake{animation:shake .3s}
+#toast{position:absolute;left:50%;bottom:40px;transform:translate(-50%,120px);background:var(--navy);color:#fff;padding:16px 28px;border-radius:14px;font-weight:700;font-size:20px;transition:.35s;z-index:20;box-shadow:0 14px 40px rgba(0,0,0,.25)}
+#toast.show{transform:translate(-50%,0)}
+#fx{position:absolute;inset:0;pointer-events:none;z-index:30;overflow:hidden}
+.conf{position:absolute;width:12px;height:12px;border-radius:3px;animation:fall 1.3s ease-in forwards}
+@keyframes fall{to{transform:translateY(1100px) rotate(540deg);opacity:0}}
+
+/* ===== cover ===== */
+#s1{display:none;grid-template-columns:1fr 760px;gap:40px;align-items:center}
+#s1.active{display:grid}
+#s1 .tag{display:inline-flex;gap:10px;margin-top:28px;flex-wrap:wrap}
+#s1 .tag span{border:1.5px solid var(--navy);border-radius:999px;padding:8px 16px;font-size:16px;font-weight:700}
+#s1 .chart{height:520px;position:relative;padding:28px}
+#s1 .chart .lbl{position:absolute;font-size:15px;font-weight:800;letter-spacing:.1em;color:var(--mute)}
+.trendline{stroke-dasharray:1500;stroke-dashoffset:1500;animation:draw 2.4s .4s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.pt{opacity:0;animation:pop .4s forwards}
+@keyframes pop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+
+/* ===== vote ===== */
+.vgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:30px}
+.vcard{padding:26px 26px;position:relative;cursor:pointer;user-select:none;transition:.2s;min-height:230px}
+.vcard .em{font-size:64px}
+.vcard .nm{font-size:26px;font-weight:800;margin-top:6px}
+.vcard .yr{font-size:14px;color:var(--mute);font-weight:600}
+.vcard .sw{position:absolute;right:16px;top:16px;display:flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;font-size:13px;font-weight:800}
+.vcard .sw i{font-style:normal;padding:5px 11px;color:var(--mute)}
+.vcard.fad{border-color:var(--coral)}.vcard.fad .sw i:first-child{background:var(--coral);color:#fff}
+.vcard.trend{border-color:var(--mint)}.vcard.trend .sw i:last-child{background:var(--mint);color:#fff}
+.tally{display:flex;gap:22px;align-items:center;margin-top:24px;font-size:18px;font-weight:700}
+.tally .barw{flex:1;height:22px;border-radius:999px;background:#E9EDF5;overflow:hidden;display:flex}
+.tally .barw i{display:block;height:100%;transition:.4s}
+.tally .barw i.f{background:var(--coral)}.tally .barw i.t{background:var(--mint)}
+
+/* ===== preview ===== */
+.prev{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px;align-items:start}
+.heads{display:flex;flex-direction:column;gap:22px}
+.hd{padding:26px 30px;cursor:pointer;display:flex;align-items:center;gap:20px;transition:.2s;min-height:160px}
+.hd .n{width:46px;height:46px;border-radius:12px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800;font-size:20px;flex:none}
+.hd .t{font-size:30px;font-weight:800;letter-spacing:.04em}
+.hd .slot{margin-left:auto;font-size:19px;color:var(--mute);font-weight:600;max-width:360px;text-align:right}
+.hd.sel{border-color:var(--sky);box-shadow:0 0 0 4px rgba(61,165,255,.2)}
+.hd.ok{border-color:var(--mint)}.hd.ok .slot{color:var(--mint)}
+.qs{display:flex;flex-direction:column;gap:18px}
+.q{padding:24px 26px;font-size:24px;font-weight:600;cursor:pointer;display:flex;gap:14px;align-items:center;transition:.2s;line-height:1.35}
+.q .ic{font-size:26px}
+.q.sel{border-color:var(--sky);box-shadow:0 0 0 4px rgba(61,165,255,.2)}
+.q.used{opacity:.35;pointer-events:none}
+
+/* ===== gist read ===== */
+#s4 .wrap{display:grid;grid-template-columns:1fr 470px;gap:26px;height:880px;align-items:start}
+.txt3{padding:24px 30px;column-count:3;column-gap:30px;font-family:Newsreader,serif;font-size:23.5px;line-height:1.48;height:880px;overflow:hidden;position:relative}
+.txt3 h4{font-family:Manrope,sans-serif;font-size:14px;letter-spacing:.14em;color:var(--coral);margin:14px 0 6px}
+.txt3 p{margin-bottom:11px;text-align:justify}
+.txt3 .title{font-family:Manrope,sans-serif;font-size:18px;color:var(--sky);font-weight:800;margin-bottom:10px}
+.txt3.blur{filter:blur(7px);pointer-events:none}
+.gpanel{display:flex;flex-direction:column;gap:12px}
+.timer{padding:16px 24px;text-align:center}
+.timer .big{font-size:64px;font-weight:800;letter-spacing:.02em;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1}
+.timer .big.red{color:var(--coral)}
+.timer .wpm{font-size:17px;color:var(--mute);margin-top:6px;font-weight:600;min-height:24px}
+.gq{padding:16px 22px;display:none}
+.gq.show{display:block;animation:up .5s}
+.gq h3{font-size:18px;font-weight:800;margin-bottom:10px;line-height:1.3}
+.gq h3 small{display:block;color:var(--coral);font-size:12px;letter-spacing:.16em;margin-bottom:6px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{border:1.5px solid var(--line);border-radius:12px;padding:9px 13px;font-size:16px;font-weight:600;cursor:pointer;transition:.15s;line-height:1.3}
+.opt:hover{border-color:var(--sky)}
+.opt.ok{border-color:var(--mint);background:#E8FAF5}.opt.no{border-color:var(--coral);background:#FFEEEE;opacity:.7}
+.bank{display:flex;flex-wrap:wrap;gap:8px}
+.bank .chip{border:1.5px solid var(--line);border-radius:999px;padding:8px 14px;font-size:15.5px;font-weight:700;cursor:pointer;transition:.15s}
+.bank .chip.sel{background:var(--navy);color:#fff;border-color:var(--navy)}
+.bank .chip.ok{background:var(--mint);color:#fff;border-color:var(--mint)}.bank .chip.no{background:#FFEEEE;border-color:var(--coral)}
+
+/* ===== close reading ===== */
+.slide.cr{display:none}.slide.cr.active{display:grid;grid-template-columns:1fr 520px;gap:28px}.cr .card{height:890px}
+.rtext{padding:30px 38px;font-family:Newsreader,serif;font-size:29px;line-height:1.52;overflow:hidden;position:relative}
+.rtext h4{font-family:Manrope,sans-serif;font-size:15px;letter-spacing:.16em;color:var(--coral);margin:10px 0 8px}
+.rtext p{margin-bottom:16px;position:relative;padding-left:46px}
+.rtext p::before{content:attr(data-n);position:absolute;left:0;top:6px;width:32px;height:32px;border-radius:9px;background:#EEF1F8;color:var(--mute);font:800 14px Manrope,sans-serif;display:grid;place-items:center}
+.s{cursor:pointer;border-radius:6px;padding:1px 3px;transition:.2s;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.s:hover{background:#EEF1F8}
+.s.ok{background:#D7F7EE;box-shadow:inset 0 -3px 0 var(--mint)}
+.s.no{background:#FFE4E4}
+.s.mark{background:#FFF1C9}
+.w{cursor:pointer;border-radius:4px;padding:0 2px}
+.w:hover{background:#EEF1F8}
+.w.ok{background:var(--yellow);color:var(--navy);font-weight:700}
+.w.no{background:#FFE4E4}
+.mpanel{display:flex;flex-direction:column;gap:12px;height:890px}.mpanel .card.mission{height:auto;min-height:0}
+.mhead{display:flex;align-items:center;gap:10px}
+.mhead .dots{display:flex;gap:6px;margin-left:auto}
+.mhead .dots i{width:12px;height:12px;border-radius:50%;background:#DDE2EE}
+.mhead .dots i.cur{background:var(--navy)}.mhead .dots i.ok{background:var(--mint)}
+.mission{padding:20px 24px;flex:1;display:flex;flex-direction:column;overflow:hidden}
+.mission .mk{font-size:12px;letter-spacing:.18em;font-weight:800;color:var(--lav);text-transform:uppercase}
+.mission .mq{font-size:20px;font-weight:700;line-height:1.38;margin:8px 0 12px}
+.mission .mbody{flex:1}
+.mission .fb{min-height:60px;font-size:17px;font-weight:600;line-height:1.4;padding:12px 14px;border-radius:12px;background:#F4F6FB;color:var(--mute)}
+.mission .fb.ok{background:#E8FAF5;color:#0C7A61}.mission .fb.no{background:#FFEEEE;color:#B33}
+.mission .mfoot{display:flex;gap:10px;margin-top:14px;align-items:center}
+.mission .mfoot .cnt{font-size:15px;color:var(--mute);font-weight:700;margin-left:auto}
+.ml{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ml .col{display:flex;flex-direction:column;gap:8px}
+.ml .it{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15.5px;font-weight:600;cursor:pointer;line-height:1.3;transition:.15s}
+.ml .it.sel{border-color:var(--sky);box-shadow:0 0 0 3px rgba(61,165,255,.2)}
+.ml .it.ok{border-color:var(--mint);background:#E8FAF5;pointer-events:none}
+.kids{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.kids span{font-size:13px;font-weight:700;color:var(--mute);background:#EEF1F8;padding:5px 10px;border-radius:999px}
+
+/* ===== planking ===== */
+#s8 .wrap{display:grid;grid-template-columns:1fr 600px;gap:36px;margin-top:22px;align-items:stretch;height:800px}
+.curve{padding:26px 30px;position:relative}
+.curve .ax{position:absolute;font-size:14px;font-weight:800;color:var(--mute);letter-spacing:.08em}
+.tests{display:flex;flex-direction:column;gap:14px}
+.test{padding:18px 22px;display:flex;align-items:center;gap:16px}
+.test .em{font-size:36px}
+.test .tq{font-size:19px;font-weight:700;flex:1;line-height:1.3}
+.test .tq small{display:block;font-size:14px;color:var(--mute);font-weight:600;margin-top:3px}
+.yn{display:flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden}
+.yn i{font-style:normal;padding:9px 16px;font-size:15px;font-weight:800;cursor:pointer;color:var(--mute)}
+.yn i.on.y{background:var(--mint);color:#fff}.yn i.on.n{background:var(--coral);color:#fff}
+.verdict{padding:22px 26px;text-align:center;min-height:150px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.stamp{display:inline-block;font-family:Newsreader,serif;font-weight:600;font-size:56px;letter-spacing:.1em;border:5px solid var(--coral);color:var(--coral);padding:4px 26px;border-radius:14px;transform:rotate(-6deg) scale(0);animation:stampin .5s forwards cubic-bezier(.2,1.6,.4,1)}
+.stamp.t{border-color:var(--mint);color:var(--mint)}
+@keyframes stampin{to{transform:rotate(-6deg) scale(1)}}
+.evid{font-family:Newsreader,serif;font-size:21px;line-height:1.4;color:var(--ink);background:#FFF9E8;border-left:5px solid var(--yellow);padding:12px 16px;border-radius:0 12px 12px 0;text-align:left}
+
+/* ===== vocab ===== */
+#s9 .wrap{display:grid;grid-template-columns:1fr 420px;gap:34px;margin-top:22px;height:800px}
+.vq{padding:34px 40px;display:flex;flex-direction:column}
+.vq .ctx{font-family:Newsreader,serif;font-size:30px;line-height:1.45;color:var(--ink);flex:0}
+.vq .ctx b{background:var(--yellow);padding:0 6px;border-radius:6px}
+.vq .ask{font-size:19px;font-weight:800;color:var(--mute);margin:22px 0 14px;letter-spacing:.04em}
+.vq .opts .opt{font-size:21px;padding:16px 20px}
+.vq .vfoot{display:flex;align-items:center;gap:12px;margin-top:auto}
+.vq .vfoot .cnt{margin-left:auto;font-weight:800;color:var(--mute);font-size:17px}
+.vside{display:flex;flex-direction:column;gap:16px}
+.vside .score{padding:26px;text-align:center}
+.vside .score .n{font-size:72px;font-weight:800;color:var(--navy);line-height:1}
+.vside .score .l{font-size:15px;color:var(--mute);font-weight:700;letter-spacing:.12em}
+.vside .fam{padding:22px 24px}
+.vside .fam h4{font-size:13px;letter-spacing:.16em;color:var(--lav);margin-bottom:12px}
+.vside .fam .row{display:flex;gap:8px;align-items:center;font-size:17px;font-weight:700;margin:8px 0;flex-wrap:wrap}
+.vside .fam .row span{background:#EEF1F8;padding:5px 12px;border-radius:8px}
+.vside .fam .row span.hl{background:var(--navy);color:#fff}
+.vside .fam .row em{color:var(--mute);font-style:normal}
+.wl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.wl span{font-size:15px;font-weight:700;padding:7px 10px;border-radius:9px;background:#EEF1F8;color:var(--mute);display:flex;justify-content:space-between}
+.wl span.ok{background:#E8FAF5;color:#0C7A61}.wl span.no{background:#FFEEEE;color:#B33}
+
+/* ===== structure ===== */
+#s10 .chips{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+.pchip{width:76px;height:56px;border-radius:14px;background:#fff;border:2px solid var(--navy);display:grid;place-items:center;font-weight:800;font-size:20px;cursor:pointer;transition:.15s;user-select:none}
+.pchip.sel{background:var(--navy);color:#fff;transform:translateY(-4px)}
+.pchip.placed{opacity:.3;pointer-events:none}
+.boxes{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:22px;height:520px}
+.box{padding:18px;display:flex;flex-direction:column;cursor:pointer;transition:.2s;position:relative}
+.box .bn{font-size:12px;letter-spacing:.18em;font-weight:800;color:var(--coral)}
+.box .bt{font-size:21px;font-weight:800;line-height:1.25;margin:8px 0 4px}
+.box .bd{font-size:14px;color:var(--mute);font-weight:600;line-height:1.35;opacity:0;transition:.4s}.box.has .bd{opacity:1}
+.box .drop{flex:1;margin-top:14px;border:2px dashed var(--line);border-radius:14px;display:flex;flex-wrap:wrap;gap:8px;padding:10px;align-content:flex-start;transition:.2s}
+.box:hover .drop{border-color:var(--sky);background:#F3F9FF}
+.box .drop .pchip{width:60px;height:44px;font-size:16px;cursor:default}
+.box .drop .pchip.ok{border-color:var(--mint);background:#E8FAF5;color:#0C7A61}
+.box .drop .pchip.no{border-color:var(--coral);background:#FFEEEE;color:#B33}
+.arrow{position:absolute;right:-16px;top:50%;width:16px;height:2px;background:var(--line)}
+.arrow::after{content:"";position:absolute;right:-2px;top:-5px;border:6px solid transparent;border-left-color:var(--line)}
+
+/* ===== critical thinking ===== */
+#s11 .wrap{display:grid;grid-template-columns:1fr 480px;gap:30px;margin-top:18px;height:780px}
+.rows{display:flex;flex-direction:column;gap:10px}
+.row2{padding:14px 20px;display:grid;grid-template-columns:270px 1fr 150px 190px;align-items:center;gap:14px}
+.row2 .nm{font-size:21px;font-weight:800;display:flex;align-items:center;gap:10px}
+.row2 .nm i{font-style:normal;font-size:26px}
+.row2 .tt{display:flex;gap:8px}
+.row2 .tt span{border:1.5px solid var(--line);border-radius:999px;padding:9px 14px;font-size:15px;font-weight:800;cursor:pointer;color:var(--mute);user-select:none;transition:.15s}
+.row2 .tt span.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.row2 .first{font-size:14px;color:var(--mute);font-weight:700}
+.row2 .first b{color:var(--ink)}
+.row2 .vd{font-size:15px;font-weight:800;text-align:center;border-radius:999px;padding:8px 10px;background:#EEF1F8;color:var(--mute)}
+.row2 .vd.T{background:var(--mint);color:#fff}.row2 .vd.F{background:var(--coral);color:#fff}.row2 .vd.chg::after{content:" · changed!";font-weight:700;font-size:12px}
+.frame{padding:24px 26px;height:100%;display:flex;flex-direction:column;gap:14px}
+.frame h3{font-size:22px;font-weight:800}
+.frame .ln{font-family:Newsreader,serif;font-size:21px;line-height:1.55;color:var(--ink)}
+.frame .ln u{text-decoration:none;border-bottom:2px solid var(--coral);padding:0 20px;color:var(--coral)}
+.frame .ln b{color:var(--lav)}
+.frame .tip{margin-top:auto;font-size:15px;color:var(--mute);line-height:1.5;border-top:1.5px dashed var(--line);padding-top:12px}
+
+/* ===== exit ===== */
+#s12 .wrap{display:grid;grid-template-columns:1fr 1fr 520px;gap:28px;margin-top:22px;height:800px}
+.exit{padding:32px 34px;display:flex;flex-direction:column;gap:26px}
+.exit h3{font-size:30px;font-weight:800}
+.exit .n321{display:flex;gap:14px;align-items:flex-start}
+.exit .n321 b{font-family:Newsreader,serif;font-size:92px;line-height:.9;color:var(--coral);width:84px;flex:none}
+.exit .n321 div{font-size:26px;font-weight:700;line-height:1.35;padding-top:14px}
+.exit .n321 div small{display:block;font-size:18px;margin-top:4px;color:var(--mute);font-weight:600}
+.exit ol{padding-left:28px;font-size:24px;line-height:1.5;font-weight:600}
+.exit ol li{margin-bottom:16px}
+.exit .fr{font-family:Newsreader,serif;font-size:23px;line-height:1.5;background:#F4F6FB;padding:14px 16px;border-radius:12px}
+.report{padding:28px 30px;text-align:center;display:flex;flex-direction:column;gap:14px;background:var(--navy);color:#fff;border-color:var(--navy)}
+.report .big{font-size:96px;font-weight:800;line-height:1;color:var(--yellow)}
+.report .lv{font-size:22px;font-weight:800;letter-spacing:.08em}
+.report .bg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+.report .bg div{background:rgba(255,255,255,.08);border-radius:14px;padding:12px 6px;font-size:13px;font-weight:700;opacity:.3}
+.report .bg div.got{opacity:1;background:rgba(255,255,255,.16)}
+.report .bg div i{display:block;font-style:normal;font-size:30px;margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+<div id="bar">
+  <div class="logo"><i></i>TREND REPORT · READING LAB</div>
+  <div class="steps">
+    <div class="step" data-r="1-3"><b>1</b>Before you read</div>
+    <div class="step" data-r="4-7"><b>2</b>Read closely</div>
+    <div class="step" data-r="8-8"><b>3</b>Reading skill</div>
+    <div class="step" data-r="9-10"><b>4</b>Vocabulary &amp; structure</div>
+    <div class="step" data-r="11-12"><b>5</b>Think &amp; apply</div>
+  </div>
+  <div id="xp"><div class="ring"><span>XP</span></div><span id="xpn">0</span><div id="badges"></div></div>
+</div>
+<div id="prog"></div>
+
+<!-- 1 COVER -->
+<section class="slide" id="s1">
+  <div class="rise">
+    <div class="kicker d1">Unit 2 · Reading</div>
+    <h1 class="d2" style="margin-top:22px">Identifying<br>Trends</h1>
+    <p class="sub d3" style="max-width:720px;margin-top:22px">How do businesses know what the <em>next big thing</em> is before everyone else? Today you become a <b>trend spotter</b>: read like an analyst, find the evidence, and make a call.</p>
+    <div class="tag d4"><span>📈 Fads vs. trends</span><span>🔎 Scanning &amp; signal words</span><span>🧩 Text structure</span><span>🗣️ Make your own prediction</span></div>
+    <p class="hint d5" style="margin-top:34px">Keys: → / ← slides · <b>T</b> teacher hints · Earn XP by completing missions.</p>
+  </div>
+  <div class="card chart">
+    <span class="lbl" style="left:28px;top:22px">POPULARITY</span>
+    <span class="lbl" style="right:28px;bottom:18px">TIME →</span>
+    <svg viewBox="0 0 700 440" width="100%" height="100%">
+      <defs><linearGradient id="g1" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#19C6A5" stop-opacity=".35"/><stop offset="1" stop-color="#19C6A5" stop-opacity="0"/></linearGradient></defs>
+      <g stroke="#E1E6F0" stroke-width="1.5"><line x1="40" y1="380" x2="680" y2="380"/><line x1="40" y1="300" x2="680" y2="300" stroke-dasharray="4 6"/><line x1="40" y1="220" x2="680" y2="220" stroke-dasharray="4 6"/><line x1="40" y1="140" x2="680" y2="140" stroke-dasharray="4 6"/><line x1="40" y1="60" x2="680" y2="60" stroke-dasharray="4 6"/></g>
+      <path d="M40 380 C 120 370, 160 300, 220 290 S 330 280, 400 230 S 520 150, 600 110 S 660 70, 680 60 L680 380 Z" fill="url(#g1)"/>
+      <path class="trendline" d="M40 380 C 120 370, 160 300, 220 290 S 330 280, 400 230 S 520 150, 600 110 S 660 70, 680 60" fill="none" stroke="#19C6A5" stroke-width="6" stroke-linecap="round"/>
+      <path class="trendline" style="animation-delay:1s" d="M120 380 C 180 300, 200 110, 250 100 C 300 90, 320 300, 390 380" fill="none" stroke="#FF5A5F" stroke-width="6" stroke-linecap="round"/>
+      <g font-family="Manrope" font-weight="800" font-size="16">
+        <text x="270" y="86" fill="#FF5A5F" class="pt" style="animation-delay:1.9s">FAD — planking, 2011</text>
+        <text x="455" y="105" fill="#0F1B3D" class="pt" style="animation-delay:2.6s" text-anchor="end">TREND — e-commerce</text>
+      </g>
+      <circle class="pt" style="animation-delay:1.8s;transform-origin:250px 100px" cx="250" cy="100" r="9" fill="#fff" stroke="#FF5A5F" stroke-width="5"/>
+      <circle class="pt" style="animation-delay:2.6s;transform-origin:600px 110px" cx="600" cy="110" r="9" fill="#fff" stroke="#19C6A5" stroke-width="5"/>
+    </svg>
+  </div>
+</section>
+
+<!-- 2 FAD OR TREND VOTE -->
+<section class="slide" id="s2">
+  <div class="kicker">Before you read · 01</div>
+  <h2 style="margin-top:12px">Quick vote: <em style="color:var(--coral)">fad</em> or <em style="color:var(--mint)">trend</em>?</h2>
+  <p class="sub">Tap each card to decide. Go with your gut — we will check your answers against the text later.</p>
+  <div class="zh">教师提示：此处不讲标准答案，只收集"直觉判断"。读后在第 11 页用文中的"三个标准"重新评估，形成"读前-读后"对比，这是让学生感到有收获的关键。</div>
+  <div class="vgrid" id="vgrid"></div>
+  <div class="tally"><span style="color:var(--coral)">FAD <b id="tf">0</b></span><div class="barw"><i class="f" id="bf"></i><i class="t" id="bt"></i></div><span style="color:var(--mint)"><b id="tt">0</b> TREND</span><span class="hint" style="margin-left:20px">What makes something last? Keep that question in mind.</span></div>
+</section>
+
+<!-- 3 PREVIEW -->
+<section class="slide" id="s3">
+  <div class="kicker">Before you read · 02</div>
+  <h2 style="margin-top:12px">Preview with subheadings</h2>
+  <div class="skill"><b>Reading skill</b> Use the title and subheadings to predict where you will find answers — before you read a single paragraph.</div>
+  <div class="zh">教师提示：先让学生读 3 个小标题，再把右侧 4 个问题"归位"到对应标题（有一个问题文中找不到——训练学生判断"文章不会回答什么"）。配对正确即得分。</div>
+  <div class="prev">
+    <div class="heads" id="heads"></div>
+    <div>
+      <p class="hint" style="margin-bottom:10px;font-weight:700">Which section will answer each question? Click a question, then a heading. One question is a trap — the text never answers it.</p>
+      <div class="qs" id="qs"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 GIST READ -->
+<section class="slide" id="s4">
+  <div class="wrap">
+    <div class="card txt3 blur" id="gtext"></div>
+    <div class="gpanel">
+      <div class="card timer">
+        <div class="kicker" style="justify-content:center">Read for gist · 2 minutes</div>
+        <div class="big" id="tm">2:00</div>
+        <div class="wpm" id="wpm">Press start, read for the main idea only. Don't stop at new words.</div>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:14px"><button class="btn coral" id="tstart">▶ Start reading</button><button class="btn ghost" id="tdone" disabled>✓ I'm done</button></div>
+      </div>
+      <div class="card gq" id="gq1">
+        <h3><small>Question 1 · Main idea</small>What is the text mainly about?</h3>
+        <div class="opts" id="gq1o"></div>
+      </div>
+      <div class="card gq" id="gq2">
+        <h3><small>Question 2 · Scan</small>According to the text, a real trend usually… (choose 3)</h3>
+        <div class="bank" id="gq2b"></div>
+        <div class="hint" id="gq2fb" style="margin-top:10px;min-height:22px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5-7 CLOSE READING -->
+<section class="slide cr" id="s5" data-cr="0"></section>
+<section class="slide cr" id="s6" data-cr="1"></section>
+<section class="slide cr" id="s7" data-cr="2"></section>
+
+<!-- 8 PLANKING CASE -->
+<section class="slide" id="s8">
+  <div class="kicker">Reading skill · Apply the author's criteria</div>
+  <h2 style="margin-top:10px">Case file: Planking, 2011</h2>
+  <div class="zh">教师提示：让学生用文中"三个标准"给 planking 打分（都是 No → FAD）。点击"Show the evidence"后出现原句，帮助学生理解作者是如何用标准支撑结论的（这就是议论性说明文的论证方式）。</div>
+  <div class="wrap">
+    <div class="card curve">
+      <span class="ax" style="left:30px;top:20px">SEARCH INTEREST</span>
+      <span class="ax" style="right:30px;bottom:16px">2010 → 2013</span>
+      <svg viewBox="0 0 800 440" width="100%" height="100%">
+        <g stroke="#E1E6F0" stroke-width="1.5"><line x1="50" y1="380" x2="770" y2="380"/><line x1="50" y1="280" x2="770" y2="280" stroke-dasharray="4 6"/><line x1="50" y1="180" x2="770" y2="180" stroke-dasharray="4 6"/><line x1="50" y1="80" x2="770" y2="80" stroke-dasharray="4 6"/></g>
+        <g font-family="Manrope" font-size="14" font-weight="700" fill="#6B7690"><text x="110" y="408">2010</text><text x="330" y="408">2011</text><text x="550" y="408">2012</text><text x="740" y="408">2013</text></g>
+        <path id="pcurve" d="M50 378 L300 376 C 330 370, 350 300, 380 120 C 400 30, 430 40, 470 180 C 500 300, 540 370, 600 377 L770 378" fill="none" stroke="#FF5A5F" stroke-width="7" stroke-linecap="round" stroke-dasharray="1800" stroke-dashoffset="1800"/>
+        <text x="300" y="60" font-family="Manrope" font-weight="800" font-size="16" fill="#FF5A5F" id="pk" opacity="0">peak: mid-2011 ⤴</text>
+        <text x="560" y="330" font-family="Manrope" font-weight="800" font-size="16" fill="#6B7690" id="pk2" opacity="0">early 2012: losing popularity ⤵</text>
+        <g transform="translate(380 150)" id="plank" opacity="0"><rect x="-70" y="-10" width="140" height="20" rx="10" fill="#0F1B3D"/><circle cx="-80" cy="0" r="12" fill="#FFC857"/></g>
+      </svg>
+    </div>
+    <div class="tests" id="tests">
+      <div class="card test"><span class="em">💰</span><div class="tq">Can businesses make money from it?<small>…and plan long-term strategies?</small></div><div class="yn" data-t="0"><i class="y">Yes</i><i class="n">No</i></div></div>
+      <div class="card test"><span class="em">🔗</span><div class="tq">Does it link with other trends?<small>Is it part of something bigger?</small></div><div class="yn" data-t="1"><i class="y">Yes</i><i class="n">No</i></div></div>
+      <div class="card test"><span class="em">👥</span><div class="tq">Does it appeal to a wide range of people?<small>Or only one small group, for one summer?</small></div><div class="yn" data-t="2"><i class="y">Yes</i><i class="n">No</i></div></div>
+      <div class="card verdict" id="verdict"><div class="hint">Answer all three to get a verdict.</div></div>
+      <div style="display:flex;gap:10px"><button class="btn ghost" id="evbtn" disabled>📄 Show the evidence in the text</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 VOCAB -->
+<section class="slide" id="s9">
+  <div class="kicker">Vocabulary building · Words in context</div>
+  <h2 style="margin-top:10px">Guess from context, then confirm</h2>
+  <div class="zh">教师提示：先遮住选项，让学生用句子本身猜词义（上下文线索：定义、举例、对比），再选择。右侧词族卡用于拓展：trend → trend spotter / trend spotting；predict → prediction / predictive。</div>
+  <div class="wrap">
+    <div class="card vq" id="vq"></div>
+    <div class="vside">
+      <div class="card score"><div class="n" id="vsc">0</div><div class="l">OUT OF 8</div><div class="wl" id="wl"></div></div>
+      <div class="card fam"><h4>WORD FAMILY · build it</h4>
+        <div class="row"><span class="hl">trend</span><em>→</em><span>trend spotter</span><span>trend spotting</span><span>trendy</span></div>
+        <div class="row"><span class="hl">predict</span><em>→</em><span>prediction</span><span>predictive tech</span><span>predictable</span></div>
+        <div class="row"><span class="hl">analyze</span><em>→</em><span>analyst</span><span>analysis</span></div>
+        <div class="row"><span class="hl">compete</span><em>→</em><span>competition</span><span>competitive</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 STRUCTURE -->
+<section class="slide" id="s10">
+  <div class="kicker">Text structure · Graphic organizer</div>
+  <h2 style="margin-top:10px">Map the article</h2>
+  <div class="skill"><b>Reading skill</b> Good readers see the <em>shape</em> of a text. Click a paragraph number, then the box where it belongs.</div>
+  <div class="zh">教师提示：答案 P1→Why；P2 P3 P4→How to tell；P5→Who；P6 P7 P8→Tools；P9→Conclusion。放错会变红并弹回，让学生再想。完成后可追问：为什么作者先讲"怎么判断"再讲"谁来做"？</div>
+  <div class="chips" id="chips"></div>
+  <div class="boxes" id="boxes"></div>
+</section>
+
+<!-- 11 CRITICAL THINKING -->
+<section class="slide" id="s11">
+  <div class="kicker">Critical thinking · Evaluate</div>
+  <h2 style="margin-top:10px">Re-judge your votes with the author's 3 tests</h2>
+  <div class="zh">教师提示：这是读前投票的"回看"。每行点亮 💰🔗👥，≥2 个即判定 TREND。重点不是对错，而是让学生用文本中的标准说理；右侧句框用于口头输出，可抽 2–3 名学生说。</div>
+  <div class="wrap">
+    <div class="rows" id="rows"></div>
+    <div class="card frame">
+      <h3>🗣️ Be the trend spotter</h3>
+      <p class="ln">I used to think <u>&nbsp;</u> was a <u>fad / trend</u>.</p>
+      <p class="ln">Now I think it is a <u>&nbsp;</u>. <b>First,</b> it <u>can / can't</u> make money because <u>&nbsp;</u>.</p>
+      <p class="ln"><b>Second,</b> it <u>links / doesn't link</u> with <u>&nbsp;</u>.</p>
+      <p class="ln"><b>Third,</b> it appeals to <u>&nbsp;</u>.</p>
+      <p class="ln">So, like <u>planking / e-commerce</u>, it will probably <u>&nbsp;</u>.</p>
+      <p class="tip">Use the author's signal words — <b>First, Second, Third</b> — to organise your reasons, just like paragraph 3 does. <span id="chg" style="color:var(--coral);font-weight:800"></span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 12 EXIT -->
+<section class="slide" id="s12">
+  <div class="kicker">Wrap-up</div>
+  <h2 style="margin-top:10px">Exit ticket &amp; homework</h2>
+  <div class="wrap">
+    <div class="card exit">
+      <h3>3 · 2 · 1 exit ticket</h3>
+      <div class="n321"><b>3</b><div>signs of a real trend<small>Say them without looking. Use First / Second / Third.</small></div></div>
+      <div class="n321"><b>2</b><div>jobs or tools that help trend spotters<small>e.g. a job from "In Search of Trends" and a tool from "New Technology".</small></div></div>
+      <div class="n321"><b>1</b><div>thing in your life you now believe is a trend, not a fad<small>One sentence with <em>because</em>.</small></div></div>
+    </div>
+    <div class="card exit">
+      <h3>📝 Homework</h3>
+      <ol>
+        <li>Write 60–80 words: <em>"Is ____ a fad or a trend?"</em> Use the three tests and the signal words <b>First / Second / Third</b>.</li>
+        <li>Vocabulary: write one new sentence each for <b>distinguish, appeal to, filter, stay relevant</b>.</li>
+        <li>Trend spotter task: find ONE thing becoming popular around you this month. Bring a photo or screenshot — we vote next class.</li>
+      </ol>
+      <div class="fr"><b>Model opening:</b> Short videos are a trend, not a fad. First, companies make money from them by…</div>
+    </div>
+    <div class="card report">
+      <div class="kicker" style="color:var(--yellow);justify-content:center">Your trend report</div>
+      <div class="big" id="fxp">0</div>
+      <div class="lv" id="flv">XP EARNED</div>
+      <div class="bg" id="fb"></div>
+      <p class="hint" style="color:rgba(255,255,255,.6)">Badges unlock as the class completes each mission.</p>
+    </div>
+  </div>
+</section>
+
+<div id="toast"></div>
+<div id="fx"></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+/* ---------- audio: a single short ding only ---------- */
+let AC;function ding(ok=true){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(ok?880:220,AC.currentTime);if(ok)o.frequency.exponentialRampToValueAtTime(1320,AC.currentTime+.12);g.gain.setValueAtTime(.0001,AC.currentTime);g.gain.exponentialRampToValueAtTime(.25,AC.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+(ok?.35:.2));o.start();o.stop(AC.currentTime+.4)}catch(e){}}
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1800)}
+function confetti(){const f=$('#fx');const cols=['#FF5A5F','#19C6A5','#FFC857','#8A7CFF','#3DA5FF'];for(let i=0;i<70;i++){const d=document.createElement('i');d.className='conf';d.style.left=Math.random()*1920+'px';d.style.top=(-20-Math.random()*200)+'px';d.style.background=cols[i%5];d.style.animationDelay=(Math.random()*.4)+'s';d.style.transform=`rotate(${Math.random()*360}deg)`;f.appendChild(d);setTimeout(()=>d.remove(),1800)}}
+
+/* ---------- XP & badges ---------- */
+const BADGES=[['vote','🗳️','Voter'],['preview','🧭','Previewer'],['gist','⏱️','Speed reader'],['close','🔍','Close reader'],['case','📈','Analyst'],['vocab','📚','Word builder'],['map','🧩','Map maker'],['think','🗣️','Trend spotter']];
+const XP={n:0,got:new Set(),max:1000};
+$('#badges').innerHTML=BADGES.map(b=>`<span data-b="${b[0]}" title="${b[2]}">${b[1]}</span>`).join('');
+function award(n,msg){XP.n+=n;$('#xpn').textContent=XP.n;$('#xp .ring').style.setProperty('--p',Math.min(100,XP.n/XP.max*100)+'%');if(msg)toast(`+${n} XP · ${msg}`);ding(true);renderReport()}
+function badge(id){if(XP.got.has(id))return;XP.got.add(id);$(`#badges [data-b="${id}"]`).classList.add('got');confetti();const b=BADGES.find(x=>x[0]===id);toast(`🏅 Badge unlocked: ${b[2]}`);renderReport()}
+function renderReport(){$('#fxp').textContent=XP.n;$('#fb').innerHTML=BADGES.map(b=>`<div class="${XP.got.has(b[0])?'got':''}"><i>${b[1]}</i>${b[2]}</div>`).join('');const lv=XP.n>=800?'LEVEL 4 · SENIOR ANALYST':XP.n>=500?'LEVEL 3 · TREND SPOTTER':XP.n>=250?'LEVEL 2 · RESEARCHER':'LEVEL 1 · INTERN';$('#flv').textContent=XP.n+' XP · '+lv}
+function wrong(el){el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),320);ding(false)}
+
+/* ---------- text data ---------- */
+const H={fads:'FADS VERSUS TRENDS',search:'IN SEARCH OF TRENDS',tech:'NEW TECHNOLOGY'};
+const P=[ // paragraph: heading before?, sentences
+ {h:null,s:["Businesses need to predict change and spot [emerging] trends in order to [stay relevant] and beat the competition.","But how can they know what the next big thing is before everyone else?"]},
+ {h:'fads',s:["One important step in identifying trends is to [distinguish] them from fads, which don't last long.","In 2011, a [craze] called “planking”—where people photographed themselves lying face down, usually in an odd public place—became popular.","However, this turned out to be nothing more than a fad."]},
+ {h:null,s:["It's often hard to tell the difference between trends and fads in the early stages.","But there are several signs we can look out for.","[First], trends can make money; businesses should be able to see how they can take advantage of a new trend and plan long-term strategies.","[Second], trends tend to link with one another.","For example, the rise of online shopping is related to a bigger trend—the rise of electronic [commerce].","And [third], trends usually [appeal] to a wide range of people.","Planking fails in all three areas, and sure enough, by early 2012, it started to lose popularity."]},
+ {h:null,s:["Another way of spotting trends is to observe people's hobbies.","The idea for social networking sites like Facebook, Instagram, and Snapchat came from noticing that people like to share photographs or personal information in their free time."]},
+ {h:'search',s:["The importance of spotting trends has led to a growing industry with a range of new jobs.","[These] vary from individual trend consultants to entire teams of people in large corporations.","Social media analysts—a job title that didn't even exist before the mid-2000s—look through huge amounts of data online.","Kevin Allocca, whose job is to analyze trends on YouTube, spends his day [monitoring] news headlines and popular videos to help his company look out for industry trends."]},
+ {h:'tech',s:["New forms of technology also aid trend spotters.","Allocca uses organization tools such as gReader Pro and NetNewsWire to help [filter] the many websites he monitors every day."]},
+ {h:null,s:["Predictive tech analyzes online conversations, blogs, videos, and even photo descriptions.","Predictive tech apps search the Web for keywords such as <i>trend</i>, <i>becoming more</i>, and <i>recently</i>, and then compare the data to find common topics."]},
+ {h:null,s:["There are also predictive tech websites that encourage trend spotters to work together and submit ideas for new trends.","Springwise is a website that allows its members to submit business ideas that they think will work in their city or country.","If a member's idea is featured on the website, they receive points that can be exchanged for money."]},
+ {h:null,s:["Trend spotting isn't easy, but it is an important skill.","Businesses around the world are competing to find the next big thing, and only those that are able to predict and make use of trends will [come out on top]."]}
+];
+const WORDS=470;
+const plain=t=>t.replace(/\[(.+?)\]/g,'$1');
+const mark=(t,pi,si)=>t.replace(/\[(.+?)\]/g,(m,w)=>`<span class="w" data-w="${w.toLowerCase()}" data-p="${pi}">${w}</span>`);
+
+/* ---------- deck ---------- */
+const deck={i:0,s:$$('.slide'),go(n){this.i=Math.max(0,Math.min(this.s.length-1,n));this.s.forEach((x,k)=>x.classList.toggle('active',k===this.i));$('#prog').style.width=((this.i+1)/this.s.length*100)+'%';$$('.pn').forEach(p=>p.remove());const pn=document.createElement('div');pn.className='pn';pn.textContent=(this.i+1)+' / '+this.s.length;this.s[this.i].appendChild(pn);const cur=this.i+1;$$('#bar .step').forEach(st=>{const [a,b]=st.dataset.r.split('-').map(Number);st.classList.toggle('on',cur>=a&&cur<=b);st.classList.toggle('done',cur>b)});if(this.i===7)startCurve()},next(){this.go(this.i+1)},prev(){this.go(this.i-1)}};
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);const st=$('#stage');st.style.transform=`scale(${s})`;st.style.left=((innerWidth-1920*s)/2)+'px';st.style.top=((innerHeight-1080*s)/2)+'px'}
+addEventListener('resize',fit);fit();
+addEventListener('keydown',e=>{if(e.key==='t'||e.key==='T'){document.body.classList.toggle('teach');return}if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();deck.next()}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();deck.prev()}});
+
+/* ---------- 2 vote ---------- */
+const ITEMS=[['🌀','Fidget spinners','2017'],['🧍','Planking','2011'],['🧊','Ice Bucket Challenge','2014'],['📱','Short videos','2016 →'],['🛒','Online shopping','2000s →'],['🔋','Electric cars','2010s →'],['☕','Dalgona coffee','2020'],['🤖','AI chat assistants','2022 →']];
+const vote={};
+$('#vgrid').innerHTML=ITEMS.map((it,i)=>`<div class="card vcard" data-i="${i}"><div class="sw"><i>FAD</i><i>TREND</i></div><div class="em">${it[0]}</div><div class="nm">${it[1]}</div><div class="yr">${it[2]}</div></div>`).join('');
+$$('.vcard').forEach(c=>c.onclick=()=>{const i=c.dataset.i;const v=vote[i]==='fad'?'trend':vote[i]==='trend'?'fad':'fad';vote[i]=v;c.classList.toggle('fad',v==='fad');c.classList.toggle('trend',v==='trend');tally()});
+function tally(){const vals=Object.values(vote);const f=vals.filter(v=>v==='fad').length,t=vals.filter(v=>v==='trend').length;$('#tf').textContent=f;$('#tt').textContent=t;$('#bf').style.width=(f/8*100)+'%';$('#bt').style.width=(t/8*100)+'%';if(vals.length===8&&!XP.got.has('vote')){award(50,'All 8 votes in');badge('vote')}renderRows()}
+
+/* ---------- 3 preview ---------- */
+const HEADS=[['fads',H.fads],['search',H.search],['tech',H.tech]];
+const QS=[['🤔','How can we tell a trend from a fad?','fads'],['💼','What new jobs have appeared because of trend spotting?','search'],['💻','What apps and websites help trend spotters?','tech'],['🔮','What will be the biggest trend of 2030?',null]];
+$('#heads').innerHTML=HEADS.map((h,i)=>`<div class="card hd" data-h="${h[0]}"><div class="n">${i+1}</div><div class="t">${h[1]}</div><div class="slot">?</div></div>`).join('');
+$('#qs').innerHTML=QS.map((q,i)=>`<div class="card q" data-q="${i}"><span class="ic">${q[0]}</span>${q[1]}</div>`).join('');
+let selQ=null,pvDone=0;
+$$('.q').forEach(q=>q.onclick=()=>{$$('.q').forEach(x=>x.classList.remove('sel'));q.classList.add('sel');selQ=+q.dataset.q;if(QS[selQ][2]===null){setTimeout(()=>{if(selQ!==null&&QS[selQ][2]===null){toast('🪤 Trap! No heading promises this — the text never answers it.');q.classList.remove('sel');q.classList.add('used');q.style.textDecoration='line-through';selQ=null;pvDone++;award(20,'Spotted the trap question');checkPv()}},900)}});
+$$('.hd').forEach(h=>h.onclick=()=>{if(selQ===null){toast('Pick a question first');return}const q=QS[selQ];if(q[2]===h.dataset.h){h.classList.add('ok');h.querySelector('.slot').textContent=q[0]+' '+q[1];$(`.q[data-q="${selQ}"]`).classList.remove('sel');$(`.q[data-q="${selQ}"]`).classList.add('used');selQ=null;pvDone++;award(20,'Matched!');checkPv()}else{wrong(h);toast('Look at the heading words again…')}});
+function checkPv(){if(pvDone===4){badge('preview');toast('Now you have a map of the text. Read to confirm!')}}
+
+/* ---------- 4 gist ---------- */
+$('#gtext').innerHTML=`<div class="title">Unit 2: Identifying trends</div>`+P.map(p=>(p.h?`<h4>${H[p.h]}</h4>`:'')+`<p>${p.s.map(plain).join(' ')}</p>`).join('');
+let T=120,ti=null,tStart=0;
+const tm=$('#tm');
+function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+$('#tstart').onclick=()=>{if(ti)return;$('#gtext').classList.remove('blur');tStart=Date.now();$('#tdone').disabled=false;$('#tstart').disabled=true;$('#wpm').textContent='Reading… find the main idea.';ti=setInterval(()=>{T--;tm.textContent=fmt(T);if(T<=20)tm.classList.add('red');if(T<=0){stopRead(true)}},1000)};
+$('#tdone').onclick=()=>stopRead(false);
+function stopRead(auto){clearInterval(ti);ti=null;$('#tdone').disabled=true;const sec=Math.max(10,Math.round((Date.now()-tStart)/1000));const wpm=Math.round(WORDS/sec*60);$('#wpm').innerHTML=auto?`Time! ≈ <b>${WORDS} words</b> in 2:00 → about <b>${Math.round(WORDS/2)} wpm</b> if you finished.`:`You read ≈ <b>${WORDS} words</b> in ${fmt(sec)} → <b>${wpm} wpm</b>. ${wpm>200?'Fast — did you catch the main idea?':wpm>120?'A good gist-reading pace.':'Steady — now let\'s check understanding.'}`;$('#gtext').classList.add('blur');$('#gq1').classList.add('show');ding(true)}
+const G1=[['How planking became popular in 2011',false],['How businesses and new technology identify trends',true],['The history of social networking sites',false],['How to earn money on Springwise',false]];
+$('#gq1o').innerHTML=G1.map((o,i)=>`<div class="opt" data-i="${i}">${String.fromCharCode(65+i)}. ${o[0]}</div>`).join('');
+let g1done=false;
+$$('#gq1o .opt').forEach(o=>o.onclick=()=>{if(g1done)return;const ok=G1[o.dataset.i][1];if(ok){g1done=true;o.classList.add('ok');award(40,'Main idea found');$('#gq2').classList.add('show');$('#gtext').classList.remove('blur');toast('Text unlocked — now SCAN for the three signs')}else{o.classList.add('no');wrong(o);toast('That is a detail, not the whole text.')}});
+const G2=[['can make money',true],['lasts only a few months',false],['links with other trends',true],['starts on YouTube',false],['appeals to a wide range of people',true],['is invented by big companies',false]];
+let g2sel=new Set(),g2done=false;
+$('#gq2b').innerHTML=G2.map((c,i)=>`<span class="chip" data-i="${i}">${c[0]}</span>`).join('');
+$$('#gq2b .chip').forEach(c=>c.onclick=()=>{if(g2done)return;const i=+c.dataset.i;if(g2sel.has(i)){g2sel.delete(i);c.classList.remove('sel')}else{if(g2sel.size>=3){toast('Only 3 — deselect one first');return}g2sel.add(i);c.classList.add('sel')}if(g2sel.size===3){const right=[...g2sel].every(k=>G2[k][1]);if(right){g2done=true;$$('#gq2b .chip.sel').forEach(x=>x.classList.replace('sel','ok'));$('#gq2fb').innerHTML='<b style="color:#0C7A61">✓ Exactly the three signs in paragraph 3.</b> Now let\'s read closely.';award(60,'Scanned the 3 signs');badge('gist')}else{[...g2sel].forEach(k=>{if(!G2[k][1]){const x=$(`#gq2b .chip[data-i="${k}"]`);x.classList.replace('sel','no');wrong(x);setTimeout(()=>x.classList.remove('no'),700);g2sel.delete(k)}});$('#gq2fb').textContent='Scan paragraph 3 for First… Second… third…'}}});
+
+/* ---------- 5-7 close reading ---------- */
+const CR=[
+ {paras:[0,1,2],title:'Introduction & Fads versus trends',sk:'Find the topic sentence and the signal words that organise a list.',zh:'教师提示：任务 1 找"全文的核心问题"（P1 第 2 句）；任务 2 找 P3 的主题句（"But there are several signs…"）；任务 3 点 First/Second/third 三个信号词；任务 4 在 P2 找 craze。学生点错只给方向性提示，不给答案。',
+  ms:[
+   {t:'sent',q:'Click the sentence that asks the <b>central question</b> the whole text will answer.',a:'0-1',fb:'Yes — a question in the introduction is a strong signal of the text\'s purpose.',no:'Look for a question mark in the introduction.'},
+   {t:'sent',q:'Paragraph 3 lists three things. Click its <b>topic sentence</b> — the one that announces the list is coming.',a:'2-1',fb:'"Several signs" tells the reader: a list follows. Now look for how the list is organised.',no:'A topic sentence usually comes early and is general, not a specific sign.'},
+   {t:'words',q:'Click the <b>three signal words</b> that organise the list of signs.',a:['first','second','third'],fb:'First / Second / third — you will use these in your own writing today.',no:'Signal words often start a sentence. Keep going…'},
+   {t:'words',q:'Vocabulary in context: in paragraph 2, click the word that means <b>"a sudden, short-lived enthusiasm"</b>.',a:['craze'],fb:'A craze = a fad. The author uses two words for the same idea — a clue to the meaning.',no:'The clue is "which don\'t last long" and the planking example.'}
+  ]},
+ {paras:[3,4],title:'Fads versus trends (cont.) & In search of trends',sk:'Follow the author\'s logic: another method → a result → examples of new jobs.',zh:'教师提示：任务 1 找 P4 中"另一种方法"；任务 2 找表示"结果"的句子（has led to）；任务 3 指代题 These → new jobs；任务 4 配对三种职业与其工作内容（用文中原词）。',
+  ms:[
+   {t:'sent',q:'Paragraph 4 gives <b>another way</b> to spot trends. Click the sentence that states it.',a:'3-0',fb:'"Another way…" — a transition that adds a second method. Facebook etc. are the example.',no:'The first sentence of a paragraph is often the general statement.'},
+   {t:'sent',q:'Click the sentence that shows a <b>cause → effect</b> relationship (something "has led to" something).',a:'4-0',fb:'Cause: trends matter. Effect: a new industry with new jobs. Watch for "has led to", "as a result".',no:'Scan for the phrase "has led to".'},
+   {t:'mc',q:'Click the word <b>These</b> in paragraph 5. What does it refer to?',opts:['large corporations','new jobs','trends on YouTube'],a:1,fb:'Pronoun reference: "These" points back to "a range of new jobs". Always ask: these WHAT?',no:'Look at the end of the sentence before "These".'},
+   {t:'match',q:'Match each job to what the person does, using words from the text.',L:['Trend consultant','Social media analyst','Kevin Allocca'],R:['looks through huge amounts of data online','works as an individual, not in a team','monitors news headlines and popular videos'],pairs:[[0,1],[1,0],[2,2]],fb:'Three jobs, one skill: watching what people do and say.',no:'Re-read the sentence about that job.'}
+  ]},
+ {paras:[5,6,7,8],title:'New technology & Conclusion',sk:'Track how examples support an idea — and how the ending echoes the beginning.',zh:'教师提示：任务 1 配对工具与功能；任务 2 找 Springwise 会员得到什么（P8 第 3 句）；任务 3 找结论中"呼应开头"的句子（P9 第 2 句，对应 P1 第 1 句 beat the competition / come out on top）。可追问 filter 一词在 P6 的本义与引申义。',
+  ms:[
+   {t:'match',q:'Match each tool to what it does.',L:['gReader Pro / NetNewsWire','Predictive tech apps','Springwise'],R:['lets members submit business ideas for points','filter the many websites he monitors','search the Web for keywords and compare data'],pairs:[[0,1],[1,2],[2,0]],fb:'Organise → search → crowd-source: three kinds of technology, three paragraphs.',no:'Each tool has its own paragraph. Find the verb that goes with it.'},
+   {t:'sent',q:'Click the sentence that tells us what Springwise members <b>receive</b> if their idea is featured.',a:'7-2',fb:'Points that can be exchanged for money — a reward system to make people share ideas.',no:'Scan paragraph 8 for the word "receive".'},
+   {t:'sent',q:'Click the sentence in the conclusion that <b>echoes the introduction</b> ("beat the competition").',a:'8-1',fb:'"Come out on top" = "beat the competition". Good writers close the circle.',no:'Which sentence talks about competing and winning?'},
+   {t:'words',q:'Vocabulary in context: in paragraph 6, click the word that means <b>"separate and remove unwanted material"</b>.',a:['filter'],fb:'Filter — like a coffee filter, but for websites. Metaphor!',no:'What do the tools help Allocca do with too many websites?'}
+  ]}
+];
+function buildCR(sec){const k=+sec.dataset.cr,d=CR[k];sec.innerHTML=`<div class="card rtext">${d.paras.map(pi=>(P[pi].h?`<h4>${H[P[pi].h]}</h4>`:'')+`<p data-n="P${pi+1}">${P[pi].s.map((s,si)=>`<span class="s" data-id="${pi}-${si}">${mark(s,pi,si)}</span>`).join(' ')}</p>`).join('')}</div>
+ <div class="mpanel"><div class="mhead"><div><div class="kicker">Close reading · ${k+1} of 3</div><div style="font-weight:800;font-size:19px;margin-top:4px">${d.title}</div></div><div class="dots">${d.ms.map(()=>'<i></i>').join('')}</div></div>
+ <div class="skill" style="margin-top:0"><b>Skill</b> ${d.sk}</div><div class="zh">${d.zh}</div>
+ <div class="card mission"><div class="mk">Mission <span class="mn">1</span></div><div class="mq"></div><div class="mbody"></div><div class="fb">Click in the text on the left.</div><div class="mfoot"><button class="btn ghost mnext" disabled>Next mission →</button><span class="cnt"></span></div></div></div>`;
+ const st={m:0,done:0,sel:null,hits:new Set()};
+ const mq=sec.querySelector('.mq'),mb=sec.querySelector('.mbody'),fb=sec.querySelector('.fb'),nx=sec.querySelector('.mnext'),dots=sec.querySelectorAll('.dots i');
+ function show(){const m=d.ms[st.m];sec.querySelector('.mn').textContent=st.m+1;mq.innerHTML=m.q;fb.className='fb';fb.textContent=m.t==='mc'?'Choose an answer.':m.t==='match'?'Click a job/tool on the left, then its description.':'Click in the text on the left.';nx.disabled=true;st.sel=null;st.hits=new Set();dots.forEach((x,i)=>{x.classList.toggle('cur',i===st.m)});sec.querySelector('.cnt').textContent=`${st.m+1} / ${d.ms.length}`;mb.innerHTML='';
+  if(m.t==='mc'){mb.innerHTML=`<div class="opts">${m.opts.map((o,i)=>`<div class="opt" data-i="${i}">${o}</div>`).join('')}</div>`;mb.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{if(nx.disabled===false)return;if(+o.dataset.i===m.a){o.classList.add('ok');good(m)}else{o.classList.add('no');bad(m)}})}
+  if(m.t==='match'){mb.innerHTML=`<div class="ml"><div class="col">${m.L.map((x,i)=>`<div class="it L" data-i="${i}">${x}</div>`).join('')}</div><div class="col">${m.R.map((x,i)=>`<div class="it R" data-i="${i}">${x}</div>`).join('')}</div></div>`;let L=null,n=0;mb.querySelectorAll('.L').forEach(x=>x.onclick=()=>{mb.querySelectorAll('.L').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');L=+x.dataset.i});mb.querySelectorAll('.R').forEach(x=>x.onclick=()=>{if(L===null){toast('Pick the left item first');return}const ok=m.pairs.some(p=>p[0]===L&&p[1]===+x.dataset.i);if(ok){x.classList.add('ok');mb.querySelector(`.L[data-i="${L}"]`).classList.add('ok');mb.querySelector(`.L[data-i="${L}"]`).classList.remove('sel');L=null;n++;ding(true);if(n===m.pairs.length)good(m)}else{wrong(x);bad(m)}})}
+  if(m.t==='words'){mb.innerHTML=`<div class="kids">${m.a.map(()=>'<span>?</span>').join('')}</div>`}
+ }
+ function good(m){fb.className='fb ok';fb.textContent='✓ '+m.fb;nx.disabled=false;dots[st.m].classList.add('ok');award(30,'Mission complete');st.done++}
+ function bad(m){fb.className='fb no';fb.textContent='✗ '+m.no;ding(false)}
+ sec.querySelector('.rtext').addEventListener('click',e=>{const m=d.ms[st.m];if(!nx.disabled)return;const w=e.target.closest('.w'),s=e.target.closest('.s');
+  if(m.t==='words'){if(!w){return}const key=w.dataset.w;if(m.a.includes(key)&&!st.hits.has(key)){st.hits.add(key);w.classList.add('ok');ding(true);const kids=mb.querySelectorAll('.kids span');kids[st.hits.size-1].textContent=w.textContent;if(st.hits.size===m.a.length)good(m);else{fb.className='fb';fb.textContent=`Good — ${st.hits.size} of ${m.a.length}. Keep looking.`}}else if(!m.a.includes(key)){w.classList.add('no');setTimeout(()=>w.classList.remove('no'),700);bad(m)}return}
+  if(m.t==='sent'){if(!s)return;if(s.dataset.id===m.a){s.classList.add('ok');good(m)}else{s.classList.add('no');wrong(s);setTimeout(()=>s.classList.remove('no'),700);bad(m)}return}
+  if(m.t==='mc'&&w&&w.dataset.w==='these'){w.classList.add('ok')}
+ });
+ nx.onclick=()=>{if(st.m<d.ms.length-1){st.m++;show()}else{toast('Page complete! → next page');CRdone++;if(CRdone===3)badge('close');deck.next()}};
+ show();
+}
+let CRdone=0;$$('.cr').forEach(buildCR);
+
+/* ---------- 8 planking case ---------- */
+let curveStarted=false;function startCurve(){if(curveStarted)return;curveStarted=true;const c=$('#pcurve');c.style.transition='stroke-dashoffset 2.6s ease-out';requestAnimationFrame(()=>c.style.strokeDashoffset=0);setTimeout(()=>{$('#plank').style.transition='opacity .5s';$('#plank').setAttribute('opacity',1);$('#pk').style.transition='opacity .5s';$('#pk').setAttribute('opacity',1)},1200);setTimeout(()=>{$('#pk2').style.transition='opacity .5s';$('#pk2').setAttribute('opacity',1)},2400)}
+const ans8=[null,null,null];
+$$('#tests .yn i').forEach(i=>i.onclick=()=>{const yn=i.parentElement,t=+yn.dataset.t;yn.querySelectorAll('i').forEach(x=>x.classList.remove('on'));i.classList.add('on');ans8[t]=i.classList.contains('y');if(ans8.every(x=>x!==null))verdict8()});
+let v8=false;
+function verdict8(){const yes=ans8.filter(Boolean).length;const v=$('#verdict');if(yes===0){v.innerHTML=`<div><span class="stamp">FAD</span></div><div class="hint">0 / 3 tests passed — exactly the author's conclusion.</div>`;if(!v8){v8=true;award(60,'Correct verdict');badge('case')}}else{v.innerHTML=`<div><span class="stamp ${yes>=2?'t':''}">${yes>=2?'TREND?':'FAD'}</span></div><div class="hint">You said Yes to ${yes} test${yes>1?'s':''}. The author disagrees — check the evidence and argue your case!</div>`;ding(false)}$('#evbtn').disabled=false}
+$('#evbtn').onclick=()=>{$('#verdict').insertAdjacentHTML('beforeend',`<div class="evid">“Planking <b>fails in all three areas</b>, and sure enough, by early 2012, it started to lose popularity.” — paragraph 3</div>`);$('#evbtn').disabled=true;if(!v8){v8=true;award(30,'Evidence found');badge('case')}}
+
+/* ---------- 9 vocab ---------- */
+const V=[
+ {w:'emerging',ctx:'Businesses need to predict change and spot <b>emerging</b> trends in order to stay relevant.',o:['just beginning to appear','disappearing quickly','very old and famous'],a:0},
+ {w:'stay relevant',ctx:'Businesses need to spot trends in order to <b>stay relevant</b> and beat the competition.',o:['remain important and useful','become cheaper','stop changing'],a:0},
+ {w:'distinguish',ctx:'One important step is to <b>distinguish</b> trends from fads, which don\'t last long.',o:['join two things together','notice the difference between things','forget about something'],a:1},
+ {w:'commerce',ctx:'Online shopping is related to a bigger trend — the rise of electronic <b>commerce</b>.',o:['the buying and selling of goods and services','a type of computer','a kind of advertisement'],a:0},
+ {w:'appeal to',ctx:'Trends usually <b>appeal to</b> a wide range of people.',o:['are liked by','are hidden from','are copied by'],a:0},
+ {w:'monitor',ctx:'Allocca spends his day <b>monitoring</b> news headlines and popular videos.',o:['writing','deleting','watching carefully over time'],a:2},
+ {w:'filter',ctx:'He uses tools such as gReader Pro to help <b>filter</b> the many websites he monitors every day.',o:['separate and remove what is unwanted','translate into other languages','pay for'],a:0},
+ {w:'come out on top',ctx:'Only those able to predict and make use of trends will <b>come out on top</b>.',o:['give up','win / be the most successful','fall behind'],a:1}
+];
+let vi=0,vs=0,vlock=false;
+$('#wl').innerHTML=V.map((v,i)=>`<span data-i="${i}">${v.w}<i></i></span>`).join('');
+function showV(){const v=V[vi];$('#vq').innerHTML=`<div class="ctx">${v.ctx}</div><div class="ask">WHAT DOES <b style="color:var(--navy)">${v.w.toUpperCase()}</b> MEAN HERE?</div><div class="opts">${v.o.map((o,i)=>`<div class="opt" data-i="${i}">${String.fromCharCode(65+i)}. ${o}</div>`).join('')}</div><div class="vfoot"><button class="btn ghost" id="vnext" disabled>Next word →</button><span class="cnt">${vi+1} / ${V.length}</span></div>`;vlock=false;
+ $$('#vq .opt').forEach(o=>o.onclick=()=>{if(vlock)return;vlock=true;const ok=+o.dataset.i===v.a;const wl=$(`#wl span[data-i="${vi}"]`);if(ok){o.classList.add('ok');vs++;$('#vsc').textContent=vs;wl.classList.add('ok');wl.querySelector('i').textContent='✓';award(20,'Word mastered')}else{o.classList.add('no');$$('#vq .opt')[v.a].classList.add('ok');wl.classList.add('no');wl.querySelector('i').textContent='✗';wrong(o)}$('#vnext').disabled=false});
+ $('#vnext').onclick=()=>{if(vi<V.length-1){vi++;showV()}else{$('#vq').innerHTML=`<div class="ctx" style="font-size:40px">You confirmed <b>${vs} / 8</b> meanings from context.</div><p class="sub">${vs>=7?'Excellent — you read like an analyst.':vs>=5?'Solid. Re-read the sentences for the ones you missed: what clue did you skip?':'Go back to the text: every word has a clue nearby.'}</p><div class="vfoot"><span class="hint">Tip: when a word is defined in a footnote, the author expects you to guess first.</span></div>`;badge('vocab')}}}
+showV();
+
+/* ---------- 10 structure ---------- */
+const BOX=[['WHY','Why spot trends?','Introduction: the business problem and the big question.'],['HOW','How to tell trends from fads','Three signs + one more method (hobbies).'],['WHO','Who spots trends?','A new industry and new jobs.'],['TOOLS','What tools help?','Organising tools, predictive apps, crowd websites.'],['SO WHAT','Conclusion','Why the skill matters — echoes the introduction.']];
+const KEY=[0,1,1,1,2,3,3,3,4];
+$('#chips').innerHTML=P.map((_,i)=>`<div class="pchip" data-p="${i}">P${i+1}</div>`).join('')+`<span class="hint" style="align-self:center;margin-left:14px">9 paragraphs → 5 parts. Which part is the longest? Why?</span>`;
+$('#boxes').innerHTML=BOX.map((b,i)=>`<div class="card box" data-b="${i}"><div class="bn">${b[0]}</div><div class="bt">${b[1]}</div><div class="bd">${b[2]}</div><div class="drop"></div>${i<4?'<div class="arrow"></div>':''}</div>`).join('');
+let selP=null,placed=0;
+$$('#chips .pchip').forEach(c=>c.onclick=()=>{$$('#chips .pchip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');selP=+c.dataset.p});
+$$('.box').forEach(b=>b.onclick=()=>{if(selP===null){toast('Pick a paragraph number first');return}const ok=KEY[selP]===+b.dataset.b;const chip=$(`#chips .pchip[data-p="${selP}"]`);if(ok){b.classList.add('has');b.querySelector('.drop').insertAdjacentHTML('beforeend',`<div class="pchip ok">P${selP+1}</div>`);chip.classList.remove('sel');chip.classList.add('placed');selP=null;placed++;award(15,'Placed');if(placed===9){badge('map');toast('The map is complete — the HOW section is the longest: it is the heart of the text.')}}else{const tmp=document.createElement('div');tmp.className='pchip no';tmp.textContent='P'+(selP+1);b.querySelector('.drop').appendChild(tmp);wrong(b);setTimeout(()=>tmp.remove(),800);toast('Re-read the first sentence of that paragraph.')}});
+
+/* ---------- 11 critical thinking ---------- */
+const CT={};
+function renderRows(){const rows=$('#rows');if(rows.children.length)return rows.querySelectorAll('.row2').forEach(r=>{const i=r.dataset.i;r.querySelector('.first b').textContent=vote[i]?vote[i].toUpperCase():'—';judge(i)});
+ rows.innerHTML=ITEMS.map((it,i)=>`<div class="card row2" data-i="${i}"><div class="nm"><i>${it[0]}</i>${it[1]}</div><div class="tt"><span data-k="0">💰 money</span><span data-k="1">🔗 links</span><span data-k="2">👥 wide</span></div><div class="first">Your vote: <b>${vote[i]?vote[i].toUpperCase():'—'}</b></div><div class="vd">?</div></div>`).join('');
+ rows.querySelectorAll('.tt span').forEach(s=>s.onclick=()=>{s.classList.toggle('on');judge(s.closest('.row2').dataset.i)})}
+let thinkDone=false;
+function judge(i){const r=$(`.row2[data-i="${i}"]`);const on=r.querySelectorAll('.tt span.on').length;const vd=r.querySelector('.vd');vd.className='vd';if(on===0){vd.textContent='?';return}const t=on>=2;vd.textContent=t?'TREND':'FAD';vd.classList.add(t?'T':'F');const first=vote[i];if(first&&first!==(t?'trend':'fad'))vd.classList.add('chg');const judged=$$('.row2 .vd.T,.row2 .vd.F').length;const changed=$$('.row2 .vd.chg').length;$('#chg').textContent=changed?`You changed your mind on ${changed} item${changed>1?'s':''} — that is what reading critically means.`:'';if(judged===8&&!thinkDone){thinkDone=true;award(80,'All 8 re-judged with evidence');badge('think')}}
+renderRows();renderReport();deck.go(0);
+</script>
+</body>
+</html>
