@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>摩擦音风洞 · Fricative Wind Tunnel</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF8F5;--panel:#FFFFFF;--ink:#17312E;--muted:#6B8783;--line:#CFE5DF;--ok:#2BB673;--no:#F0564A;--gold:#FFB703;
+--f:#FF8A5B;--v:#FF5D8F;--th:#FFC43D;--dh:#F39C12;--s:#4FC3F7;--z:#2979FF;--sh:#8E6BFF;--zh:#C55CFF;--h:#39C9A4;
+--fd:'Fredoka','PingFang SC','Microsoft YaHei',sans-serif;--fb:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;--ipa:'Charis SIL','Doulos SIL','Noto Sans','Segoe UI',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100vh;background-image:radial-gradient(circle at 10% 0%,#d9f3ec 0,transparent 35%),radial-gradient(circle at 95% 100%,#e6ddff 0,transparent 35%)}
+header{padding:22px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-family:var(--fd);font-size:34px;font-weight:700;background:linear-gradient(90deg,var(--h),var(--z),var(--zh));-webkit-background-clip:text;background-clip:text;color:transparent}
+header .sub{font-size:14px;color:var(--muted);margin-top:2px}
+.hud{display:flex;gap:12px;align-items:center;font-weight:800}
+.pill{background:var(--panel);padding:8px 16px;border-radius:999px;font-size:16px;border:2px solid var(--line)}
+main{max-width:1140px;margin:0 auto;padding:10px 20px 60px}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:12px;margin-bottom:22px}
+.lv{background:var(--panel);border-radius:18px;padding:14px 10px;text-align:center;cursor:pointer;border:3px solid transparent;transition:.15s;position:relative;box-shadow:0 4px 14px rgba(23,49,46,.06)}
+.lv:hover{transform:translateY(-4px)}.lv.active{border-color:var(--gold)}
+.lv .ic{font-size:34px}.lv .nm{font-family:var(--fd);font-weight:700;font-size:16px;margin-top:4px}.lv .ds{font-size:12px;color:var(--muted);margin-top:2px}
+.lv .st{margin-top:6px;letter-spacing:2px;color:var(--gold);font-size:14px}
+.lv.locked{opacity:.45;cursor:not-allowed}.lv.locked::after{content:'🔒';position:absolute;top:8px;right:10px}
+.stage{background:var(--panel);border-radius:24px;padding:26px 28px;min-height:460px;border:2px solid var(--line);position:relative;box-shadow:0 10px 30px rgba(23,49,46,.06)}
+.stage h2{font-family:var(--fd);font-size:28px;font-weight:700}
+.stage .rule{color:var(--muted);font-size:15px;margin:4px 0 18px}
+.progress{height:10px;background:#E3F1ED;border-radius:5px;overflow:hidden;margin-bottom:18px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--h),var(--z));width:0;transition:.3s}
+.btn{border:none;border-radius:999px;padding:12px 26px;font-family:var(--fd);font-weight:700;font-size:18px;cursor:pointer;color:#17312E;background:var(--gold);box-shadow:0 6px 0 rgba(23,49,46,.18);transition:.12s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(23,49,46,.18)}
+.btn.ghost{background:#E3F1ED;color:var(--ink)}.btn.ok{background:var(--ok);color:#fff}.btn.no{background:var(--no);color:#fff}.btn.k{background:var(--z);color:#fff}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+.big{font-family:var(--fd);font-size:60px;font-weight:700;text-align:center}
+.ipa{font-family:var(--ipa)}
+.sound{display:inline-flex;align-items:center;justify-content:center;font-family:var(--ipa);font-size:30px;font-weight:700;width:68px;height:68px;border-radius:20px;color:#17312E}
+.s-f{background:var(--f)}.s-v{background:var(--v)}.s-θ{background:var(--th)}.s-ð{background:var(--dh)}.s-s{background:var(--s)}.s-z{background:var(--z);color:#fff}.s-ʃ{background:var(--sh);color:#fff}.s-ʒ{background:var(--zh);color:#fff}.s-h{background:var(--h)}
+.card{background:#F6FBF9;border:3px solid var(--line);border-radius:20px;padding:16px 10px;text-align:center;cursor:pointer;transition:.15s;font-weight:800;font-size:24px;user-select:none;color:var(--ink);font-family:var(--fb)}
+.card .em{font-size:52px;display:block;line-height:1.1}
+.card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.card.ok{border-color:var(--ok);background:#E4F7EC}.card.no{border-color:var(--no);background:#FDE7E5;animation:shake .3s}
+.card.dim{opacity:.4;pointer-events:none}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.popin{animation:pop .35s ease both}
+.fb{min-height:30px;text-align:center;font-weight:800;font-size:20px;margin-top:16px}
+.fb.ok{color:var(--ok)}.fb.no{color:var(--no)}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;align-items:center}
+.bins{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;margin-top:14px}
+.bin{border:3px dashed var(--line);border-radius:18px;padding:10px 4px;text-align:center;cursor:pointer;min-height:120px;transition:.15s;background:#F6FBF9}
+.bin:hover{border-color:var(--gold)}.bin.ok{border-style:solid;border-color:var(--ok)}.bin.no{border-color:var(--no);animation:shake .3s}
+.bin .sound{width:54px;height:54px;font-size:24px;border-radius:14px}
+.bin .items{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px}
+.bin .items span{background:#E3F1ED;border-radius:8px;padding:2px 6px;font-size:12px}
+.throat{display:flex;gap:30px;justify-content:center;align-items:center;flex-wrap:wrap;margin:10px 0}
+.hand{font-size:110px;line-height:1}
+.timer{font-family:var(--fd);font-size:36px;font-weight:700;color:var(--dh)}
+.pairs{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:640px;margin:0 auto}
+.mirror{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:760px;margin:0 auto}
+.mt{position:relative;overflow:hidden;border-radius:22px;border:4px solid #B8C9D9;background:linear-gradient(135deg,#f4f9ff,#dfeaf5);height:150px;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:34px;font-weight:700;cursor:pointer;transition:.15s}
+.mt{height:170px;flex-direction:column;gap:6px;cursor:default}.mt .mb{display:flex;gap:6px;z-index:2}.mt .mb button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--fb)}.mt .mb button:hover{border-color:var(--gold)}.mt.fogged .mb,.mt.clear .mb{visibility:hidden}.mt .w{z-index:2}
+.mt .fog{position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,.98) 0,rgba(235,243,248,.9) 50%,transparent 75%);opacity:0;transform:scale(.3);transition:.5s ease}
+.mt.fogged .fog{opacity:1;transform:scale(1.8)}
+.mt .tag{position:absolute;bottom:10px;z-index:3;left:0;right:0;text-align:center;font-size:14px;font-family:var(--fb);color:var(--muted);opacity:0;transition:.3s .2s}
+.mt.fogged .tag,.mt.clear .tag{opacity:1}
+.mt.clear{border-color:var(--no)}.mt.clear span.w{text-decoration:line-through;text-decoration-color:var(--no);text-decoration-thickness:5px}
+.mt.fogged{border-color:var(--ok)}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:820px;margin:14px auto 0}
+.tri .card small{display:block;font-size:13px;color:var(--muted);font-weight:700;margin-top:4px}
+.xword{font-family:var(--fd);font-size:64px;font-weight:700;text-align:center;letter-spacing:.04em;margin:6px 0 10px}
+.xword .seg{display:inline-block;padding:0 6px;border-radius:12px;border:3px solid transparent;cursor:pointer;transition:.15s}
+.xword .seg:hover{border-color:var(--gold);background:#FFF6DE}
+.xword .seg.ok{background:#E4F7EC;border-color:var(--ok)}.xword .seg.no{background:#FDE7E5;border-color:var(--no);animation:shake .3s}
+.tank{position:relative;height:360px;border-radius:24px;background:linear-gradient(180deg,#D9F3FF,#8ED8FF);overflow:hidden;border:3px solid var(--line);margin-top:10px}
+.bub{position:absolute;bottom:-130px;width:118px;height:118px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffffff 0,rgba(255,255,255,.55) 30%,rgba(255,255,255,.15) 70%);border:3px solid rgba(255,255,255,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:17px;cursor:pointer;animation:rise linear forwards;box-shadow:inset -6px -6px 14px rgba(41,121,255,.25)}
+.bub .em{font-size:36px;line-height:1}
+.bub.popped{animation:none;transform:scale(1.4);opacity:0;transition:.25s;pointer-events:none}
+.bub.bad{background:radial-gradient(circle at 35% 30%,#fff 0,#FDE7E5 60%);border-color:var(--no)}
+@keyframes rise{to{bottom:380px}}
+.tt{background:#F6FBF9;border-radius:18px;padding:22px;font-size:26px;line-height:1.5;text-align:center;font-weight:800;border:2px solid var(--line)}
+.tt b{color:var(--z)}
+.result{text-align:center;padding:24px 10px}
+.result .emoji{font-size:80px}.result h3{font-family:var(--fd);font-size:30px;margin:10px 0}.result .stars{font-size:44px;color:var(--gold);letter-spacing:6px}.result p{color:var(--muted)}
+.chart{background:var(--panel);border-radius:24px;padding:22px 26px;margin-top:22px;border:2px solid var(--line)}
+.chart h3{font-family:var(--fd);font-size:20px;margin-bottom:12px}
+.ref{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rf{background:#F6FBF9;border-radius:18px;padding:14px;display:flex;gap:14px;align-items:center;border:2px solid var(--line)}
+.rf .info b{display:block;font-size:15px}.rf .info span{font-size:13px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:18px}
+@media (max-width:760px){.bins{grid-template-columns:repeat(3,1fr)}.mirror{grid-template-columns:repeat(2,1fr)}.ref{grid-template-columns:1fr}.tri{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>🌬️ 摩擦音风洞 · Fricative Wind Tunnel</h1><div class="sub">/f/ /v/ · /θ/ /ð/ · /s/ /z/ · /ʃ/ /ʒ/ · /h/ — 九个摩擦音 · 八个游戏 · 老师读音、学生抢答</div></div>
+  <div class="hud"><div class="pill">⭐ <span id="score">0</span></div><div class="pill">🔥 连击 <span id="combo">0</span></div><button class="btn ghost" id="resetBtn" style="padding:8px 16px;font-size:15px">重置进度</button></div>
+</header>
+<main>
+  <section class="levels" id="levels"></section>
+  <section class="stage" id="stage"></section>
+  <section class="chart">
+    <h3>📚 九个摩擦音速查（点击卡片看口型提示）</h3>
+    <div class="ref" id="ref"></div>
+  </section>
+</main>
+<footer>建议：由老师或学生真人发音，课件负责出题、计分和反馈。每关拿到 1 颗星解锁下一关，所有游戏可重玩。</footer>
+
+<script>
+/* ---------- data ---------- */
+const SOUNDS={
+ 'f':{voiced:false,place:'唇齿',tip:'上齿轻碰下唇，气流从缝里挤出，不振动声带。纸片测试：纸会动。',words:[['fox','🦊'],['fan','🪭'],['leaf','🍃'],['phone','📱'],['coffee','☕'],['knife','🔪'],['fork','🍴'],['foot','🦶']]},
+ 'v':{voiced:true, place:'唇齿',tip:'口型同 /f/，声带振动。常见错误：读成 /w/（very→wery），上齿一定要碰下唇。',words:[['van','🚐'],['violin','🎻'],['vase','🏺'],['seven','7️⃣'],['love','❤️'],['glove','🧤'],['wave','🌊'],['vest','🦺']]},
+ 'θ':{voiced:false,place:'齿间',tip:'舌尖伸到上下齿之间，吹气，不振动声带。别偷懒读成 /s/（think→sink）。',words:[['three','3️⃣'],['thumb','👍'],['mouth','👄'],['tooth','🦷'],['bath','🛁'],['think','🤔'],['thank','🙏'],['earth','🌍']]},
+ 'ð':{voiced:true, place:'齿间',tip:'口型同 /θ/，声带振动。多出现在小词里：the, that, they, with。',words:[['that','👉'],['mother','👩'],['father','👨'],['feather','🪶'],['brother','👦'],['weather','🌦️'],['they','👥'],['together','🤝']]},
+ 's':{voiced:false,place:'齿龈',tip:'舌尖靠近上齿龈，气流细而尖，像蛇叫。不振动声带。',words:[['sun','☀️'],['sock','🧦'],['bus','🚌'],['ice','🧊'],['snake','🐍'],['star','⭐'],['mouse','🐭'],['soup','🍜']]},
+ 'z':{voiced:true, place:'齿龈',tip:'口型同 /s/，声带振动，像蜜蜂嗡嗡。词尾字母 s 常常读 /z/：dogs, is, nose。',words:[['zoo','🦁'],['zebra','🦓'],['zipper','🤐'],['nose','👃'],['rose','🌹'],['cheese','🧀'],['bees','🐝'],['eyes','👀']]},
+ 'ʃ':{voiced:false,place:'齿龈后',tip:'舌头后缩，嘴唇撅圆向前，"嘘——"。拼写花样多：sh / ti / ci / s / ch。',words:[['ship','🚢'],['shoe','👟'],['sheep','🐑'],['shark','🦈'],['brush','🪥'],['shell','🐚'],['sugar','🍬'],['shirt','👕']]},
+ 'ʒ':{voiced:true, place:'齿龈后',tip:'口型同 /ʃ/，声带振动。英语里最少见的辅音，几乎不出现在词首。别读成 /dʒ/。',words:[['measure','📏'],['treasure','💎'],['garage','🏚️'],['beige','🟫'],['usual','🗓️'],['pleasure','😊'],['Asia','🌏'],['casual','👖']]},
+ 'h':{voiced:false,place:'声门',tip:'没有舌头和嘴唇的动作，只是从喉咙深处呼出一口热气，像对镜子哈气。不是汉语"喝"的喉咙摩擦。',words:[['hat','🎩'],['hand','✋'],['heart','💛'],['hippo','🦛'],['hamburger','🍔'],['honey','🍯'],['hair','💇'],['hen','🐔']]}};
+const KEYS=['f','v','θ','ð','s','z','ʃ','ʒ','h'];
+const PAIRS=[['fan','van','f','v'],['fat','vat','f','v'],['leaf','leave','f','v'],['safe','save','f','v'],['ferry','very','f','v'],
+ ['think','sink','θ','s'],['thin','sin','θ','s'],['mouth','mouse','θ','s'],['path','pass','θ','s'],['free','three','f','θ'],
+ ['they','day','ð','d'],['then','den','ð','d'],['breathe','breeze','ð','z'],['bus','buzz','s','z'],['sue','zoo','s','z'],['ice','eyes','s','z'],['rice','rise','s','z'],
+ ['sip','ship','s','ʃ'],['see','she','s','ʃ'],['save','shave','s','ʃ'],['sock','shock','s','ʃ'],['heel','eel','h','-'],['hat','at','h','-'],['hair','air','h','-']];
+const HWORDS=[['hat',1],['hour',0],['hello',1],['honest',0],['happy',1],['hotel',1],['heir',0],['horse',1],['honour',0],['hungry',1],['hill',1],['hour hand',0]];
+const ENDS=[['cats','s'],['dogs','z'],['buses','iz'],['books','s'],['pens','z'],['boxes','iz'],['is','z'],['watches','iz'],['eyes','z'],['maps','s'],['his','z'],['wishes','iz'],['cups','s'],['birds','z'],['dishes','iz'],['hats','s'],['bees','z'],['noses','iz']];
+const XRAY=[['ship',['sh','i','p'],0,'ʃ'],['station',['st','a','ti','on'],2,'ʃ'],['special',['sp','e','ci','al'],2,'ʃ'],['sugar',['s','u','g','ar'],0,'ʃ'],['machine',['m','a','ch','ine'],2,'ʃ'],['ocean',['o','ce','an'],1,'ʃ'],['delicious',['de','li','ci','ous'],2,'ʃ'],['fish',['f','i','sh'],2,'ʃ'],
+ ['television',['tele','vi','s','ion'],2,'ʒ'],['measure',['mea','s','ure'],1,'ʒ'],['garage',['ga','ra','ge'],2,'ʒ'],['usual',['u','s','ual'],1,'ʒ'],['treasure',['trea','s','ure'],1,'ʒ'],['beige',['b','ei','ge'],2,'ʒ'],['Asia',['A','s','ia'],1,'ʒ'],['decision',['de','ci','si','on'],2,'ʒ']];
+const TWISTERS=[['Fresh fried fish, fish fresh fried.','f'],['Vincent\'s very vivid velvet vest.','v'],['Three thin thieves thought a thousand thoughts.','θ'],['The father and the mother bathe together.','ð'],['Six slippery snails slid slowly seaward.','s'],['Zebras zig and zebras zag in the zoo.','z'],['She sells seashells by the seashore.','ʃ'],['The usual treasure is a beige garage.','ʒ'],['Harry the happy hippo hums at home.','h']];
+
+/* ---------- utils ---------- */
+const $=s=>document.querySelector(s);
+const shuffle=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+const pick=(a,n)=>shuffle(a).slice(0,n); const rand=a=>a[Math.floor(Math.random()*a.length)];
+const ctx=('AudioContext' in window)?new AudioContext():null;
+function beep(ok){if(!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type=ok?'sine':'sawtooth';o.frequency.value=ok?880:180;g.gain.setValueAtTime(.12,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.25);o.start();o.stop(ctx.currentTime+.25);
+ if(ok){const o2=ctx.createOscillator(),g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.frequency.value=1320;g2.gain.setValueAtTime(.1,ctx.currentTime+.1);g2.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.35);o2.start(ctx.currentTime+.1);o2.stop(ctx.currentTime+.35);}}
+const state=JSON.parse(localStorage.getItem('fricativeTunnel')||'{}');state.score=state.score||0;state.stars=state.stars||{};
+let combo=0,cur=null;
+const save=()=>localStorage.setItem('fricativeTunnel',JSON.stringify(state));
+function addScore(n){state.score+=n;combo++;$('#score').textContent=state.score;$('#combo').textContent=combo;save();}
+function breakCombo(){combo=0;$('#combo').textContent=0;}
+const snd=k=>`<span class="sound s-${k}">/${k}/</span>`;
+
+/* ---------- levels ---------- */
+const LEVELS=[
+ {id:1,ic:'🧺',nm:'找音分拣',ds:'这个词里藏着哪个摩擦音？',rounds:12,build:bSort},
+ {id:2,ic:'✋',nm:'摸喉咙',ds:'清音还是浊音？',rounds:10,build:bVoice},
+ {id:3,ic:'⚔️',nm:'最小对立决斗',ds:'think 还是 sink？',rounds:10,build:bPair},
+ {id:4,ic:'🪞',nm:'镜子哈气',ds:'h 到底发不发音？',rounds:0,build:bMirror},
+ {id:5,ic:'🐍',nm:'蛇·蜂·巴士',ds:'词尾 -s 读什么？',rounds:12,build:bEnds},
+ {id:6,ic:'🔍',nm:'拼写透视',ds:'哪几个字母在发 /ʃ/ /ʒ/？',rounds:10,build:bXray},
+ {id:7,ic:'🫧',nm:'泡泡机',ds:'只戳目标音的泡泡',rounds:0,build:bBubble},
+ {id:8,ic:'🌪️',nm:'绕口令挑战',ds:'计时朗读',rounds:0,build:bTwister}];
+const unlocked=id=>id===1||state.stars[id-1]>=1;
+function renderLevels(){const el=$('#levels');el.innerHTML='';LEVELS.forEach(L=>{const d=document.createElement('div');d.className='lv'+(unlocked(L.id)?'':' locked')+(cur&&cur.id===L.id?' active':'');
+ d.innerHTML=`<div class="ic">${L.ic}</div><div class="nm">${L.id}. ${L.nm}</div><div class="ds">${L.ds}</div><div class="st">${'★'.repeat(state.stars[L.id]||0)}${'☆'.repeat(3-(state.stars[L.id]||0))}</div>`;
+ d.onclick=()=>{if(unlocked(L.id))start(L);else{const f=$('#fb');if(f){f.textContent='先拿到上一关至少 1 颗星！';f.className='fb no';}}};el.appendChild(d);});}
+function start(L){if(cur&&cur.stop)cur.stop();cur={id:L.id,L,round:0,ok:0,bad:0};renderLevels();L.build();}
+function frame(L,html,rule){const pct=L.rounds?Math.round(cur.round/L.rounds*100):0;
+ $('#stage').innerHTML=`<h2>${L.ic} 第 ${L.id} 关 · ${L.nm}</h2><div class="rule">${rule}</div>${L.rounds?`<div class="progress"><div style="width:${pct}%"></div></div>`:''}${html}<div class="fb" id="fb"></div>`;}
+function fb(ok,msg){const f=$('#fb');if(!f)return;f.textContent=msg;f.className='fb '+(ok?'ok':'no');}
+function mark(ok,pts,msg){if(ok){beep(true);addScore(pts);cur.ok++;}else{beep(false);breakCombo();cur.bad++;}fb(ok,msg);}
+function next(build){cur.round++;if(cur.round>=cur.L.rounds)finish();else setTimeout(build,900);}
+function finish(custom){const tot=cur.ok+cur.bad,acc=tot?cur.ok/tot:0;const stars=custom!=null?custom:(acc>=.9?3:acc>=.7?2:acc>=.5?1:0);
+ state.stars[cur.id]=Math.max(state.stars[cur.id]||0,stars);save();
+ const words={3:'完美通关！摩擦音小达人！',2:'很棒！再练练就满星了',1:'过关了，继续加油',0:'再挑战一次吧！'}[stars];
+ $('#stage').innerHTML=`<div class="result"><div class="emoji">${['💪','👍','🎉','🏆'][stars]}</div><h3>${words}</h3><div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div><p>正确 ${cur.ok} · 错误 ${cur.bad}${tot?` · 正确率 ${Math.round(acc*100)}%`:''}</p>
+ <div class="row"><button class="btn" onclick="start(LEVELS[${cur.id-1}])">🔁 再玩一次</button>${cur.id<LEVELS.length?`<button class="btn ghost" onclick="start(LEVELS[${cur.id}])">下一关 ➡️</button>`:''}</div></div>`;renderLevels();}
+const lock=()=>document.querySelectorAll('.card').forEach(b=>b.classList.add('dim'));
+function peekBtn(target){const pk=$('#peek'),box=$('#peekBox');const show=e=>{e.preventDefault();box.textContent=target;},hide=()=>box.textContent='·····';pk.onmousedown=pk.ontouchstart=show;pk.onmouseup=pk.onmouseleave=pk.ontouchend=hide;}
+
+/* 1 sort */
+function bSort(){const L=LEVELS[0];
+ if(cur.round===0){const ks=shuffle(KEYS);cur.queue=shuffle([...ks,...pick(KEYS,3)].map(k=>[k,...rand(SOUNDS[k].words)]));cur.done=[];}
+ const [k,w,em]=cur.queue[cur.round];
+ frame(L,`<div class="big popin"><span style="font-size:80px">${em}</span><br>${w}</div>
+  <div class="bins">${KEYS.map(x=>`<div class="bin" data-k="${x}">${snd(x)}<div class="items">${cur.done.filter(d=>d[0]===x).map(d=>`<span>${d[1]}</span>`).join('')}</div></div>`).join('')}</div>`,
+  '看图读词（老师先示范）。这个词里有一个摩擦音，它在开头、中间还是结尾都可能——点对应的音箩。');
+ document.querySelectorAll('.bin').forEach(b=>b.onclick=()=>{document.querySelectorAll('.bin').forEach(x=>x.onclick=null);const ok=b.dataset.k===k;b.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.bin[data-k="${k}"]`).classList.add('ok');cur.done.push([k,w]);mark(ok,10,ok?`✔ ${w} → /${k}/`:`✘ ${w} 里的摩擦音是 /${k}/`);next(bSort);});}
+
+/* 2 voiced */
+function bVoice(){const L=LEVELS[1];const k=rand(KEYS),[w,em]=rand(SOUNDS[k].words);
+ frame(L,`<div class="throat"><div class="hand">🤚🗣️</div><div><div class="big popin">${em} ${w}</div><div style="text-align:center;color:var(--muted)">目标音 <span class="ipa" style="font-size:28px;color:var(--ink)">/${k}/</span>（拖长读：${k}${k}${k}——）</div></div></div>
+  <div class="row"><button class="card" data-v="0" style="min-width:230px"><span class="em">💨</span>清音 · 只有风<br><small style="color:var(--muted)">voiceless /f/ /θ/ /s/ /ʃ/ /h/</small></button><button class="card" data-v="1" style="min-width:230px"><span class="em">🐝</span>浊音 · 喉咙嗡嗡<br><small style="color:var(--muted)">voiced /v/ /ð/ /z/ /ʒ/</small></button></div>`,
+  '摩擦音可以拖长，所以最适合摸喉咙！手放喉咙，把这个音拖长读 3 秒：抖不抖？');
+ document.querySelectorAll('.card').forEach(b=>b.onclick=()=>{lock();const ok=(b.dataset.v==='1')===SOUNDS[k].voiced;b.classList.add(ok?'ok':'no');mark(ok,10,ok?`✔ /${k}/ 是${SOUNDS[k].voiced?'浊音':'清音'}`:`✘ /${k}/ 是${SOUNDS[k].voiced?'浊音，喉咙会抖':'清音，只有气流'}`);next(bVoice);});}
+
+/* 3 minimal pair duel */
+function bPair(){const L=LEVELS[2];const [a,b,ka,kb]=rand(PAIRS);const tIdx=Math.random()<.5?0:1;const target=[a,b][tIdx];
+ frame(L,`<div style="text-align:center;color:var(--muted);margin-bottom:8px">👩‍🏫 老师：按住"偷看"知道要读哪个词，然后大声读出来（只读一次！）</div>
+  <div class="row"><button class="btn ghost" id="peek">👀 老师偷看</button><span id="peekBox" class="ipa" style="font-size:26px;min-width:120px;text-align:center;color:var(--dh)">·····</span></div>
+  <div class="pairs" style="margin-top:14px"><button class="card" data-w="${a}"><span class="em" style="font-size:24px;color:var(--muted)">${ka==='-'?'无 h':'/'+ka+'/'}</span>${a}</button><button class="card" data-w="${b}"><span class="em" style="font-size:24px;color:var(--muted)">${kb==='-'?'无 h':'/'+kb+'/'}</span>${b}</button></div>`,
+  '两个词只差一个音。学生听老师读音后点击听到的词。');
+ peekBtn(target);
+ document.querySelectorAll('.card').forEach(c=>c.onclick=()=>{lock();const ok=c.dataset.w===target;c.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.card[data-w="${target}"]`).classList.add('ok');mark(ok,15,ok?`✔ 是 ${target}`:`✘ 老师读的是 ${target}`);next(bPair);});}
+
+/* 4 mirror */
+function bMirror(){const L=LEVELS[3];cur.rounds=Infinity;cur.ok=0;cur.bad=0;const ws=pick(HWORDS,8);let left=ws.length;
+ frame(L,`<div style="text-align:center;color:var(--muted);margin-bottom:10px">/h/ 只是一口热气。对镜子说这个词：如果 h 发音，镜子会起雾；如果 h 是哑音（hour, honest…），镜子一点雾都没有。</div>
+  <div class="mirror">${ws.map((w,i)=>`<div class="mt" data-i="${i}"><span class="w">${w[0]}</span><div class="fog"></div><div class="tag"></div><div class="mb"><button data-g="1">💨 发音</button><button data-g="0">🚫 哑音</button></div></div>`).join('')}</div>
+  <div class="row"><span class="pill">全班先读一遍，再选 · 剩余 <b id="left">${left}</b></span></div>`,
+  '镜子哈气：判断每个词的 h 发不发音，选完后镜子会告诉你答案。');
+ document.querySelectorAll('.mt .mb button').forEach(btn=>btn.onclick=e=>{e.stopPropagation();const m=btn.closest('.mt');if(m.classList.contains('fogged')||m.classList.contains('clear'))return;const w=ws[+m.dataset.i];const ok=+btn.dataset.g===w[1];m.classList.add(w[1]?'fogged':'clear');m.querySelector('.tag').textContent=w[1]?'/h/ 发音 · 起雾了':'哑音 h · 没有雾';if(ok){cur.ok++;addScore(10);beep(true);fb(true,`✔ ${w[0]}：${w[1]?'h 发音':'h 不发音'}`);}else{cur.bad++;breakCombo();beep(false);fb(false,`✘ ${w[0]}：${w[1]?'h 要发音':'h 是哑音'}`);}left--;$('#left').textContent=left;if(left===0)setTimeout(()=>finish(cur.bad===0?3:cur.bad<=1?2:cur.bad<=3?1:0),900);});}
+
+/* 5 -s endings */
+function bEnds(){const L=LEVELS[4];
+ if(cur.round===0)cur.queue=pick(ENDS,12);
+ const [w,a]=cur.queue[cur.round];
+ const F={s:'前面是清音（p t k f θ）→ /s/',z:'前面是浊音或元音 → /z/',iz:'前面已经是嘶嘶/嗡嗡音（s z ʃ ʒ tʃ dʒ）→ 加 /ɪz/'};
+ frame(L,`<div class="big popin" style="font-size:84px">${w}</div>
+  <div class="tri"><button class="card" data-a="s"><span class="em">🐍</span><span class="ipa">/s/</span><small>cats · books</small></button><button class="card" data-a="z"><span class="em">🐝</span><span class="ipa">/z/</span><small>dogs · is</small></button><button class="card" data-a="iz"><span class="em">🚌</span><span class="ipa">/ɪz/</span><small>buses · watches</small></button></div>`,
+  '词尾的 s 读 /s/、/z/ 还是 /ɪz/？规则管复数、第三人称和所有格。先读出来再选！');
+ document.querySelectorAll('.card').forEach(c=>c.onclick=()=>{lock();const ok=c.dataset.a===a;c.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.card[data-a="${a}"]`).classList.add('ok');mark(ok,10,(ok?'✔ ':'✘ ')+F[a]);next(bEnds);});}
+
+/* 6 spelling x-ray */
+function bXray(){const L=LEVELS[5];
+ if(cur.round===0)cur.queue=pick(XRAY,10);
+ const [w,segs,ans,k]=cur.queue[cur.round];
+ frame(L,`<div style="text-align:center;color:var(--muted)">目标音 ${snd(k)}</div>
+  <div class="xword popin">${segs.map((s,i)=>`<span class="seg" data-i="${i}">${s}</span>`).join('')}</div>
+  <div style="text-align:center;color:var(--muted);font-size:15px">提示：/ʃ/ 常见拼写 sh · ti · ci · ch · s(ugar) · ce(an)；/ʒ/ 常见拼写 s(ure) · si(on) · ge · z(seizure)</div>`,
+  '拼写透视：全班一起读这个词，然后点出正在发目标音的那一段字母。');
+ document.querySelectorAll('.seg').forEach(s=>s.onclick=()=>{document.querySelectorAll('.seg').forEach(x=>x.onclick=null);const ok=+s.dataset.i===ans;s.classList.add(ok?'ok':'no');if(!ok)document.querySelector(`.seg[data-i="${ans}"]`).classList.add('ok');mark(ok,15,ok?`✔ ${segs[ans]} → /${k}/`:`✘ 是 "${segs[ans]}" 在发 /${k}/`);next(bXray);});}
+
+/* 7 bubble machine */
+function bBubble(){const L=LEVELS[6];const target=rand(KEYS);cur.time=30;cur.ok=0;cur.bad=0;cur.rounds=Infinity;
+ frame(L,`<div class="row" style="justify-content:space-between"><div>目标音：${snd(target)}</div><div class="timer">⏱ <span id="tm">30</span>s</div><div class="pill">戳中 <span id="hits">0</span> · 误戳 <span id="miss">0</span></div></div>
+  <div class="tank" id="tank"></div>`,
+  `30 秒内，只戳含有 /${target}/ 的泡泡！其他泡泡让它飘走。`);
+ const tank=$('#tank');let alive=true;const others=KEYS.filter(k=>k!==target);
+ function spawn(){if(!alive)return;const isT=Math.random()<.45;const k=isT?target:rand(others);const [w,em]=rand(SOUNDS[k].words);const b=document.createElement('div');b.className='bub';b.dataset.t=isT?'1':'0';b.style.left=(Math.random()*(tank.clientWidth-130))+'px';b.style.animationDuration=(3.2+Math.random()*2)+'s';b.innerHTML=`<span class="em">${em}</span>${w}`;
+  b.onclick=()=>{if(b.classList.contains('popped'))return;const ok=b.dataset.t==='1';b.classList.add('popped');if(!ok)b.classList.add('bad');if(ok){cur.ok++;addScore(5);beep(true);}else{cur.bad++;breakCombo();beep(false);}$('#hits').textContent=cur.ok;$('#miss').textContent=cur.bad;};
+  b.onanimationend=()=>b.remove();tank.appendChild(b);}
+ const sp=setInterval(spawn,700);const tick=setInterval(()=>{cur.time--;const t=$('#tm');if(!t){stop();return;}t.textContent=cur.time;if(cur.time<=0){stop();const net=cur.ok-cur.bad;finish(net>=12?3:net>=8?2:net>=4?1:0);}},1000);
+ function stop(){clearInterval(sp);clearInterval(tick);alive=false;}cur.stop=stop;}
+
+/* 8 tongue twister */
+function bTwister(){const L=LEVELS[7];let idx=0,t0=null,tick=null;cur.ok=0;cur.bad=0;cur.rounds=Infinity;const done=[];
+ const RX={'f':/\b(f\w*|ph\w*)/gi,'v':/\b(v\w*)/gi,'θ':/\b(th\w*)/gi,'ð':/\b(th\w*|ba\w*)/gi,'s':/\b(s\w*)/gi,'z':/\b(z\w*)/gi,'ʃ':/\b(sh\w*|sea\w*)/gi,'ʒ':/(usual|treasure|beige|garage)/gi,'h':/\b(h\w*)/gi};
+ function render(){const [txt,k]=TWISTERS[idx];
+  frame(L,`<div class="row">${snd(k)}<span class="timer" id="sw">0.0s</span></div>
+   <div class="tt popin" style="margin-top:12px">${txt.replace(RX[k],'<b>$1</b>')}</div>
+   <div class="row"><button class="btn ok" id="go">▶ 开始计时</button><button class="btn" id="stop" disabled>⏹ 读完了！</button><button class="btn ghost" id="nx">下一条 ➡️</button></div>
+   <div style="text-align:center;color:var(--muted);margin-top:10px">已完成：${done.map(d=>`${d[0]} <b style="color:var(--dh)">${d[1]}s</b>`).join(' · ')||'—'}</div>`,
+   '绕口令挑战：请一位同学清楚、快速地读出来，全班当裁判。读得清楚才算！');
+  $('#go').onclick=()=>{t0=performance.now();$('#go').disabled=true;$('#stop').disabled=false;tick=setInterval(()=>$('#sw').textContent=((performance.now()-t0)/1000).toFixed(1)+'s',100);};
+  $('#stop').onclick=()=>{clearInterval(tick);const s=((performance.now()-t0)/1000).toFixed(1);$('#stop').disabled=true;done.push([`/${k}/`,s]);cur.ok++;addScore(20);beep(true);fb(true,`⏱ ${s} 秒！${s<4?'快如闪电 ⚡':s<7?'很流利 👏':'再练一次会更快 💪'}`);};
+  $('#nx').onclick=()=>{clearInterval(tick);idx++;if(idx>=TWISTERS.length){finish(done.length>=8?3:done.length>=5?2:done.length>=3?1:0);}else render();};}
+ render();}
+
+/* ---------- reference ---------- */
+(()=>{const r=$('#ref');KEYS.forEach(k=>{const s=SOUNDS[k];const d=document.createElement('div');d.className='rf';d.style.cursor='pointer';
+ d.innerHTML=`${snd(k)}<div class="info"><b>${s.voiced?'浊音 voiced':'清音 voiceless'} · ${s.place} · ${s.words.slice(0,3).map(w=>w[1]+w[0]).join(' ')}</b><span class="tip">点击看口型提示</span></div>`;
+ d.onclick=()=>{d.querySelector('.tip').textContent=s.tip;};r.appendChild(d);});})();
+
+/* ---------- init ---------- */
+$('#resetBtn').onclick=()=>{if(confirm('清空所有分数和星星？')){localStorage.removeItem('fricativeTunnel');location.reload();}};
+$('#score').textContent=state.score;renderLevels();
+$('#stage').innerHTML=`<div class="result"><div class="emoji">🌬️</div><h3>欢迎来到摩擦音风洞！</h3><p>九个摩擦音 = 气流从窄缝里"挤"出来的声音，可以一直拖长。四对清浊 /f v/ /θ ð/ /s z/ /ʃ ʒ/ 口型相同，只差喉咙抖不抖；/h/ 是孤家寡人，没有浊音伙伴。</p><p style="margin-top:6px">每关拿到 1 颗星解锁下一关。课件不带语音，请老师或学生真人发音，效果最好。</p><div class="row"><button class="btn" onclick="start(LEVELS[0])">🚀 开始第 1 关</button></div></div>`;
+</script>
+</body>
+</html>

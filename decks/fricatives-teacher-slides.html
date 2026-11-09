@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>九个摩擦音 · 课堂讲解课件 | Echo老师工作室</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF8F5;--panel:#FFFFFF;--ink:#17312E;--muted:#6B8783;--line:#CFE5DF;
+  --ok:#2BB673;--no:#F0564A;--gold:#FFB703;
+  --f:#FF8A5B;--v:#FF5D8F;--th:#FFC43D;--dh:#F39C12;--s:#4FC3F7;--z:#2979FF;--sh:#8E6BFF;--zh:#C55CFF;--h:#39C9A4;
+  --fd:'Fredoka','PingFang SC','Microsoft YaHei',sans-serif;
+  --fb:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#D9EBE6;font-family:var(--fb);color:var(--ink);overflow:hidden}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+.deck{width:1280px;height:720px;position:relative;transform-origin:center center;background:var(--bg);border-radius:18px;box-shadow:0 20px 60px rgba(23,49,46,.18);overflow:hidden}
+.slide{position:absolute;inset:0;padding:48px 64px 64px;display:none;flex-direction:column;background:var(--bg)}
+.slide.on{display:flex;animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tag{display:inline-block;font-family:var(--fd);font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:var(--ink);padding:4px 14px;border-radius:999px;margin-bottom:12px;align-self:flex-start}
+h1{font-family:var(--fd);font-size:68px;line-height:1.1;font-weight:700}
+h2{font-family:var(--fd);font-size:40px;line-height:1.15;font-weight:700;margin-bottom:18px}
+h3{font-family:var(--fd);font-size:24px;font-weight:600;margin-bottom:8px}
+p,li{font-size:21px;line-height:1.5}
+.sub{color:var(--muted);font-size:22px}
+.ipa{font-family:'Charis SIL','Doulos SIL','Gentium','Times New Roman',serif;font-weight:700}
+.row{display:flex;gap:22px;flex:1;min-height:0}
+.col{flex:1;min-width:0}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:20px 24px}
+.card.flat{box-shadow:none}
+.pill{display:inline-block;padding:3px 12px;border-radius:999px;color:#fff;font-weight:800;font-size:18px;margin:2px 4px 2px 0}
+.big{font-family:var(--fd);font-size:58px;font-weight:700;line-height:1}
+table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:2px solid var(--line);border-radius:16px;overflow:hidden;font-size:19px}
+th,td{padding:9px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);line-height:1.4}
+th{background:#DFF2EC;font-family:var(--fd);font-weight:600;font-size:19px}
+tr:last-child td{border-bottom:none}
+td.c,th.c{text-align:center}
+.foot{position:absolute;left:64px;right:64px;bottom:20px;display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+#bar{position:absolute;left:0;bottom:0;height:5px;background:var(--ok);width:0;transition:width .3s}
+#num{position:absolute;right:22px;bottom:14px;font-size:14px;color:var(--muted);font-weight:700}
+.nav{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:10px}
+.nav button{border:0;background:#fff;border:2px solid var(--line);border-radius:999px;padding:4px 18px;font:700 14px var(--fb);color:var(--ink);cursor:pointer}
+.rv{cursor:pointer;position:relative;transition:.2s}
+.rv:not(.show) .ans{visibility:hidden}
+.rv:not(.show)::after{content:'点击揭晓';position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);background:#F2FAF7;border:1px dashed var(--line);border-radius:999px;padding:2px 10px}
+.ans{color:var(--ok);font-weight:800}
+.hint{font-size:16px;color:var(--muted);margin-top:auto;padding-top:10px}
+.sound-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;flex:1}
+.sound{background:#fff;border:2px solid var(--line);border-radius:18px;padding:18px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.sound .em{font-size:52px}
+.sound .ipa{font-size:34px}
+.sound .w{font-size:18px;color:var(--muted)}
+.kw{background:#FFF5D6;border-left:6px solid var(--gold);padding:12px 18px;border-radius:10px;font-size:22px;font-weight:800;margin:10px 0}
+.warn{background:#FFEAE8;border-left:6px solid var(--no);padding:10px 16px;border-radius:10px;font-size:19px}
+.ok{background:#E4F7EC;border-left:6px solid var(--ok);padding:10px 16px;border-radius:10px;font-size:19px}
+.tt{font-family:var(--fd);font-size:24px;background:#fff;border:2px dashed var(--gold);border-radius:14px;padding:12px 18px;margin-top:8px}
+ul{padding-left:26px}
+li{margin:4px 0}
+.steps{display:flex;gap:14px;margin-top:10px}
+.step{flex:1;background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-size:19px;position:relative}
+.step b{display:block;font-family:var(--fd);font-size:26px;color:var(--ok)}
+.grid9{display:grid;grid-template-columns:150px repeat(5,1fr);gap:8px;flex:1}
+.grid9 div{background:#fff;border:2px solid var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--fd);font-size:20px;text-align:center;padding:6px}
+.grid9 .hd{background:#DFF2EC;font-weight:600}
+.grid9 .ipa{font-size:40px}
+.grid9 .lab{background:transparent;border:0;font-size:22px}
+.mini{font-size:17px;color:var(--muted)}
+.two{columns:2;column-gap:28px}
+.cf{color:var(--f)}.cv{color:var(--v)}.cth{color:#D99400}.cdh{color:var(--dh)}.cs{color:#1AA6E0}.cz{color:var(--z)}.csh{color:var(--sh)}.czh{color:var(--zh)}.ch{color:#1FA886}
+.bf{background:var(--f)}.bv{background:var(--v)}.bth{background:var(--th)}.bdh{background:var(--dh)}.bs{background:var(--s)}.bz{background:var(--z)}.bsh{background:var(--sh)}.bzh{background:var(--zh)}.bh{background:var(--h)}
+.focus{position:absolute;right:64px;top:44px;display:flex;gap:10px}
+.focus span{font-family:var(--fd);font-size:30px;color:#fff;border-radius:14px;padding:4px 16px}
+a.btn{display:inline-block;align-self:flex-start;background:var(--ok);color:#fff;text-decoration:none;font:700 22px var(--fd);padding:12px 28px;border-radius:999px;margin-top:14px}
+.emoji{font-size:40px}
+</style>
+</head>
+<body>
+<div id="stage"><div class="deck" id="deck">
+
+<!-- 1 封面 -->
+<section class="slide" style="justify-content:center;align-items:center;text-align:center;background:linear-gradient(160deg,#EEF8F5,#D7F0E8)">
+  <span class="tag" style="align-self:center">Phonics · Fricatives</span>
+  <h1>九个摩擦音</h1>
+  <p class="sub" style="margin:14px 0 26px"><span class="ipa" style="font-size:36px;color:var(--ink)">/f/ /v/ · /θ/ /ð/ · /s/ /z/ · /ʃ/ /ʒ/ · /h/</span></p>
+  <div style="display:flex;gap:10px">
+    <span class="pill bf">f</span><span class="pill bv">v</span><span class="pill bth">θ</span><span class="pill bdh">ð</span><span class="pill bs">s</span><span class="pill bz">z</span><span class="pill bsh">ʃ</span><span class="pill bzh">ʒ</span><span class="pill bh">h</span>
+  </div>
+  <p class="sub" style="margin-top:30px">讲解 20–25 分钟 → 摩擦音风洞 8 关游戏 → 中考辨音题现场练</p>
+  <p class="mini" style="margin-top:8px">Echo老师工作室 · 配套：games/fricatives-game.html</p>
+</section>
+
+<!-- 2 导入 -->
+<section class="slide">
+  <span class="tag">Warm-up · 0–3 min</span>
+  <h2>先听，再模仿：这些是什么声音？</h2>
+  <div class="sound-grid">
+    <div class="sound"><div class="em">🐍</div><div class="ipa cs">sss…</div><div class="w">蛇</div></div>
+    <div class="sound"><div class="em">🐝</div><div class="ipa cz">zzz…</div><div class="w">蜜蜂</div></div>
+    <div class="sound"><div class="em">🤫</div><div class="ipa csh">shh…</div><div class="w">嘘</div></div>
+    <div class="sound"><div class="em">🎈</div><div class="ipa cf">fff…</div><div class="w">漏气的气球</div></div>
+    <div class="sound"><div class="em">🪞</div><div class="ipa ch">hhh…</div><div class="w">对着镜子哈气</div></div>
+  </div>
+  <div class="card rv" style="margin-top:18px;font-size:24px"><b>Q：这五个声音有什么共同点？</b>&nbsp;&nbsp;<span class="ans">→ 都可以一直拖长！（试试拖 5 秒）</span></div>
+</section>
+
+<!-- 3 什么是摩擦音 -->
+<section class="slide">
+  <span class="tag">总论 1</span>
+  <h2>什么是摩擦音？气流从"窄缝"里挤出来</h2>
+  <div class="row">
+    <div class="col card">
+      <h3>🌬️ 摩擦音 Fricatives</h3>
+      <p>发音器官<b>不完全闭合</b>，留一条窄缝，气流通过时与缝的边缘<b>摩擦</b>，产生嘶嘶、嗡嗡的噪音。</p>
+      <div class="kw">关键特征：可以一直拖长 ➜ fffffff…</div>
+    </div>
+    <div class="col card">
+      <h3>💥 爆破音 Plosives（上节课）</h3>
+      <p>先<b>完全堵住</b>再<b>突然放开</b>：p t k b d g。一瞬间就结束，拖不长。</p>
+      <div class="kw" style="background:#FFEAE8;border-color:var(--no)">p-p-p-p-p ✗ 拖不长</div>
+    </div>
+  </div>
+  <div class="tt">👉 全班一起试：<b>ppppp</b>（断断续续）vs <b>fffff</b>（一条线）。能拖长的，就是摩擦音。</div>
+</section>
+
+<!-- 4 四对清浊 + 孤儿 -->
+<section class="slide">
+  <span class="tag">总论 2</span>
+  <h2>四对清浊 + 一个"孤儿"（按发音部位从前到后）</h2>
+  <table>
+    <tr><th>发音部位</th><th class="c">清音（只有气流）💨</th><th class="c">浊音（气流 + 声带振动）🐝</th><th>窄缝在哪里</th></tr>
+    <tr><td>① 唇齿</td><td class="c ipa cf" style="font-size:30px">/f/</td><td class="c ipa cv" style="font-size:30px">/v/</td><td>上齿 × 下唇</td></tr>
+    <tr><td>② 齿间</td><td class="c ipa cth" style="font-size:30px">/θ/</td><td class="c ipa cdh" style="font-size:30px">/ð/</td><td>舌尖 × 上下齿之间</td></tr>
+    <tr><td>③ 齿龈</td><td class="c ipa cs" style="font-size:30px">/s/</td><td class="c ipa cz" style="font-size:30px">/z/</td><td>舌尖 × 上齿龈</td></tr>
+    <tr><td>④ 齿龈后</td><td class="c ipa csh" style="font-size:30px">/ʃ/</td><td class="c ipa czh" style="font-size:30px">/ʒ/</td><td>舌面 × 齿龈后部，嘴唇撅圆</td></tr>
+    <tr><td>⑤ 声门</td><td class="c ipa ch" style="font-size:30px">/h/</td><td class="c" style="color:var(--muted)">—（没有浊音伙伴）</td><td>声带之间</td></tr>
+  </table>
+  <div class="kw" style="margin-top:14px">四对清浊<b>口型完全一样</b>，差别只有喉咙抖不抖。</div>
+</section>
+
+<!-- 5 两个小实验 -->
+<section class="slide">
+  <span class="tag">总论 3 · 课堂小实验</span>
+  <h2>两个小实验：怎么"看见"清和浊？</h2>
+  <div class="row">
+    <div class="col card">
+      <div class="emoji">📄</div>
+      <h3>实验一：纸片测试</h3>
+      <p>一张纸放在嘴前 3 cm。</p>
+      <ul><li><span class="ipa cf">/f/</span> ➜ 纸<b>被吹动</b></li><li><span class="ipa cv">/v/</span> ➜ 纸<b>几乎不动</b>（气流被声带分掉一部分）</li></ul>
+    </div>
+    <div class="col card">
+      <div class="emoji">✋</div>
+      <h3>实验二：摸喉咙</h3>
+      <p>手掌轻放喉结处，拖长读 3 秒。</p>
+      <ul><li><span class="ipa cs">/s/</span> ➜ <b>不抖</b></li><li><span class="ipa cz">/z/</span> ➜ <b>抖</b></li></ul>
+    </div>
+  </div>
+  <div class="card rv" style="margin-top:16px;font-size:22px">⚠️ 陷阱题：<span class="ipa">/h/</span> 摸喉咙抖不抖？&nbsp;&nbsp;<span class="ans">清音，不抖——学生以为抖是因为后面元音抖了，只拖 h 本身！</span></div>
+</section>
+
+<!-- 6 为什么重要 -->
+<section class="slide">
+  <span class="tag">为什么要学这节课</span>
+  <h2>摩擦音 = 中考、听说考试的"常客"</h2>
+  <div class="row">
+    <div class="col card"><div class="emoji">📝</div><h3>中考辨音题</h3><p>几乎每年都考：<b>th</b> 的清浊、词尾 <b>-s/-es</b>、<b>ch/sh</b> 的读音判断。</p></div>
+    <div class="col card"><div class="emoji">🎙️</div><h3>听说考试 · 模仿朗读</h3><p>深圳中考英语听说、口语评测评分看重：<b>th</b> 舌位、<b>v/w</b>、词尾 <b>-s</b> 是否到位。</p></div>
+    <div class="col card"><div class="emoji">👂</div><h3>听力干扰项</h3><p>最小对立词：<b>think/sink</b>、<b>three/free</b>、<b>mouth/mouse</b>——听错一个音，整句意思就变了。</p></div>
+  </div>
+  <div class="tt" style="text-align:center">I <b>think</b> so. ➜ 读成 I <b>sink</b> so. 🫠　｜　<b>three</b> o'clock ➜ <b>free</b> o'clock 🤔</div>
+</section>
+
+<!-- 7 f v -->
+<section class="slide">
+  <span class="tag">逐音讲解 ①</span>
+  <div class="focus"><span class="bf ipa">/f/</span><span class="bv ipa">/v/</span></div>
+  <h2>唇齿摩擦音：上齿咬下唇</h2>
+  <div class="row">
+    <div class="col">
+      <div class="card" style="margin-bottom:12px"><h3>👄 口型</h3><p>上齿轻轻放在<b>下唇</b>上，气流从齿唇缝隙挤出。<span class="ipa cv">/v/</span> = 同样口型 + 声带振动。</p></div>
+      <div class="card" style="margin-bottom:12px"><h3>🔤 拼写</h3><p><span class="ipa cf">/f/</span>：f (fish) · ff (coffee) · <b>ph</b> (phone, photo, elephant) · <b>gh</b> (laugh, enough, cough)<br><span class="ipa cv">/v/</span>：v (very) · 特例 <b>of</b> 读 /əv/</p></div>
+      <div class="card"><h3>📚 例词</h3><p><span class="cf">fox fan leaf phone coffee knife fork foot</span><br><span class="cv">van violin vase seven love glove wave vest</span></p></div>
+    </div>
+    <div class="col">
+      <div class="warn" style="margin-bottom:12px"><b>易错 1：</b>/v/ 读成 /w/ — very→<s>wery</s>, van→<s>wan</s>。汉语没有唇齿浊音。<br><b>纠正：</b>先做 /f/，保持口型不变，打开喉咙。</div>
+      <div class="warn" style="margin-bottom:12px"><b>易错 2：</b>词尾 /v/ 丢掉或读成 /f/：lo<b>ve</b>, fi<b>ve</b>, ha<b>ve</b>。</div>
+      <div class="card" style="margin-bottom:12px"><h3>⚔️ 最小对立</h3><p>fan/van · fat/vat · ferry/very · leaf/leave · safe/save · few/view</p></div>
+      <div class="tt">🌪️ Fresh fried fish, fish fresh fried.<br>🌪️ Vincent's very vivid velvet vest.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 θ ð -->
+<section class="slide">
+  <span class="tag">逐音讲解 ②</span>
+  <div class="focus"><span class="bth ipa">/θ/</span><span class="bdh ipa">/ð/</span></div>
+  <h2>齿间摩擦音："咬舌头"</h2>
+  <div class="row">
+    <div class="col">
+      <div class="card" style="margin-bottom:12px"><h3>👄 口型</h3><p>舌尖轻轻伸到<b>上下齿之间</b>（镜子里能看到舌尖），气流从舌齿缝隙吹出。<span class="ipa cdh">/ð/</span> 加声带振动。</p></div>
+      <div class="card" style="margin-bottom:12px"><h3>🔤 拼写</h3><p>两个音都拼作 <b>th</b> ➜ 必须靠规律判断清浊（见规则②）。特例：<b>Thomas, Thames</b> 读 /t/。</p></div>
+      <div class="card"><h3>📚 例词</h3><p><span class="cth">three thumb mouth tooth bath think thank earth</span><br><span class="cdh">that mother father feather brother weather they together</span></p></div>
+    </div>
+    <div class="col">
+      <div class="warn" style="margin-bottom:12px"><b>易错：</b>/θ/→/s/（think→<s>sink</s>, three→<s>tree/free</s>）；/ð/→/z/ 或 /d/（this→<s>zis/dis</s>）。<br><b>根本原因：</b>舌头没伸出来。<b>纠正：</b>先夸张伸舌 1 秒再收回。</div>
+      <div class="card" style="margin-bottom:12px"><h3>⚔️ 最小对立</h3><p>think/sink · thin/sin · mouth/mouse · path/pass · free/three · they/day · then/den · breathe/breeze</p></div>
+      <div class="tt">🌪️ Three thin thieves thought a thousand thoughts.<br>🌪️ The father and the mother bathe together.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 s z -->
+<section class="slide">
+  <span class="tag">逐音讲解 ③</span>
+  <div class="focus"><span class="bs ipa">/s/</span><span class="bz ipa">/z/</span></div>
+  <h2>齿龈摩擦音：蛇叫 vs 蜜蜂叫</h2>
+  <div class="row">
+    <div class="col">
+      <div class="card" style="margin-bottom:12px"><h3>👄 口型</h3><p>舌尖<b>靠近</b>上齿龈（不碰），齿缝微开，气流细而尖。<span class="ipa cz">/z/</span> 加声带振动。</p></div>
+      <div class="card" style="margin-bottom:12px"><h3>🔤 拼写</h3><p><span class="ipa cs">/s/</span>：s · ss (class) · c+e/i/y (ice, city, cycle) · sc (science) · x = /ks/ (box, six)<br><span class="ipa cz">/z/</span>：z · zz (buzz) · <b>s 在元音/浊音后</b> (nose, is, his, dogs) · x = /gz/ (exam, exact)</p></div>
+      <div class="card"><h3>📚 例词</h3><p><span class="cs">sun sock bus ice snake star mouse soup</span><br><span class="cz">zoo zebra zipper nose rose cheese bees eyes</span></p></div>
+    </div>
+    <div class="col">
+      <div class="warn" style="margin-bottom:12px"><b>易错：</b>所有字母 s 都读 /s/。其实 <b>is, his, these, those, please, because, dogs</b> 全是 /z/！<br>词尾复数 -s 一律读 /s/，或干脆吞掉。</div>
+      <div class="card" style="margin-bottom:12px"><h3>⚔️ 最小对立</h3><p>bus/buzz · sue/zoo · ice/eyes · rice/rise · price/prize · peace/peas</p></div>
+      <div class="tt">🌪️ Six slippery snails slid slowly seaward.<br>🌪️ Zebras zig and zebras zag in the zoo.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 ʃ ʒ -->
+<section class="slide">
+  <span class="tag">逐音讲解 ④</span>
+  <div class="focus"><span class="bsh ipa">/ʃ/</span><span class="bzh ipa">/ʒ/</span></div>
+  <h2>齿龈后摩擦音："嘘——"，嘴唇撅圆</h2>
+  <div class="row">
+    <div class="col">
+      <div class="card" style="margin-bottom:12px"><h3>👄 口型</h3><p>舌尖后缩、舌面抬向齿龈后部，嘴唇<b>撅圆前伸</b>（像要亲吻）。<span class="ipa czh">/ʒ/</span> 加声带振动。</p></div>
+      <div class="card" style="margin-bottom:12px"><h3>🔤 拼写（重点！）</h3><p><span class="ipa csh">/ʃ/</span>：sh · <b>ti</b> (station) · <b>ci</b> (special, delicious) · <b>s</b> (sure, sugar) · ss (Russia) · <b>ch</b> 法语词 (machine, chef) · ce (ocean)<br><span class="ipa czh">/ʒ/</span>：s+ure/ion (measure, television, decision) · <b>ge</b> 法语词 (garage, beige) · s (usual, Asia)</p></div>
+      <div class="card"><h3>📚 例词</h3><p><span class="csh">ship shoe sheep shark brush shell sugar shirt</span><br><span class="czh">measure treasure garage beige usual pleasure Asia casual</span></p></div>
+    </div>
+    <div class="col">
+      <div class="warn" style="margin-bottom:12px"><b>易错：</b>/ʃ/ 发音不难（接近"诗"），难在<b>拼写识别</b>：station、sure、machine 认不出是 /ʃ/。<br>/ʒ/ 常读成 /dʒ/（usual→<s>u-jual</s>）或 /z/。/ʒ/ 几乎不出现在词首（genre 除外）。</div>
+      <div class="card" style="margin-bottom:12px"><h3>⚔️ 最小对立</h3><p>sip/ship · see/she · save/shave · sock/shock · pressure/pleasure (ʃ/ʒ)</p></div>
+      <div class="tt">🌪️ She sells seashells by the seashore.<br>🌪️ The usual treasure is a beige garage.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 h -->
+<section class="slide">
+  <span class="tag">逐音讲解 ⑤</span>
+  <div class="focus"><span class="bh ipa">/h/</span></div>
+  <h2>声门摩擦音：对镜子哈一口热气</h2>
+  <div class="row">
+    <div class="col">
+      <div class="card" style="margin-bottom:12px"><h3>👄 口型</h3><p>嘴唇舌头都<b>不动</b>，口型跟后面的元音一样，只从喉咙深处呼出一口热气。</p></div>
+      <div class="card" style="margin-bottom:12px"><h3>🔤 拼写</h3><p>h (hat) · wh 在 o 前 (<b>who, whose, whole</b>)<br><b>哑音 h：</b>hour, honest, honour, heir（以及 ghost, rhyme, school 里的 h 不发音）</p></div>
+      <div class="card"><h3>📚 例词</h3><p><span class="ch">hat hand heart hippo hamburger honey hair hen</span></p></div>
+    </div>
+    <div class="col">
+      <div class="warn" style="margin-bottom:12px"><b>易错 1：</b>用汉语"喝"的 h（舌根摩擦）代替英语 /h/，听起来<b>太重</b>。<br><b>纠正：</b>镜子哈气，气要热、要轻。</div>
+      <div class="warn" style="margin-bottom:12px"><b>易错 2：</b>把哑音 h 读出来：hour→<s>/haʊə/</s>。<b>速测：</b>能说 <b>an</b> hour ➜ h 不发音。</div>
+      <div class="card" style="margin-bottom:12px"><h3>⚔️ 最小对立</h3><p>hat/at · hair/air · heel/eel · hold/old · hear/ear</p></div>
+      <div class="tt">🌪️ Harry the happy hippo hums at home.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 规则① -->
+<section class="slide">
+  <span class="tag">必讲规则 ① · 游戏第 5 关</span>
+  <h2>词尾 -s / -es 怎么读？（复数 · 三单 · 所有格通用）</h2>
+  <div class="kw">口诀：前面<b>不抖</b>读 /s/，前面<b>抖</b>读 /z/，前面已经<b>嘶嘶嗡嗡</b>就加 /ɪz/。</div>
+  <table>
+    <tr><th>看前一个音</th><th class="c">读音</th><th>例词</th></tr>
+    <tr><td>清辅音 <span class="ipa">/p t k f θ/</span> 之后</td><td class="c ipa cs" style="font-size:26px">/s/</td><td>cats, books, maps, cups, hats, laughs, months</td></tr>
+    <tr><td>浊辅音或元音之后</td><td class="c ipa cz" style="font-size:26px">/z/</td><td>dogs, pens, birds, bees, eyes, is, his, plays</td></tr>
+    <tr><td><span class="ipa">/s z ʃ ʒ tʃ dʒ/</span> 之后（本身就是嘶嘶/嗡嗡音）</td><td class="c ipa czh" style="font-size:26px">/ɪz/</td><td>buses, boxes, watches, wishes, dishes, noses, bridges</td></tr>
+  </table>
+  <div class="steps">
+    <div class="step"><b>①</b>去掉 s，读出词干最后一个音</div>
+    <div class="step"><b>②</b>摸喉咙：不抖 → /s/，抖 → /z/</div>
+    <div class="step"><b>③</b>最后一个音本身是 s/z/sh/ch/ge → /ɪz/</div>
+  </div>
+</section>
+
+<!-- 13 规则② -->
+<section class="slide">
+  <span class="tag">必讲规则 ② · 游戏第 3 关</span>
+  <h2>th 什么时候读 /θ/，什么时候读 /ð/？</h2>
+  <div class="kw">课堂速判：<b>小词 → /ð/</b>　｜　<b>大词 → /θ/</b>　｜　<b>夹在元音中间 → /ð/</b></div>
+  <table style="font-size:18px">
+    <tr><th>情况</th><th class="c">读音</th><th>例词</th></tr>
+    <tr><td>功能词（冠词、代词、连词、介词）"小词"</td><td class="c ipa cdh" style="font-size:24px">/ð/</td><td>the, this, that, these, those, they, them, their, there, then, than, though, with</td></tr>
+    <tr><td>实义词开头（名、动、形、数词）"大词"</td><td class="c ipa cth" style="font-size:24px">/θ/</td><td>think, thank, three, thirty, thing, thick, thin, Thursday, theatre, thumb, thief</td></tr>
+    <tr><td>词尾 -th（多为名词、形容词）</td><td class="c ipa cth" style="font-size:24px">/θ/</td><td>mouth, tooth, bath, path, month, north, south, earth, health, both, truth</td></tr>
+    <tr><td>词中 -th- 在两个元音之间（家庭词）</td><td class="c ipa cdh" style="font-size:24px">/ð/</td><td>mother, father, brother, weather, feather, leather, together, other, either</td></tr>
+    <tr><td>词尾 -the（动词）</td><td class="c ipa cdh" style="font-size:24px">/ð/</td><td>breathe, bathe, clothe（对比名词 breath /θ/, bath /θ/）</td></tr>
+    <tr><td>-ths 复数</td><td class="c ipa" style="font-size:20px">/θs/ /ðz/</td><td>months /mʌnθs/, mouths /maʊðz/, clothes /kləʊðz/（口语常省成 /kləʊz/）</td></tr>
+  </table>
+</section>
+
+<!-- 14 规则③ -->
+<section class="slide">
+  <span class="tag">必讲规则 ③ · 游戏第 4、6 关</span>
+  <h2>/ʃ/ /ʒ/ 的"马甲"拼写 + 哑音 h</h2>
+  <table style="font-size:18px">
+    <tr><th>拼写</th><th class="c">读音</th><th>例词（中考高频）</th></tr>
+    <tr><td>sh</td><td class="c ipa csh">/ʃ/</td><td>she, shop, fish, English, wash</td></tr>
+    <tr><td>-tion / -tian</td><td class="c ipa csh">/ʃən/</td><td>station, nation, dictation, patient　⚠️ <b>question</b> 是 /tʃ/，唯一例外</td></tr>
+    <tr><td>-cial / -cious / -cian / ce</td><td class="c ipa csh">/ʃ/</td><td>special, social, delicious, musician, ocean</td></tr>
+    <tr><td>s + u</td><td class="c ipa csh">/ʃ/</td><td>sure, sugar, insurance</td></tr>
+    <tr><td>ch（法语来源词）</td><td class="c ipa csh">/ʃ/</td><td>machine, chef, Chicago, parachute（对比 chair /tʃ/, school /k/）</td></tr>
+    <tr><td>-sion 在元音后 / -sure</td><td class="c ipa czh">/ʒ/</td><td>television, decision, occasion, measure, pleasure, treasure, usually</td></tr>
+    <tr><td>-sion 在辅音后</td><td class="c ipa csh">/ʃ/</td><td>expression, discussion, mission（元音后 /ʒ/，辅音后 /ʃ/）</td></tr>
+    <tr><td>-ge（法语来源词）</td><td class="c ipa czh">/ʒ/</td><td>garage, beige, massage, rouge（对比 age, page /dʒ/）</td></tr>
+    <tr><td>哑音 h</td><td class="c">不发音</td><td>hour, honest, honour, heir；what/when/where 的 h 不单独发音</td></tr>
+  </table>
+</section>
+
+<!-- 15 易错词 -->
+<section class="slide">
+  <span class="tag">顺带讲的易错词</span>
+  <h2>8 个"读错率最高"的词，先读一遍，再揭晓</h2>
+  <table>
+    <tr><th style="width:200px">词</th><th>正确读音要点</th><th>常见错读</th></tr>
+    <tr class="rv"><td class="big" style="font-size:30px">clothes</td><td class="ans">/kləʊðz/ 或口语 /kləʊz/</td><td class="ans" style="color:var(--no)">/kləʊðɪz/（多了一个音节）</td></tr>
+    <tr class="rv"><td class="big" style="font-size:30px">of</td><td class="ans">/əv/ 弱读，词尾 /v/</td><td class="ans" style="color:var(--no)">/ɒf/</td></tr>
+    <tr class="rv"><td class="big" style="font-size:30px">months</td><td class="ans">/mʌnθs/，th 清音</td><td class="ans" style="color:var(--no)">/mʌns/ 吞掉 th</td></tr>
+    <tr class="rv"><td class="big" style="font-size:30px">usually</td><td class="ans">/ˈjuːʒuəli/</td><td class="ans" style="color:var(--no)">/ˈjuːdʒuəli/</td></tr>
+    <tr class="rv"><td class="big" style="font-size:30px">Thomas</td><td class="ans">/t/ 不是 /θ/（Thames 同理）</td><td class="ans" style="color:var(--no)">/θɒməs/</td></tr>
+    <tr class="rv"><td class="big" style="font-size:30px">question</td><td class="ans">/ˈkwestʃən/，-tion 唯一读 /tʃ/</td><td class="ans" style="color:var(--no)">/ˈkwesʃən/</td></tr>
+    <tr class="rv"><td class="big" style="font-size:30px">hour / honest</td><td class="ans">h 哑音 ➜ an hour, an honest man</td><td class="ans" style="color:var(--no)">a hour</td></tr>
+    <tr class="rv"><td class="big" style="font-size:30px">exam</td><td class="ans">x = /gz/（example 同理）</td><td class="ans" style="color:var(--no)">/ks/</td></tr>
+  </table>
+</section>
+
+<!-- 16 游戏 -->
+<section class="slide">
+  <span class="tag">25–80 min · 游戏环节</span>
+  <h2>🌪️ 摩擦音风洞：8 关闯关</h2>
+  <table style="font-size:17px">
+    <tr><th>关</th><th>玩法</th><th>考什么</th><th>老师怎么带 / 常见卡点</th></tr>
+    <tr><td>1 🧺 找音分拣</td><td>看图读词，点摩擦音的箩筐</td><td>9 个音标认读，词首/中/尾</td><td>示范读词、跟读 2 遍再选；ʒ 在词中找不到 ➜ "哪一段能拖长？"</td></tr>
+    <tr><td>2 ✋ 摸喉咙</td><td>拖长 3 秒，判清浊</td><td>清浊对应</td><td>手必须真放喉咙；/h/ 只拖 h 本身</td></tr>
+    <tr><td>3 ⚔️ 最小对立决斗</td><td>老师只读一次，学生点听到的词</td><td>f/v θ/s ð/d s/z s/ʃ h/无</td><td>读得自然不夸张；θ/s 正确率最低 ➜ 看口型有没有舌尖</td></tr>
+    <tr><td>4 🪞 镜子哈气</td><td>h 发音 or 哑音</td><td>哑音 h</td><td>先用 a/an 测试：an hour</td></tr>
+    <tr><td>5 🐍🐝🚌 蛇·蜂·巴士</td><td>词尾 -s 三选一</td><td>规则①</td><td>"去 s → 摸喉咙"三步；eyes, his, is 常错选 /s/</td></tr>
+    <tr><td>6 🔍 拼写透视</td><td>点出发 /ʃ/ /ʒ/ 的那段</td><td>规则③</td><td>station 点 st、television 点 vi、sugar 不敢点 s</td></tr>
+    <tr><td>7 🫧 泡泡机</td><td>30 秒只戳含目标音的泡泡</td><td>快速认读</td><td>两队各一轮；误戳扣连击，"看清再戳"</td></tr>
+    <tr><td>8 🌪️ 绕口令挑战</td><td>9 条计时朗读，全班当裁判</td><td>连续发音、舌位切换</td><td>"清楚才算"，think 读成 sink 就喊 Again</td></tr>
+  </table>
+  <a class="btn" href="../games/fricatives-game.html" target="_blank">▶ 打开游戏 fricatives-game.html</a>
+</section>
+
+<!-- 17 辨音题 1 -->
+<section class="slide">
+  <span class="tag">收束 · 中考辨音题现场练 (1/2)</span>
+  <h2>选出划线部分读音<b>不同</b>的一个（点击揭晓）</h2>
+  <table style="font-size:19px">
+    <tr><th style="width:110px">考点</th><th>题组</th><th style="width:420px">答案与解析</th></tr>
+    <tr class="rv"><td>th</td><td>A. <b>th</b>ink　B. <b>th</b>ank　C. <b>th</b>is　D. <b>th</b>ree</td><td class="ans">C /ð/，其余 /θ/——小词 vs 大词</td></tr>
+    <tr class="rv"><td>th</td><td>A. mo<b>th</b>er　B. fa<b>th</b>er　C. wea<b>th</b>er　D. mon<b>th</b></td><td class="ans">D /θ/（词尾），其余元音间 /ð/</td></tr>
+    <tr class="rv"><td>-s</td><td>A. cat<b>s</b>　B. dog<b>s</b>　C. book<b>s</b>　D. map<b>s</b></td><td class="ans">B /z/，其余清辅音后 /s/</td></tr>
+    <tr class="rv"><td>-s</td><td>A. play<b>s</b>　B. run<b>s</b>　C. like<b>s</b>　D. goe<b>s</b></td><td class="ans">C /s/（k 后），其余 /z/</td></tr>
+    <tr class="rv"><td>-es</td><td>A. box<b>es</b>　B. bus<b>es</b>　C. watch<b>es</b>　D. cak<b>es</b></td><td class="ans">D /s/，其余 /ɪz/</td></tr>
+    <tr class="rv"><td>s</td><td>A. <b>s</b>un　B. no<b>s</b>e　C. ro<b>s</b>e　D. the<b>s</b>e</td><td class="ans">A /s/，其余 /z/</td></tr>
+    <tr class="rv"><td>s</td><td>A. plea<b>s</b>e　B. <b>s</b>ea　C. <b>s</b>eat　D. <b>s</b>it</td><td class="ans">A /z/，其余 /s/</td></tr>
+  </table>
+</section>
+
+<!-- 18 辨音题 2 -->
+<section class="slide">
+  <span class="tag">收束 · 中考辨音题现场练 (2/2)</span>
+  <h2>选出划线部分读音<b>不同</b>的一个（点击揭晓）</h2>
+  <table style="font-size:19px">
+    <tr><th style="width:110px">考点</th><th>题组</th><th style="width:420px">答案与解析</th></tr>
+    <tr class="rv"><td>ch</td><td>A. ma<b>ch</b>ine　B. <b>ch</b>air　C. <b>Ch</b>ina　D. tea<b>ch</b>er</td><td class="ans">A /ʃ/（法语借词），其余 /tʃ/</td></tr>
+    <tr class="rv"><td>ch</td><td>A. s<b>ch</b>ool　B. <b>ch</b>icken　C. <b>ch</b>urch　D. lun<b>ch</b></td><td class="ans">A /k/，其余 /tʃ/（ch 三读：/tʃ/ /ʃ/ /k/）</td></tr>
+    <tr class="rv"><td>sh/s</td><td>A. <b>s</b>ure　B. <b>s</b>it　C. <b>s</b>and　D. <b>s</b>even</td><td class="ans">A /ʃ/，其余 /s/</td></tr>
+    <tr class="rv"><td>ph/gh</td><td>A. <b>ph</b>oto　B. <b>ph</b>one　C. thou<b>gh</b>　D. lau<b>gh</b></td><td class="ans">C gh 不发音，其余 /f/</td></tr>
+    <tr class="rv"><td>x</td><td>A. bo<b>x</b>　B. si<b>x</b>　C. e<b>x</b>am　D. fo<b>x</b></td><td class="ans">C /gz/，其余 /ks/</td></tr>
+    <tr class="rv"><td>h</td><td>A. <b>h</b>at　B. <b>h</b>our　C. <b>h</b>and　D. <b>h</b>appy</td><td class="ans">B h 不发音</td></tr>
+    <tr class="rv"><td>-sion</td><td>A. televi<b>s</b>ion　B. deci<b>s</b>ion　C. discu<b>ss</b>ion　D. u<b>s</b>ual</td><td class="ans">C /ʃ/（辅音后），其余 /ʒ/</td></tr>
+  </table>
+</section>
+
+<!-- 19 听说易混点 -->
+<section class="slide">
+  <span class="tag">延伸 · 听力与听说考试</span>
+  <h2>听力干扰项 & 模仿朗读评分点</h2>
+  <div class="row">
+    <div class="col card">
+      <h3>👂 最小对立干扰项</h3>
+      <p>think/<b>sink</b> · three/<b>free</b>/tree · mouth/<b>mouse</b> · thirty/<b>dirty</b> · path/<b>pass</b> · faith/<b>face</b> · breathe/<b>breeze</b></p>
+      <p style="margin-top:8px">close <span class="ipa">/kləʊz/</span>（动词）vs close <span class="ipa">/kləʊs/</span>（形容词）</p>
+      <h3 style="margin-top:14px">🔗 连读里的摩擦音</h3>
+      <p>this is <span class="ipa">/ðɪ-sɪz/</span> · is it <span class="ipa">/ɪ-zɪt/</span> · of a <span class="ipa">/ə-və/</span> · what's this <span class="ipa">/wɒts-ðɪs/</span></p>
+    </div>
+    <div class="col card">
+      <h3>🎙️ 模仿朗读评分点</h3>
+      <ul>
+        <li><b>th</b> 舌位：the, this, three, think</li>
+        <li><b>v/w</b>：very, village, visit vs we, with, will</li>
+        <li>词尾 <b>-s/-es</b> 是否发出、清浊是否正确</li>
+        <li><b>/h/</b> 是否过重</li>
+      </ul>
+      <div class="ok" style="margin-top:14px">✍️ 语法填空 / 改错延伸：三单 -s、复数 -s 漏写——读音规则讲清楚后，学生能"听出"自己漏了 s。</div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 板书 -->
+<section class="slide">
+  <span class="tag">板书回顾 · 九宫格</span>
+  <h2>一张图记住九个摩擦音</h2>
+  <div class="grid9">
+    <div class="lab"></div><div class="hd">唇齿</div><div class="hd">齿间</div><div class="hd">齿龈</div><div class="hd">齿龈后</div><div class="hd">声门</div>
+    <div class="lab">💨 清</div><div><span class="ipa cf">/f/</span>fan</div><div><span class="ipa cth">/θ/</span>think</div><div><span class="ipa cs">/s/</span>sun</div><div><span class="ipa csh">/ʃ/</span>ship</div><div><span class="ipa ch">/h/</span>hat</div>
+    <div class="lab">🐝 浊</div><div><span class="ipa cv">/v/</span>van</div><div><span class="ipa cdh">/ð/</span>this</div><div><span class="ipa cz">/z/</span>zoo</div><div><span class="ipa czh">/ʒ/</span>usual</div><div style="color:var(--muted)">—</div>
+  </div>
+  <div class="card" style="margin-top:14px;font-size:19px;line-height:1.8">
+    <b>-s</b>：不抖 /s/ · 抖 /z/ · 嘶嗡 /ɪz/　｜　<b>th</b>：小词 /ð/ · 大词 /θ/ · 元音中间 /ð/　｜　<b>ʃ</b>：sh ti ci su ch　<b>ʒ</b>：-sure -sion -ge
+  </div>
+</section>
+
+<!-- 21 作业 -->
+<section class="slide">
+  <span class="tag">Homework</span>
+  <h2>作业</h2>
+  <div class="row">
+    <div class="col card"><div class="emoji">🎤</div><h3>1. 录音</h3><p>九个音各拖长 3 秒 + 每个音 2 个词。<br>/f/ /v/ 要对着纸片录（看得见纸动）。</p></div>
+    <div class="col card"><div class="emoji">🔎</div><h3>2. 找词</h3><p>在本周课本课文里找出 10 个词尾 -s 的词，标出 /s/ /z/ /ɪz/。</p></div>
+    <div class="col card"><div class="emoji">📝</div><h3>3. 小测</h3><p>14 道辨音题，下节课开头 5 分钟。</p></div>
+    <div class="col card"><div class="emoji">🌪️</div><h3>4. 绕口令</h3><p>选 1 条，下节课挑战本关最好成绩。</p></div>
+  </div>
+  <div class="tt" style="text-align:center;font-size:30px">Fresh fried fish · Three thin thieves · She sells seashells 🎉</div>
+</section>
+
+<div id="bar"></div>
+<div id="num"></div>
+<div class="nav"><button onclick="go(-1)">◀</button><button onclick="go(1)">▶</button></div>
+</div></div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];let i=0;
+function show(n){i=(n+slides.length)%slides.length;slides.forEach((s,k)=>s.classList.toggle('on',k===i));
+  document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+  document.getElementById('num').textContent=(i+1)+' / '+slides.length;location.hash=i+1;}
+function go(d){show(i+d)}
+document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(1)}
+  else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(-1)}
+  else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+  else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+document.querySelectorAll('.rv').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();el.classList.toggle('show')}));
+document.getElementById('deck').addEventListener('click',e=>{if(e.target.closest('.nav,a,.rv'))return;go(e.clientX<innerWidth/2?-1:1)});
+function fit(){const s=Math.min(innerWidth/1280,innerHeight/720)*0.97;document.getElementById('deck').style.transform='scale('+s+')'}
+addEventListener('resize',fit);fit();
+show(Math.max(0,(parseInt(location.hash.slice(1))||1)-1));
+</script>
+</body>
+</html>
