@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>元音音标大闯关 · Vowel Quest</title>
+<style>
+  :root{--bg:#FFF8EC;--card:#fff;--ink:#333;--muted:#777;--orange:#FF8A5B;--yellow:#FFB347;--green:#7AC943;--blue:#2B7DE9;--purple:#9B59B6;--teal:#1ABC9C;--red:#E8551E;--pink:#FF6FA5}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  header{background:linear-gradient(135deg,var(--orange),var(--yellow));color:#fff;padding:22px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  header h1{font-size:30px;font-weight:800}
+  header .sub{font-size:14px;opacity:.9;margin-top:4px}
+  .hud{display:flex;gap:14px;align-items:center;font-weight:700}
+  .hud .pill{background:rgba(255,255,255,.25);padding:8px 16px;border-radius:999px;font-size:16px}
+  main{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
+  .levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+  .lv{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.06);cursor:pointer;border:3px solid transparent;transition:.15s;text-align:center;position:relative}
+  .lv:hover{transform:translateY(-3px)}
+  .lv.active{border-color:var(--orange)}
+  .lv .icon{font-size:34px}
+  .lv .name{font-weight:800;margin-top:6px}
+  .lv .desc{font-size:12px;color:var(--muted);margin-top:4px}
+  .lv .stars{margin-top:6px;font-size:14px;letter-spacing:2px;color:#f5a623}
+  .lv.locked{opacity:.5;cursor:not-allowed}
+  .lv.locked::after{content:'🔒';position:absolute;top:8px;right:10px}
+  .stage{background:var(--card);border-radius:20px;padding:28px;box-shadow:0 6px 18px rgba(0,0,0,.07);min-height:420px}
+  .stage h2{font-size:24px;font-weight:800;margin-bottom:6px}
+  .stage .rule{color:var(--muted);font-size:15px;margin-bottom:20px}
+  .progress{height:10px;background:#f3e5d2;border-radius:5px;overflow:hidden;margin-bottom:22px}
+  .progress > div{height:100%;background:linear-gradient(90deg,var(--green),var(--teal));width:0;transition:.3s}
+  .prompt{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin:10px 0 26px}
+  .big{font-size:56px;font-weight:800;font-family:'Charis SIL','Doulos SIL','Times New Roman',serif;background:#FFF4EC;border-radius:18px;padding:12px 32px;color:var(--red);min-width:150px;text-align:center}
+  .word{font-size:44px;font-weight:800}
+  .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+  .opt{background:#fff;border:3px solid #f3d9b8;border-radius:16px;padding:18px 12px;font-size:28px;font-weight:700;cursor:pointer;transition:.15s;text-align:center;font-family:'Charis SIL','Doulos SIL','Times New Roman',serif;position:relative}
+  .opt small{display:block;font-size:14px;color:var(--muted);font-family:inherit;margin-top:4px}
+  .opt:hover{border-color:var(--orange);transform:translateY(-2px)}
+  .opt.correct{background:#E9F8DD;border-color:var(--green)}
+  .opt.wrong{background:#FDE8E4;border-color:var(--red);animation:shake .3s}
+  .opt:disabled{cursor:default;opacity:.85}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .btn{border:none;border-radius:999px;padding:12px 26px;font-size:17px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.play{background:var(--blue);color:#fff;font-size:22px;padding:16px 30px}
+  .btn.play.playing{animation:pulse .8s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(43,125,233,.5)}50%{box-shadow:0 0 0 14px rgba(43,125,233,0)}}
+  .btn.primary{background:var(--orange);color:#fff}
+  .btn.ghost{background:#f3e5d2;color:var(--ink)}
+  .feedback{min-height:32px;text-align:center;font-size:20px;font-weight:700;margin-top:20px}
+  .feedback.ok{color:var(--green)}.feedback.no{color:var(--red)}
+  .actions{display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+  .bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:10px}
+  .bin{border:3px dashed #f3d9b8;border-radius:16px;padding:14px;min-height:110px;text-align:center;cursor:pointer;transition:.15s;background:#fffaf3}
+  .bin .ph{font-size:30px;font-weight:800;font-family:'Charis SIL','Doulos SIL','Times New Roman',serif;color:var(--red)}
+  .bin .items{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px}
+  .bin .items span{background:#E9F8DD;border-radius:8px;padding:2px 8px;font-size:14px;font-weight:600}
+  .bin:hover{border-color:var(--orange);background:#fff}
+  .bin.correct{border-color:var(--green);border-style:solid}
+  .bin.wrong{border-color:var(--red);animation:shake .3s}
+  .timer{font-size:22px;font-weight:800;color:var(--red)}
+  .result{text-align:center;padding:30px 10px}
+  .result .emoji{font-size:80px}
+  .result h3{font-size:30px;margin:12px 0}
+  .result .stars{font-size:44px;color:#f5a623;letter-spacing:6px;margin:6px 0 14px}
+  .result p{color:var(--muted);font-size:16px}
+  .chart{background:var(--card);border-radius:20px;padding:24px;margin-top:24px;box-shadow:0 6px 18px rgba(0,0,0,.07)}
+  .chart h3{font-weight:800;margin-bottom:12px}
+  .chart .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+  .chart .grid.diph{margin-top:12px}
+  .chip{background:#fffaf3;border:2px solid #f3d9b8;border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;transition:.15s}
+  .chip:hover{border-color:var(--blue);background:#fff}
+  .chip .ph{font-size:24px;font-weight:800;font-family:'Charis SIL','Doulos SIL','Times New Roman',serif;color:var(--red)}
+  .chip .ex{font-size:12px;color:var(--muted);margin-top:2px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;color:#fff;margin-bottom:8px}
+  .hidden{display:none}
+  footer{text-align:center;color:var(--muted);font-size:13px;padding:20px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>🎯 元音音标大闯关 · Vowel Quest</h1>
+    <div class="sub">20 个元音（12 单元音 + 8 双元音）混合练习 · 点击按钮听音 · 六关挑战</div>
+  </div>
+  <div class="hud">
+    <div class="pill">⭐ 总分 <span id="score">0</span></div>
+    <div class="pill">🔥 连击 <span id="combo">0</span></div>
+    <button class="btn ghost" id="resetBtn" style="padding:8px 16px">重置进度</button>
+  </div>
+</header>
+
+<main>
+  <section class="levels" id="levels"></section>
+  <section class="stage" id="stage"></section>
+
+  <section class="chart">
+    <h3>📚 音标速查表（点任意格子可听示范词）</h3>
+    <span class="tag" style="background:var(--blue)">单元音 Monophthongs</span>
+    <div class="grid" id="chartMono"></div>
+    <span class="tag" style="background:var(--purple);margin-top:14px">双元音 Diphthongs</span>
+    <div class="grid diph" id="chartDiph"></div>
+  </section>
+</main>
+<footer>音频：按钮上的 data-audio 可替换为本地 mp3；未配置时自动使用浏览器英式语音朗读。</footer>
+
+<script>
+/* ===================== 数据 ===================== */
+// 每个音标：ipa, 类型, 示范词列表 [word, 是否用于最小对立 pair]
+const PHONEMES = [
+  {ipa:'iː',type:'mono',long:true, words:['sheep','see','tea','green','key']},
+  {ipa:'ɪ', type:'mono',long:false,words:['ship','sit','big','fish','milk']},
+  {ipa:'e', type:'mono',long:false,words:['bed','pen','egg','red','ten']},
+  {ipa:'æ', type:'mono',long:false,words:['cat','bag','hat','map','apple']},
+  {ipa:'ɑː',type:'mono',long:true, words:['car','father','park','arm','star']},
+  {ipa:'ʌ', type:'mono',long:false,words:['cup','sun','bus','duck','run']},
+  {ipa:'ɒ', type:'mono',long:false,words:['hot','dog','box','clock','sock']},
+  {ipa:'ɔː',type:'mono',long:true, words:['door','ball','horse','four','tall']},
+  {ipa:'ʊ', type:'mono',long:false,words:['book','foot','look','put','cook']},
+  {ipa:'uː',type:'mono',long:true, words:['moon','food','blue','shoe','two']},
+  {ipa:'ɜː',type:'mono',long:true, words:['bird','girl','nurse','shirt','word']},
+  {ipa:'ə', type:'mono',long:false,words:['teacher','banana','sofa','about','sister']},
+  {ipa:'eɪ',type:'diph',words:['cake','rain','name','play','face']},
+  {ipa:'aɪ',type:'diph',words:['kite','bike','five','light','eye']},
+  {ipa:'ɔɪ',type:'diph',words:['boy','toy','coin','oil','noise']},
+  {ipa:'aʊ',type:'diph',words:['house','cow','mouth','down','flower']},
+  {ipa:'əʊ',type:'diph',words:['go','boat','nose','yellow','home']},
+  {ipa:'ɪə',type:'diph',words:['ear','near','here','beer','year']},
+  {ipa:'eə',type:'diph',words:['hair','bear','chair','pear','there']},
+  {ipa:'ʊə',type:'diph',words:['tour','pure','sure','poor','cure']},
+];
+// 长短元音最小对立
+const PAIRS = [
+  ['sheep','ship','iː','ɪ'],['seat','sit','iː','ɪ'],['feet','fit','iː','ɪ'],['bean','bin','iː','ɪ'],
+  ['cart','cut','ɑː','ʌ'],['calm','come','ɑː','ʌ'],['heart','hut','ɑː','ʌ'],
+  ['port','pot','ɔː','ɒ'],['caught','cot','ɔː','ɒ'],['sport','spot','ɔː','ɒ'],
+  ['pool','pull','uː','ʊ'],['fool','full','uː','ʊ'],
+  ['bed','bad','e','æ'],['pen','pan','e','æ'],['men','man','e','æ'],
+  ['bird','bad','ɜː','æ'],['cup','cap','ʌ','æ'],['hot','hat','ɒ','æ'],
+];
+// 第五关：音标拼读 → 单词
+const DECODE = [
+  ['kæt','cat',['cut','kite','cot']],['bɪg','big',['bag','beg','bug']],['ʃiːp','sheep',['ship','shop','shape']],
+  ['dʒʌmp','jump',['jam','gem','jeep']],['bəʊt','boat',['bat','bit','bought']],['haʊs','house',['horse','hose','has']],
+  ['kaɪt','kite',['cat','coat','kit']],['bɔːl','ball',['bell','bull','bowl']],['bʌs','bus',['boss','bass','base']],
+  ['keɪk','cake',['cook','kick','cock']],['bʊk','book',['back','bake','beak']],['muːn','moon',['man','men','mine']],
+  ['bɜːd','bird',['bed','bad','beard']],['bɔɪ','boy',['buy','bay','bee']],['tʃeə','chair',['cheer','chore','char']],
+  ['nɪə','near',['nor','new','know']],['hɒt','hot',['hat','hut','heat']],['reɪn','rain',['run','ran','ruin']],
+];
+const byIpa = Object.fromEntries(PHONEMES.map(p=>[p.ipa,p]));
+
+/* ===================== 音频 ===================== */
+// 优先播放 data-audio 指定的文件，否则用 TTS
+const AUDIO_BASE = 'audio/'; // 若有 mp3，命名为 audio/sheep.mp3 即可自动使用
+let voice=null;
+function pickVoice(){
+  const vs=speechSynthesis.getVoices();
+  voice = vs.find(v=>/en-GB/i.test(v.lang) && /female|Kate|Serena|Google UK English Female/i.test(v.name))
+       || vs.find(v=>/en-GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || vs[0] || null;
+}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function speak(text,rate=0.85){
+  if(!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  if(voice) u.voice=voice; u.lang='en-GB'; u.rate=rate; u.pitch=1.05;
+  speechSynthesis.speak(u);
+}
+function playWord(word,btn){
+  if(btn){btn.classList.add('playing');setTimeout(()=>btn.classList.remove('playing'),900);}
+  const src=(btn&&btn.dataset.audio)||(AUDIO_BASE+word.toLowerCase()+'.mp3');
+  const a=new Audio(src);
+  a.onerror=()=>speak(word);
+  a.play().catch(()=>speak(word));
+}
+// 简易音效
+const ctx=('AudioContext' in window)?new AudioContext():null;
+function beep(ok){
+  if(!ctx) return; const o=ctx.createOscillator(),g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);
+  o.frequency.value=ok?880:220;o.type=ok?'sine':'sawtooth';
+  g.gain.setValueAtTime(.15,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.3);
+  o.start();o.stop(ctx.currentTime+.3);
+  if(ok){const o2=ctx.createOscillator(),g2=ctx.createGain();o2.connect(g2);g2.connect(ctx.destination);o2.frequency.value=1320;g2.gain.setValueAtTime(.12,ctx.currentTime+.12);g2.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);o2.start(ctx.currentTime+.12);o2.stop(ctx.currentTime+.4);}
+}
+
+/* ===================== 状态 ===================== */
+const state=JSON.parse(localStorage.getItem('vowelQuest')||'{}');
+state.score=state.score||0; state.stars=state.stars||{};
+let combo=0, current=null;
+function save(){localStorage.setItem('vowelQuest',JSON.stringify(state));}
+function addScore(n){state.score+=n;combo++;document.getElementById('score').textContent=state.score;document.getElementById('combo').textContent=combo;save();}
+function breakCombo(){combo=0;document.getElementById('combo').textContent=0;}
+const shuffle=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+const pick=(a,n)=>shuffle(a).slice(0,n);
+const rand=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ===================== 关卡定义 ===================== */
+const LEVELS=[
+  {id:1,icon:'👂',name:'听音识标',desc:'听单词，选它的元音',color:'var(--green)',rounds:10,build:buildListen},
+  {id:2,icon:'🧺',name:'单词分拣',desc:'把单词放进对的音标篓',color:'var(--blue)',rounds:12,build:buildSort},
+  {id:3,icon:'⚔️',name:'长短对决',desc:'ship 还是 sheep？',color:'var(--yellow)',rounds:10,build:buildPair},
+  {id:4,icon:'💎',name:'双元音寻宝',desc:'找出藏着双元音的词',color:'var(--purple)',rounds:8,build:buildOddOne},
+  {id:5,icon:'🔤',name:'拼读解码',desc:'看音标，拼出单词',color:'var(--teal)',rounds:10,build:buildDecode},
+  {id:6,icon:'👑',name:'终极 Boss',desc:'60 秒限时混合挑战',color:'var(--red)',rounds:0,build:buildBoss},
+];
+function unlocked(id){return id===1||state.stars[id-1]>=1;}
+
+function renderLevels(){
+  const el=document.getElementById('levels');el.innerHTML='';
+  LEVELS.forEach(L=>{
+    const d=document.createElement('div');
+    d.className='lv'+(unlocked(L.id)?'':' locked')+(current&&current.id===L.id?' active':'');
+    d.innerHTML=`<div class="icon">${L.icon}</div><div class="name" style="color:${L.color}">第${L.id}关 · ${L.name}</div><div class="desc">${L.desc}</div><div class="stars">${'★'.repeat(state.stars[L.id]||0)}${'☆'.repeat(3-(state.stars[L.id]||0))}</div>`;
+    d.onclick=()=>{if(unlocked(L.id)) startLevel(L); else toast('先通过上一关才能解锁哦！');};
+    el.appendChild(d);
+  });
+}
+function toast(msg){const f=document.querySelector('.feedback');if(f){f.textContent=msg;f.className='feedback no';}}
+
+/* ===================== 通用关卡引擎 ===================== */
+function startLevel(L){
+  current={id:L.id,L,round:0,correct:0,wrong:0};
+  renderLevels(); L.build();
+}
+function frame(L,html){
+  const pct=L.rounds?Math.round(current.round/L.rounds*100):0;
+  document.getElementById('stage').innerHTML=`
+    <span class="tag" style="background:${L.color}">第 ${L.id} 关</span>
+    <h2>${L.icon} ${L.name}</h2>
+    <div class="rule">${L.rule}</div>
+    ${L.rounds?`<div class="progress"><div style="width:${pct}%"></div></div>`:''}
+    ${html}
+    <div class="feedback" id="fb"></div>`;
+}
+function feedback(ok,msg){const f=document.getElementById('fb');if(!f)return;f.textContent=msg;f.className='feedback '+(ok?'ok':'no');}
+function nextOrFinish(build){
+  current.round++;
+  if(current.round>=current.L.rounds) finish(); else setTimeout(build,900);
+}
+function finish(){
+  const total=current.correct+current.wrong;
+  const acc=total?current.correct/total:0;
+  const stars=acc>=0.9?3:acc>=0.7?2:acc>=0.5?1:0;
+  state.stars[current.id]=Math.max(state.stars[current.id]||0,stars); save();
+  const emoji=stars===3?'🏆':stars===2?'🎉':stars===1?'👍':'💪';
+  const words={3:'完美通关！音标小达人！',2:'很棒！再练练就满星了',1:'过关了，还有进步空间',0:'再挑战一次吧，你可以的！'}[stars];
+  document.getElementById('stage').innerHTML=`<div class="result"><div class="emoji">${emoji}</div><h3>${words}</h3><div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div><p>正确 ${current.correct} / 错误 ${current.wrong} · 正确率 ${Math.round(acc*100)}%</p>
+    <div class="actions"><button class="btn primary" onclick="startLevel(LEVELS[${current.id-1}])">🔁 再玩一次</button>${current.id<6?`<button class="btn ghost" onclick="startLevel(LEVELS[${current.id}])">➡️ 下一关</button>`:''}</div></div>`;
+  renderLevels();
+}
+function lockOptions(){document.querySelectorAll('.opt').forEach(b=>b.disabled=true);}
+
+/* ---------- 第1关：听单词选音标 ---------- */
+function buildListen(){
+  const L=LEVELS[0]; L.rule='点击喇叭听单词，从四个音标里选出这个单词的元音。可以反复听。';
+  const target=rand(PHONEMES), word=rand(target.words);
+  const pool=PHONEMES.filter(p=>p!==target);
+  // 干扰项优先选同类（单/双）增加难度
+  const same=pick(pool.filter(p=>p.type===target.type),2), other=pick(pool.filter(p=>!same.includes(p)),1);
+  const opts=shuffle([target,...same,...other]);
+  frame(L,`<div class="prompt"><button class="btn play" id="playBtn" data-audio="">🔊 听单词</button></div>
+    <div class="options">${opts.map(p=>`<button class="opt" data-ipa="${p.ipa}">/${p.ipa}/</button>`).join('')}</div>
+    <div class="actions"><button class="btn ghost" id="hintBtn">💡 提示：看单词</button></div>`);
+  const pb=document.getElementById('playBtn'); pb.onclick=()=>playWord(word,pb); setTimeout(()=>playWord(word,pb),300);
+  document.getElementById('hintBtn').onclick=e=>{e.target.textContent=word;e.target.disabled=true;};
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    lockOptions();
+    if(b.dataset.ipa===target.ipa){b.classList.add('correct');beep(true);addScore(10);current.correct++;feedback(true,`✔ ${word} → /${target.ipa}/`);}
+    else{b.classList.add('wrong');document.querySelector(`.opt[data-ipa="${target.ipa}"]`).classList.add('correct');beep(false);breakCombo();current.wrong++;feedback(false,`✘ ${word} 的元音是 /${target.ipa}/`);}
+    nextOrFinish(buildListen);
+  });
+}
+
+/* ---------- 第2关：单词分拣 ---------- */
+function buildSort(){
+  const L=LEVELS[1]; L.rule='上方出现一个单词（可点击听），把它放进正确的音标篓子。每轮 4 个篓子，共 12 个词。';
+  if(current.round===0){ current.bins=pick(PHONEMES,4); current.queue=shuffle(current.bins.flatMap(p=>pick(p.words,3))); }
+  const word=current.queue[current.round];
+  const target=current.bins.find(p=>p.words.includes(word));
+  frame(L,`<div class="prompt"><button class="btn play" id="playBtn">🔊</button><span class="word">${word}</span></div>
+    <div class="bins">${current.bins.map(p=>`<div class="bin" data-ipa="${p.ipa}"><div class="ph">/${p.ipa}/</div><div class="items" id="bin-${p.ipa}">${(current.done||[]).filter(d=>d.ipa===p.ipa).map(d=>`<span>${d.w}</span>`).join('')}</div></div>`).join('')}</div>`);
+  const pb=document.getElementById('playBtn'); pb.onclick=()=>playWord(word,pb); setTimeout(()=>playWord(word,pb),300);
+  document.querySelectorAll('.bin').forEach(bin=>bin.onclick=()=>{
+    document.querySelectorAll('.bin').forEach(x=>x.onclick=null);
+    current.done=current.done||[];
+    if(bin.dataset.ipa===target.ipa){bin.classList.add('correct');beep(true);addScore(10);current.correct++;current.done.push({w:word,ipa:target.ipa});feedback(true,`✔ ${word} 放进 /${target.ipa}/`);}
+    else{bin.classList.add('wrong');document.querySelector(`.bin[data-ipa="${target.ipa}"]`).classList.add('correct');beep(false);breakCombo();current.wrong++;current.done.push({w:word,ipa:target.ipa});feedback(false,`✘ ${word} 应该在 /${target.ipa}/`);}
+    nextOrFinish(buildSort);
+  });
+}
+
+/* ---------- 第3关：长短元音最小对立 ---------- */
+function buildPair(){
+  const L=LEVELS[2]; L.rule='两个单词只差一个元音！听音频，选出你听到的那个词。注意长音要"拉长"哦。';
+  const [a,b,ia,ib]=rand(PAIRS);
+  const heardA=Math.random()<.5, word=heardA?a:b, ipa=heardA?ia:ib;
+  frame(L,`<div class="prompt"><button class="btn play" id="playBtn">🔊 听一听</button></div>
+    <div class="options" style="grid-template-columns:1fr 1fr;max-width:560px;margin:0 auto">
+      <button class="opt" data-w="${a}">${a}<small>/${ia}/</small></button>
+      <button class="opt" data-w="${b}">${b}<small>/${ib}/</small></button></div>
+    <div class="actions"><button class="btn ghost" id="cmpBtn">🎧 对比听两个词</button></div>`);
+  const pb=document.getElementById('playBtn'); pb.onclick=()=>playWord(word,pb); setTimeout(()=>playWord(word,pb),300);
+  document.getElementById('cmpBtn').onclick=()=>{playWord(a);setTimeout(()=>playWord(b),1100);};
+  document.querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+    lockOptions();
+    if(btn.dataset.w===word){btn.classList.add('correct');beep(true);addScore(15);current.correct++;feedback(true,`✔ 你听到的是 ${word} /${ipa}/`);}
+    else{btn.classList.add('wrong');document.querySelector(`.opt[data-w="${word}"]`).classList.add('correct');beep(false);breakCombo();current.wrong++;feedback(false,`✘ 其实是 ${word} /${ipa}/，再对比听一次`);}
+    nextOrFinish(buildPair);
+  });
+}
+
+/* ---------- 第4关：双元音寻宝（找不同） ---------- */
+function buildOddOne(){
+  const L=LEVELS[3]; L.rule='四个单词里有三个是同一个元音，只有一个"宝藏词"元音不同。找出它！可点击每个词听音。';
+  const same=rand(PHONEMES), odd=rand(PHONEMES.filter(p=>p!==same));
+  const words=[...pick(same.words,3).map(w=>({w,ipa:same.ipa,odd:false})),{w:rand(odd.words),ipa:odd.ipa,odd:true}];
+  const opts=shuffle(words);
+  frame(L,`<div class="prompt"><span style="font-size:20px;color:var(--muted)">哪个词的元音和其他三个不一样？</span></div>
+    <div class="options">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${o.w}<small>🔊 点我听</small></button>`).join('')}</div>
+    <div class="actions"><button class="btn primary" id="confirmBtn" disabled>✅ 确认选择</button></div>`);
+  let chosen=null;
+  document.querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+    playWord(opts[btn.dataset.i].w,btn);
+    document.querySelectorAll('.opt').forEach(x=>x.style.borderColor='');
+    btn.style.borderColor='var(--blue)'; chosen=+btn.dataset.i; document.getElementById('confirmBtn').disabled=false;
+  });
+  document.getElementById('confirmBtn').onclick=()=>{
+    lockOptions(); document.getElementById('confirmBtn').disabled=true;
+    const btns=document.querySelectorAll('.opt');
+    const oddIdx=opts.findIndex(o=>o.odd);
+    btns.forEach((b,i)=>{b.innerHTML=`${opts[i].w}<small>/${opts[i].ipa}/</small>`;});
+    if(chosen===oddIdx){btns[chosen].classList.add('correct');beep(true);addScore(15);current.correct++;feedback(true,`✔ ${opts[oddIdx].w} 是 /${odd.ipa}/，其他都是 /${same.ipa}/`);}
+    else{btns[chosen].classList.add('wrong');btns[oddIdx].classList.add('correct');beep(false);breakCombo();current.wrong++;feedback(false,`✘ 宝藏是 ${opts[oddIdx].w} /${odd.ipa}/`);}
+    nextOrFinish(buildOddOne);
+  };
+}
+
+/* ---------- 第5关：音标拼读 ---------- */
+function buildDecode(){
+  const L=LEVELS[4]; L.rule='只给你音标，不给声音！先自己拼读出来，再选正确的单词。选完可以听答案验证。';
+  const [ipa,word,dis]=rand(DECODE);
+  const opts=shuffle([word,...dis]);
+  frame(L,`<div class="prompt"><div class="big">/${ipa}/</div></div>
+    <div class="options">${opts.map(w=>`<button class="opt" data-w="${w}">${w}</button>`).join('')}</div>`);
+  document.querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+    lockOptions(); playWord(word);
+    if(btn.dataset.w===word){btn.classList.add('correct');beep(true);addScore(20);current.correct++;feedback(true,`✔ /${ipa}/ = ${word}`);}
+    else{btn.classList.add('wrong');document.querySelector(`.opt[data-w="${word}"]`).classList.add('correct');beep(false);breakCombo();current.wrong++;feedback(false,`✘ /${ipa}/ 是 ${word}`);}
+    nextOrFinish(buildDecode);
+  });
+}
+
+/* ---------- 第6关：限时 Boss ---------- */
+function buildBoss(){
+  const L=LEVELS[5]; L.rule='60 秒内答对越多越好！题型随机混合。答对 +1 秒，答错 −2 秒。';
+  current.time=60; current.rounds=Infinity;
+  frame(L,`<div class="prompt"><span class="timer">⏱ <span id="tm">60</span> s</span><span class="pill" style="background:#f3e5d2;padding:8px 16px;border-radius:999px;font-weight:700">答对 <span id="bc">0</span></span></div><div id="bossQ"></div>`);
+  const tick=setInterval(()=>{
+    current.time--; const t=document.getElementById('tm'); if(!t){clearInterval(tick);return;}
+    t.textContent=Math.max(0,current.time);
+    if(current.time<=0){clearInterval(tick);bossEnd();}
+  },1000);
+  current.tick=tick; bossQuestion();
+}
+function bossQuestion(){
+  const q=document.getElementById('bossQ'); if(!q) return;
+  const type=rand(['listen','decode','pair']);
+  let html='',answer,say;
+  if(type==='listen'){const t=rand(PHONEMES);say=rand(t.words);answer=t.ipa;const opts=shuffle([t,...pick(PHONEMES.filter(p=>p!==t),3)]);
+    html=`<div class="prompt"><button class="btn play" id="playBtn">🔊 听单词</button></div><div class="options">${opts.map(p=>`<button class="opt" data-a="${p.ipa}">/${p.ipa}/</button>`).join('')}</div>`;}
+  else if(type==='decode'){const [ipa,w,dis]=rand(DECODE);answer=w;say=null;
+    html=`<div class="prompt"><div class="big">/${ipa}/</div></div><div class="options">${shuffle([w,...dis]).map(x=>`<button class="opt" data-a="${x}">${x}</button>`).join('')}</div>`;}
+  else {const [a,b]=rand(PAIRS);say=Math.random()<.5?a:b;answer=say;
+    html=`<div class="prompt"><button class="btn play" id="playBtn">🔊 听一听</button></div><div class="options" style="grid-template-columns:1fr 1fr;max-width:500px;margin:0 auto"><button class="opt" data-a="${a}">${a}</button><button class="opt" data-a="${b}">${b}</button></div>`;}
+  q.innerHTML=html;
+  const pb=document.getElementById('playBtn'); if(pb){pb.onclick=()=>playWord(say,pb);setTimeout(()=>playWord(say,pb),200);}
+  q.querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+    q.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+    if(btn.dataset.a===answer){btn.classList.add('correct');beep(true);addScore(10);current.correct++;current.time+=1;document.getElementById('bc').textContent=current.correct;}
+    else{btn.classList.add('wrong');q.querySelector(`.opt[data-a="${answer}"]`).classList.add('correct');beep(false);breakCombo();current.wrong++;current.time-=2;}
+    setTimeout(bossQuestion,600);
+  });
+}
+function bossEnd(){
+  clearInterval(current.tick);
+  const n=current.correct, stars=n>=20?3:n>=12?2:n>=6?1:0;
+  state.stars[6]=Math.max(state.stars[6]||0,stars); save();
+  document.getElementById('stage').innerHTML=`<div class="result"><div class="emoji">${stars===3?'👑':stars>=1?'🎉':'💪'}</div><h3>时间到！答对 ${n} 题</h3><div class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div><p>正确 ${current.correct} · 错误 ${current.wrong}（20 题三星 · 12 题两星 · 6 题一星）</p>
+    <div class="actions"><button class="btn primary" onclick="startLevel(LEVELS[5])">🔁 再战 Boss</button><button class="btn ghost" onclick="startLevel(LEVELS[0])">⏮ 回到第 1 关</button></div></div>`;
+  renderLevels();
+}
+
+/* ===================== 速查表 ===================== */
+function renderChart(){
+  const m=document.getElementById('chartMono'),d=document.getElementById('chartDiph');
+  PHONEMES.forEach(p=>{
+    const c=document.createElement('div');c.className='chip';
+    c.innerHTML=`<div class="ph">/${p.ipa}/</div><div class="ex">${p.words[0]}</div>`;
+    c.onclick=()=>{playWord(p.words[0]);setTimeout(()=>playWord(p.words[1]),1000);};
+    (p.type==='mono'?m:d).appendChild(c);
+  });
+}
+
+/* ===================== 初始化 ===================== */
+document.getElementById('resetBtn').onclick=()=>{if(confirm('清空所有分数和星星？')){localStorage.removeItem('vowelQuest');location.reload();}};
+document.getElementById('score').textContent=state.score;
+renderLevels(); renderChart();
+document.getElementById('stage').innerHTML=`<div class="result"><div class="emoji">🎮</div><h3>欢迎来到元音王国！</h3><p>点击上方任意已解锁的关卡开始。每关达到 50% 正确率解锁下一关，90% 以上拿三星。</p><p style="margin-top:8px">建议课堂玩法：两位同学轮流答题，比谁的连击更高；Boss 关全班一起抢答。</p><div class="actions"><button class="btn primary" onclick="startLevel(LEVELS[0])">🚀 开始第 1 关</button></div></div>`;
+</script>
+</body>
+</html>
