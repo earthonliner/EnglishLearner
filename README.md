@@ -6,6 +6,8 @@
 
 - [`lesson-plans/our-world-starter-phonics-24-lessons.docx`](lesson-plans/our-world-starter-phonics-24-lessons.docx)
   Our World Starter × Phonics 1 故事化启蒙课程（24 课修订版）：L1 直接进入 Unit 1，短元音前置，L2 开始 CVC，并采用有情节的绘本。
+- [`lesson-plans/our-world-starter-lesson1-my-school.pptx`](lesson-plans/our-world-starter-lesson1-my-school.pptx)
+  Starter 第 1 课 `My School Adventure`：90 分钟互动课件，含词汇、句型、Phonics、原创故事、离堂任务和可打印词卡。
 - [`lesson-plans/our-world-1-phonics-24-lessons.docx`](lesson-plans/our-world-1-phonics-24-lessons.docx)
   Our World 1 × Phonics 课程大纲。
 - [`lesson-plans/our-world-starter-phonics-syllabus.docx`](lesson-plans/our-world-starter-phonics-syllabus.docx)
@@ -59,3 +61,5 @@
 ```bash
 python3 scripts/build_starter_phonics_syllabus.py
 ```
+
+`scripts/build_starter_lesson1_deck.py` 用于生成 Starter 第 1 课 PPTX。
