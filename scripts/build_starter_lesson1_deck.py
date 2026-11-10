@@ -192,7 +192,7 @@ def label_card(slide, x, y, w, h, title, color=WHITE, accent=TEAL, subtitle=None
 def draw_book(slide, x, y, scale=1, color=SKY):
     rect(slide, x, y, 1.15 * scale, 0.82 * scale, color, NAVY, False)
     rect(slide, x + 0.53 * scale, y + 0.03 * scale, 0.05 * scale, 0.76 * scale, WHITE, WHITE, False)
-    text(slide, "A", x + 0.1 * scale, y + 0.12 * scale, 0.38 * scale, 0.35 * scale, 16 * scale, WHITE, True, PP_ALIGN.CENTER)
+    text(slide, "★", x + 0.1 * scale, y + 0.12 * scale, 0.38 * scale, 0.35 * scale, 15 * scale, WHITE, True, PP_ALIGN.CENTER)
     return 1.15 * scale, 0.82 * scale
 
 
@@ -352,7 +352,7 @@ def build():
     prs.core_properties.title = "Lesson 1: My School Adventure"
     prs.core_properties.subject = "Our World Starter × Phonics 1"
     prs.core_properties.author = "EnglishLearner"
-    prs.core_properties.keywords = "My School, Starter, phonics, p, short a, CVC preparation"
+    prs.core_properties.keywords = "My School, Starter, phonics, p, b, oral blending"
 
     # 1 Cover
     slide = prs.slides.add_slide(prs.slide_layouts[6])
@@ -360,7 +360,7 @@ def build():
     rect(slide, 0.62, 0.52, 2.25, 0.45, TEAL, TEAL)
     text(slide, "OUR WORLD STARTER · L1", 0.72, 0.58, 2.05, 0.25, 10, WHITE, True, PP_ALIGN.CENTER)
     text(slide, "My School\nAdventure!", 0.75, 1.35, 6.2, 2.0, 38, NAVY, True)
-    text(slide, "Words • Speaking • Sound Detectives • Story", 0.82, 3.55, 6.0, 0.5, 18, TEAL_DARK, True)
+    text(slide, "8 School Words • Full Sentences • /p/ Sound Detective • Story", 0.82, 3.55, 6.2, 0.5, 16.5, TEAL_DARK, True)
     draw_bag(slide, 8.55, 1.3, 1.55, TEAL)
     draw_pencil(slide, 7.9, 1.45, 1.25)
     draw_book(slide, 10.35, 3.95, 1.3)
@@ -371,9 +371,9 @@ def build():
     # 2 Outcomes
     slide = new_slide(prs, "WELCOME", "Today I can…", "Three things to take home after Lesson 1", CORAL, cue="Point to each badge; children repeat the short promise.", time_label="0–3′")
     outcomes = [
-        ("8", "school words", SKY, "I can name it."),
+        ("8", "school words", SKY, "book, pencil, pen, crayon…"),
         ("Q+A", "one full sentence", YELLOW, "What is it? It’s a…"),
-        ("p · a", "two sounds", MINT, "I can hear it."),
+        ("/p/", "sound detective", MINT, "pen • pencil • paper (+ /b/ book)"),
     ]
     for i, (big, title_value, bg, small) in enumerate(outcomes):
         x = 0.75 + i * 4.15
@@ -563,88 +563,99 @@ def build():
     text(slide, "BOOK!   PENCIL!   DESK!   CHAIR!", 2.1, 4.42, 9.1, 0.45, 26, NAVY, True, PP_ALIGN.CENTER)
 
     # 18 /p/ detective
-    slide = new_slide(prs, "PHONICS", "Sound Detective: /p/", "Not the letter name “pee” — a quick, quiet /p/.", CORAL, cue="Hold tissue before lips. Say /p/ without adding ‘uh’. Children feel the puff.", time_label="45–49′")
-    draw_big_letter(slide, "p", 1.0, 2.15, 2.5, YELLOW, "sound /p/")
-    rect(slide, 4.4, 2.2, 7.1, 2.7, WHITE, WHITE)
-    text(slide, "Lips together", 4.8, 2.58, 2.0, 0.45, 21, NAVY, True)
-    text(slide, "→", 6.7, 2.58, 0.7, 0.45, 24, CORAL, True, PP_ALIGN.CENTER)
-    text(slide, "tiny puff of air", 7.4, 2.58, 2.7, 0.45, 21, NAVY, True)
-    rect(slide, 4.8, 3.45, 5.9, 0.62, PALE_BLUE, PALE_BLUE)
-    text(slide, "/p/  /p/  /p/", 5.0, 3.56, 5.5, 0.36, 26, CORAL, True, PP_ALIGN.CENTER)
-    text(slide, "Try it with a tissue.", 5.1, 4.32, 5.3, 0.36, 16, MUTED, True, PP_ALIGN.CENTER)
+    slide = new_slide(prs, "PHONICS", "Sound Detective: /p/", "Not the letter name “pee” — a quick, quiet puff /p/.", CORAL, cue="Hold a tissue in front of your lips. Say /p/ cleanly without adding ‘uh’. Let every child make the tissue dance.", time_label="45–48′")
+    draw_big_letter(slide, "p", 0.95, 2.1, 2.45, YELLOW, "sound /p/")
+    rect(slide, 4.15, 2.08, 8.2, 3.65, WHITE, WHITE)
+    text(slide, "1. Lips together", 4.55, 2.38, 2.35, 0.45, 20, NAVY, True)
+    text(slide, "→", 6.95, 2.38, 0.55, 0.45, 24, CORAL, True, PP_ALIGN.CENTER)
+    text(slide, "2. Quick puff of air", 7.55, 2.38, 2.8, 0.45, 20, NAVY, True)
+    text(slide, "→", 10.35, 2.38, 0.45, 0.45, 24, CORAL, True, PP_ALIGN.CENTER)
+    text(slide, "3. Voice OFF", 10.8, 2.38, 1.35, 0.45, 18, TEAL_DARK, True)
+    rect(slide, 4.55, 3.22, 7.35, 0.72, PALE_BLUE, PALE_BLUE)
+    text(slide, "/p/   /p/   /p/   —   make the tissue dance!", 4.75, 3.35, 6.95, 0.42, 23, CORAL, True, PP_ALIGN.CENTER)
+    text(slide, "Tip: Today we only hunt beginning sounds — no confusing vowel rules!", 4.65, 4.35, 7.15, 0.45, 15, MUTED, True, PP_ALIGN.CENTER)
 
-    # 19 p sort
-    slide = new_slide(prs, "HEAR IT", "Does it start with /p/?", "Thumbs up or hands on head.", SKY, cue="Say words without showing labels first. Reveal pictures as confirmation.", time_label="49–53′")
+    # 19 /p/ in our school bag
+    slide = new_slide(prs, "WORD MATCH", "/p/ Lives in Our School Bag!", "Three of today’s school words start with /p/!", TEAL, cue="Hold up the real pen, pencil, and paper. Children tap their lips three times before saying each word: /p/-/p/-/p/ pen!", time_label="48–52′")
+    p_cards = [
+        ("pen", "/p/ - /p/ - pen", MINT),
+        ("pencil", "/p/ - /p/ - pencil", PALE_YELLOW),
+        ("paper", "/p/ - /p/ - paper", PALE_BLUE),
+    ]
+    for i, (kind, chant, bg) in enumerate(p_cards):
+        x = 0.8 + i * 4.05
+        object_card(slide, kind, kind, x, 1.95, 3.55, 2.75, bg, True, 1.18)
+        rect(slide, x + 0.25, 4.92, 3.05, 0.58, WHITE, TEAL)
+        text(slide, chant, x + 0.3, 5.02, 2.95, 0.36, 18, NAVY, True, PP_ALIGN.CENTER)
+    text(slide, "Bonus friend:  /p/ - /p/ - Pip the Puppy!", 3.2, 5.85, 6.9, 0.45, 18, CORAL, True, PP_ALIGN.CENTER)
+
+    # 20 p sort
+    slide = new_slide(prs, "HEAR IT", "Does it start with /p/?", "Thumbs up for /p/ • Hands on head for NOT /p/.", SKY, cue="Say each word aloud before pointing. Focus strictly on the FIRST sound by ear.", time_label="52–55′")
     p_words = [("pen", "pen"), ("pencil", "pencil"), ("paper", "paper")]
-    no_words = [("book", "book"), ("desk", "desk"), ("chair", "chair")]
+    no_words = [("book", "book"), ("crayon", "crayon"), ("chair", "chair")]
     rect(slide, 0.75, 1.95, 5.8, 4.2, MINT, MINT)
     rect(slide, 6.78, 1.95, 5.8, 4.2, PALE_CORAL, PALE_CORAL)
-    text(slide, "YES  /p/", 1.1, 2.15, 5.1, 0.45, 22, TEAL_DARK, True, PP_ALIGN.CENTER)
-    text(slide, "NO  /p/", 7.15, 2.15, 5.1, 0.45, 22, CORAL, True, PP_ALIGN.CENTER)
+    text(slide, "YES  /p/  (Thumbs Up)", 1.0, 2.15, 5.3, 0.45, 21, TEAL_DARK, True, PP_ALIGN.CENTER)
+    text(slide, "NO  /p/  (Hands on Head)", 6.95, 2.15, 5.4, 0.45, 21, CORAL, True, PP_ALIGN.CENTER)
     for i, (kind, label) in enumerate(p_words):
         object_card(slide, kind, label, 1.0 + i * 1.78, 3.0, 1.55, 2.15, WHITE, True, 0.7)
     for i, (kind, label) in enumerate(no_words):
         object_card(slide, kind, label, 7.03 + i * 1.78, 3.0, 1.55, 2.15, WHITE, True, 0.7)
 
-    # 20 sound hunt
-    slide = new_slide(prs, "HUNT", "Find three /p/ things!", "Point. Say. Place a sticky note.", TEAL, cue="Pairs search the room or picture cards for pen, pencil, paper. 45 seconds only.", time_label="53–55′")
-    text(slide, "/p/", 0.95, 2.1, 2.8, 1.5, 72, CORAL, True, PP_ALIGN.CENTER)
-    for i in range(3):
-        rect(slide, 4.15 + i * 2.55, 2.25, 1.85, 1.85, YELLOW, YELLOW)
-        text(slide, "?", 4.15 + i * 2.55, 2.55, 1.85, 0.8, 46, NAVY, True, PP_ALIGN.CENTER)
-    text(slide, "pen  •  pencil  •  paper", 3.8, 4.75, 7.8, 0.65, 28, NAVY, True, PP_ALIGN.CENTER)
-    rect(slide, 3.5, 5.65, 8.4, 0.42, PALE_BLUE, PALE_BLUE)
-    text(slide, "Challenge: Can you think of one more /p/ word?", 3.65, 5.71, 8.1, 0.27, 13, MUTED, True, PP_ALIGN.CENTER)
+    # 21 Lip partners /p/ vs /b/
+    slide = new_slide(prs, "LIP PARTNERS", "Same lips! Puff /p/ vs Buzz /b/", "Both use two lips — feel the difference with your hand.", YELLOW, cue="Have children hold a tissue in one hand and touch their throat with the other. /p/ moves the tissue; /b/ buzzes the throat (book, bag).", time_label="55–58′")
+    rect(slide, 0.8, 1.95, 5.65, 4.25, PALE_YELLOW, PALE_YELLOW)
+    draw_big_letter(slide, "p", 1.15, 2.25, 1.65, YELLOW, "quiet puff")
+    text(slide, "/p/  Voice OFF", 3.05, 2.3, 3.1, 0.45, 22, CORAL, True)
+    text(slide, "Tissue dances!\npen • pencil • paper", 3.05, 2.9, 3.15, 0.95, 17, NAVY, True)
+    draw_pen(slide, 1.55, 4.35, 0.95, TEAL)
+    draw_pencil(slide, 2.85, 4.85, 0.95, YELLOW)
+    draw_paper(slide, 4.75, 4.35, 0.82)
 
-    # 21 short a
-    slide = new_slide(prs, "PHONICS", "Meet short /a/", "Open your mouth wide: /a/ /a/ apple.", YELLOW, cue="Keep it short /æ/, not the letter name ‘A’. Use mirror or partner mouth check.", time_label="55–60′")
-    draw_big_letter(slide, "a", 1.0, 2.15, 2.5, SKY, "short /a/")
-    examples = [
-        ("APPLE", "round mouth", CORAL),
-        ("ANT", "tiny steps", TEAL),
-        ("ALLIGATOR", "big snap", GREEN),
+    rect(slide, 6.88, 1.95, 5.65, 4.25, PALE_BLUE, PALE_BLUE)
+    draw_big_letter(slide, "b", 7.23, 2.25, 1.65, SKY, "throat buzz")
+    text(slide, "/b/  Voice ON", 9.13, 2.3, 3.1, 0.45, 22, TEAL_DARK, True)
+    text(slide, "Throat buzzes!\nbook • bag", 9.13, 2.9, 3.15, 0.95, 17, NAVY, True)
+    draw_book(slide, 7.75, 4.55, 1.08, SKY)
+    draw_bag(slide, 9.85, 4.1, 0.82, TEAL)
+
+    # 22 Pop or Bounce game
+    slide = new_slide(prs, "GAME 4", "Pop for /p/! Bounce for /b/!", "Hear the first sound and do the move.", CORAL, cue="Call out in random order: pen, book, pencil, bag, paper, Pip! Add desk/chair as ‘Freeze!’ trick words.", time_label="58–62′")
+    cards = [
+        ("p", "POP UP!", "/p/  pen • pencil • paper", PALE_YELLOW, YELLOW),
+        ("b", "BOUNCE!", "/b/  book • bag", PALE_BLUE, SKY),
+        ("!", "FREEZE!", "desk • chair • crayon • eraser", PALE_CORAL, CORAL),
     ]
-    for i, (word, action, color) in enumerate(examples):
-        x = 4.15 + i * 2.7
-        rect(slide, x, 2.15, 2.25, 2.75, WHITE, WHITE)
-        circle(slide, x + 0.62, 2.55, 1.0, color, color)
-        text(slide, "a", x + 0.62, 2.72, 1.0, 0.5, 29, WHITE, True, PP_ALIGN.CENTER)
-        text(slide, word, x + 0.18, 3.75, 1.9, 0.38, 16, NAVY, True, PP_ALIGN.CENTER)
-        text(slide, action, x + 0.18, 4.25, 1.9, 0.28, 11, MUTED, False, PP_ALIGN.CENTER)
-    text(slide, "Quick. Short. Smile a little.", 4.5, 5.45, 6.85, 0.5, 21, CORAL, True, PP_ALIGN.CENTER)
+    for i, (badge, move, words_str, bg, accent) in enumerate(cards):
+        x = 0.78 + i * 4.12
+        rect(slide, x, 2.0, 3.55, 3.95, bg, bg)
+        draw_big_letter(slide, badge, x + 1.0, 2.22, 1.55, accent)
+        text(slide, move, x + 0.25, 4.02, 3.05, 0.55, 24, NAVY, True, PP_ALIGN.CENTER)
+        text(slide, words_str, x + 0.2, 4.75, 3.15, 0.75, 15.5, NAVY, True, PP_ALIGN.CENTER)
 
-    # 22 p or a movement
-    slide = new_slide(prs, "GAME 4", "/p/ or /a/?", "Hear the sound. Do the move.", CORAL, cue="Say one sound only, then use mixed words: pen, apple, paper, ant. Do not show the letter first.", time_label="60–63′")
-    rect(slide, 0.95, 2.0, 5.25, 3.65, PALE_YELLOW, PALE_YELLOW)
-    draw_big_letter(slide, "p", 1.5, 2.55, 1.55, YELLOW)
-    text(slide, "PAT YOUR KNEES", 3.35, 2.7, 2.35, 0.9, 22, NAVY, True, PP_ALIGN.CENTER)
-    text(slide, "/p/ /p/ /p/", 3.25, 4.05, 2.55, 0.55, 24, CORAL, True, PP_ALIGN.CENTER)
-    rect(slide, 7.1, 2.0, 5.25, 3.65, PALE_BLUE, PALE_BLUE)
-    draw_big_letter(slide, "a", 7.65, 2.55, 1.55, SKY)
-    text(slide, "OPEN YOUR ARMS", 9.5, 2.7, 2.35, 0.9, 22, NAVY, True, PP_ALIGN.CENTER)
-    text(slide, "/a/ /a/ /a/", 9.4, 4.05, 2.55, 0.55, 24, TEAL_DARK, True, PP_ALIGN.CENTER)
+    # 23 Robot talk oral blending
+    slide = new_slide(prs, "EAR BLENDING", "Robot Talk: Push the Sounds Together!", "Listen to the robot. Say the whole school word fast!", PURPLE, cue="Purely oral blending prepares children for L2 CVC (pat, bat, tap) without showing confusing vowel spellings today.", time_label="62–66′")
+    robot_items = [
+        ("/p/  -  /e/  -  /n/", "pen!", "pen", MINT),
+        ("/b/  -  /ʊ/  -  /k/", "book!", "book", PALE_BLUE),
+        ("/d/  -  /e/  -  /s/  -  /k/", "desk!", "desk", PALE_YELLOW),
+    ]
+    for i, (segmented, whole, kind, bg) in enumerate(robot_items):
+        y = 1.98 + i * 1.45
+        rect(slide, 0.85, y, 11.65, 1.2, bg, bg)
+        text(slide, "ROBOT:   " + segmented, 1.15, y + 0.25, 5.25, 0.65, 22, NAVY, True)
+        text(slide, "→", 6.55, y + 0.25, 0.65, 0.65, 26, CORAL, True, PP_ALIGN.CENTER)
+        text(slide, whole, 7.35, y + 0.25, 2.1, 0.65, 25, TEAL_DARK, True, PP_ALIGN.CENTER)
+        draw_object(slide, kind, 10.15, y + 0.12, 0.78)
+    text(slide, "Next lesson (L2): we meet short /a/ and blend pat • bat • tap!", 2.2, 6.32, 8.9, 0.35, 13.5, MUTED, True, PP_ALIGN.CENTER)
 
-    # 23 sound slide
-    slide = new_slide(prs, "BLEND PREP", "Build a Sound Road", "Touch each sound. Then slide.", PURPLE, cue="This is oral blending preparation, not a word to memorize. Keep sounds clean and separate first.", time_label="63–67′")
-    draw_big_letter(slide, "p", 1.2, 2.25, 2.2, YELLOW, "/p/")
-    rect(slide, 3.75, 3.15, 4.0, 0.18, TEAL, TEAL, False)
-    for i in range(4):
-        circle(slide, 3.75 + i * 1.25, 2.96, 0.55, TEAL, TEAL)
-    text(slide, "slide the sound →", 4.3, 2.35, 3.0, 0.42, 17, TEAL_DARK, True, PP_ALIGN.CENTER)
-    draw_big_letter(slide, "a", 8.4, 2.25, 2.2, SKY, "/a/")
-    rich_text(slide, [
-        ("/p/  …  /a/", NAVY, True, 28),
-        ("     then     ", MUTED, False, 18),
-        ("/p-a/", CORAL, True, 30),
-    ], 3.3, 5.15, 6.8, 0.65, 28, PP_ALIGN.CENTER)
-
-    # 24 floor road
-    slide = new_slide(prs, "GAME 5", "Walk the Sound Road!", "Step • Say • Slide", TEAL, cue="Put printed p and a cards on floor 1 metre apart. One child steps; class voices the sound.", time_label="67–70′")
+    # 24 Sound basket relay
+    slide = new_slide(prs, "GAME 5", "Sound Basket Relay!", "Pick an object • Say the first sound • Drop it in the right basket!", TEAL, cue="Place the printed p and b cards (Slide 35) on two baskets or floor hoops. Two children race safely per round.", time_label="66–70′")
     steps = [
-        ("1", "STEP", "p", YELLOW),
-        ("2", "SAY", "/p/", PALE_YELLOW),
-        ("3", "STEP", "a", SKY),
-        ("4", "SLIDE", "/p-a/", MINT),
+        ("1", "PICK", "one object", YELLOW),
+        ("2", "SAY", "/p/ or /b/", PALE_YELLOW),
+        ("3", "SPEAK", "It’s a ___.", SKY),
+        ("4", "SORT", "p or b basket", MINT),
     ]
     for i, (n, action, sound, color) in enumerate(steps):
         x = 0.75 + i * 3.05
@@ -652,7 +663,7 @@ def build():
         circle(slide, x + 0.85, 2.5, 0.85, WHITE, NAVY)
         text(slide, n, x + 0.85, 2.7, 0.85, 0.3, 17, NAVY, True, PP_ALIGN.CENTER)
         text(slide, action, x + 0.2, 3.65, 2.15, 0.35, 17, CORAL, True, PP_ALIGN.CENTER)
-        text(slide, sound, x + 0.2, 4.32, 2.15, 0.55, 28, NAVY, True, PP_ALIGN.CENTER)
+        text(slide, sound, x + 0.2, 4.32, 2.15, 0.55, 23, NAVY, True, PP_ALIGN.CENTER)
 
     # 25 story cover
     slide = new_slide(prs, "STORY LAB", "Pip’s First Day", "An original mini-story: predict before you read.", CORAL, cue="Use this as the fallback if the physical Spot book is unavailable. Point to Pip and ask: How does Pip feel?", time_label="70–72′")
@@ -742,7 +753,7 @@ def build():
     doors = [
         ("DOOR 1", "Say 3 words", SKY, "book • pen • chair"),
         ("DOOR 2", "Ask + answer", YELLOW, "What is it? It’s a…"),
-        ("DOOR 3", "Hear /p/ or /a/", MINT, "point to the sound"),
+        ("DOOR 3", "Catch /p/!", MINT, "pen • pencil • paper"),
     ]
     for i, (door, task, color, hint) in enumerate(doors):
         x = 0.78 + i * 4.15
@@ -756,17 +767,17 @@ def build():
     slide = new_slide(prs, "TAKE HOME", "20-second School Bag Challenge", "One small task — no whole-book recording.", TEAL, cue="Model the exact recording before dismissal. Parents only need to hold the phone.", time_label="89–90′")
     draw_bag(slide, 0.9, 2.25, 1.3, TEAL)
     steps = [
-        ("1", "Pick 3 things."),
-        ("2", "Show each thing."),
-        ("3", "Say: It’s a ___."),
+        ("1", "Pick 3 school things."),
+        ("2", "Say: It’s a ___."),
+        ("3", "Bonus: Say /p/ /p/ pen!"),
     ]
     for i, (n, phrase) in enumerate(steps):
         y = 2.05 + i * 1.12
         circle(slide, 4.25, y, 0.72, YELLOW if i == 0 else SKY if i == 1 else CORAL, NAVY)
         text(slide, n, 4.25, y + 0.18, 0.72, 0.28, 16, NAVY, True, PP_ALIGN.CENTER)
         text(slide, phrase, 5.25, y + 0.05, 4.9, 0.55, 23, NAVY, True)
-    rect(slide, 3.95, 5.6, 7.1, 0.55, PALE_YELLOW, PALE_YELLOW)
-    text(slide, "Example: It’s a book. It’s a pencil. It’s a pen.", 4.1, 5.7, 6.8, 0.32, 15.5, NAVY, True, PP_ALIGN.CENTER)
+    rect(slide, 3.65, 5.6, 7.8, 0.55, PALE_YELLOW, PALE_YELLOW)
+    text(slide, "Example: It’s a book. It’s a pencil. /p/ /p/ pen!", 3.8, 5.7, 7.5, 0.32, 15.5, NAVY, True, PP_ALIGN.CENTER)
 
     # 33 printable cards 1
     slide = prs.slides.add_slide(prs.slide_layouts[6])
@@ -792,13 +803,15 @@ def build():
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     slide.background.fill.solid()
     slide.background.fill.fore_color.rgb = rgb(WHITE)
-    add_header(slide, "PRINTABLE", "Floor Sound Cards", printable=True)
+    add_header(slide, "PRINTABLE", "Floor & Basket Sound Cards (p vs b)", printable=True)
     rect(slide, 0.7, 1.05, 5.65, 5.8, PALE_YELLOW, NAVY, False)
-    text(slide, "p", 0.7, 1.55, 5.65, 3.3, 128, NAVY, True, PP_ALIGN.CENTER)
-    text(slide, "/p/  quick puff", 1.0, 5.4, 5.05, 0.55, 22, CORAL, True, PP_ALIGN.CENTER)
+    text(slide, "p", 0.7, 1.45, 5.65, 3.1, 128, NAVY, True, PP_ALIGN.CENTER)
+    text(slide, "/p/  quiet puff", 1.0, 4.85, 5.05, 0.48, 22, CORAL, True, PP_ALIGN.CENTER)
+    text(slide, "pen • pencil • paper", 1.0, 5.5, 5.05, 0.45, 18, NAVY, True, PP_ALIGN.CENTER)
     rect(slide, 6.98, 1.05, 5.65, 5.8, PALE_BLUE, NAVY, False)
-    text(slide, "a", 6.98, 1.55, 5.65, 3.3, 128, NAVY, True, PP_ALIGN.CENTER)
-    text(slide, "short /a/  apple", 7.28, 5.4, 5.05, 0.55, 22, TEAL_DARK, True, PP_ALIGN.CENTER)
+    text(slide, "b", 6.98, 1.45, 5.65, 3.1, 128, NAVY, True, PP_ALIGN.CENTER)
+    text(slide, "/b/  throat buzz", 7.28, 4.85, 5.05, 0.48, 22, TEAL_DARK, True, PP_ALIGN.CENTER)
+    text(slide, "book • bag", 7.28, 5.5, 5.05, 0.45, 18, NAVY, True, PP_ALIGN.CENTER)
 
     # 36 story sequence print
     slide = prs.slides.add_slide(prs.slide_layouts[6])
@@ -829,23 +842,23 @@ def build():
         text(slide, caption, x + 0.4, 5.65, 3.05, 0.6, 24, NAVY, True, PP_ALIGN.CENTER)
 
     # 37 final prep checklist
-    slide = new_slide(prs, "TEACHER PREP", "明天上课：购买与准备清单", "按优先级准备；没有绘本也可直接用本课原创故事替代", CORAL, bg=CREAM, cue=None, time_label=None)
+    slide = new_slide(prs, "TEACHER PREP", "明天上课：购买与准备清单", "按优先级准备；已移除容易混淆的 short /a/，所有语音词直接取自本课书包物品", CORAL, bg=CREAM, cue=None, time_label=None)
     columns = [
         ("① 外卖 / 附近文具店", [
-            "不透明书包或布袋 1 个",
+            "不透明书包或布袋 1 个（兼作 /b/ bag）",
             "书、铅笔、笔、蜡笔、纸、橡皮各 2–4",
             "便利贴 / 美纹纸 / 奖励贴",
-            "纸巾 1 包（/p/ 吹气实验）",
+            "纸巾 1 包（/p/ 吹气 vs /b/ 摸喉咙）",
         ], PALE_YELLOW, YELLOW),
         ("② 家中可找", [
-            "小玩偶 1–2 个（代替 Pip / Mia）",
+            "小玩偶 1–2 个（扮演 Pip / Mia）",
             "蓝牙音箱或手机音乐",
-            "两个篮子 / 纸盒、计时器",
+            "两个篮子 / 纸盒（p 篮 vs b 篮）",
             "桌椅；红、蓝物品作挑战",
         ], PALE_BLUE, SKY),
         ("③ 今晚打印", [
             "词卡：Slides 33–34",
-            "p / a 地板卡：Slide 35",
+            "p / b 分类卡：Slide 35",
             "故事排序卡：Slide 36",
             "建议彩印；也可黑白印后手涂",
         ], MINT, TEAL),

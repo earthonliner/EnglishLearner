@@ -261,8 +261,8 @@ def add_cover(doc):
     add_callout(
         doc,
         "课程承诺",
-        "第一节课就能说出校园物品、使用完整句型，并听辨第一个辅音与短元音；"
-        "不再用两节课重复 ABC。",
+        "第一节课就能说出校园物品、使用完整句型，并听辨与本课生词完全一致的 /p/（及 /b/ 对比）；"
+        "第 2 课引入真短音 /a/ 并进入 CVC 拼读，不再用两节课重复 ABC。",
         MINT,
     )
     meta = [
@@ -288,7 +288,7 @@ def add_revision_section(doc):
     add_bullets(doc, [
         "孩子“认识字母名”不等于“会字母音”，但也不需要从 A–Z 重新教一遍。字母薄弱点改为课堂中的即时诊断与随用随补。",
         "第一节课必须有可复述的学习成果：词汇、句型和声音意识同时出现，让孩子回家能具体地说“今天我会了什么”。",
-        "短元音若集中在中段，会让前期只有孤立辅音，CVC 拼读启动过晚；因此五个短元音在 L1–L9 逐步出现。",
+        "短元音若集中在中段，会让前期只有孤立辅音，CVC 拼读启动过晚；因此五个短元音在 L2–L9 逐步出现，且每个短元音只搭配真正发该短音的词（L1 先学 /p/ 与 /b/ 绑定 pen, pencil, paper, book，避免 paper/eraser/chair 中字母 a 发音不一致带来的困惑）。",
         "有情节的绘本可以比孩子当前解码水平更丰富，但不能把“老师可读”误当成“孩子必须独立读”。两条阅读线需要分开。",
     ])
     doc.add_heading("五项结构性调整", level=2)
@@ -344,20 +344,20 @@ def add_framework_section(doc):
     rows = [
         ("Starter", "实物 school bag 寻宝：book, pencil, pen, crayon, paper, eraser, desk, chair"),
         ("Sentence", "What is it? — It’s a ___.  挑战：It’s a red / blue ___."),
-        ("Phonics", "先听 /p/，再认识短 /a/；做口型、听辨和 p–a sound slide，不要求背字母表"),
-        ("Story", "Spot Goes to School：预测 Spot 带了什么、比较 Spot 和自己的上学准备"),
-        ("Exit", "每人抽 1 件文具，说完整句；指出 p 或 a 的声音卡"),
-        ("带回家", "“Today I can name school things and say It’s a… / 我会说文具，还会用一个完整句。”"),
+        ("Phonics", "聚焦 /p/（pen, pencil, paper）与双唇伙伴 /b/（book, bag）吹纸巾对比 + Robot Talk 合音耳朵训练；不提前塞入 short /a/，彻底避免 paper/eraser/chair 中字母 a 的发音混淆"),
+        ("Story", "Spot Goes to School（或课件内置原创故事 Pip’s First Day）：预测书包物品、发现问题并分享解决"),
+        ("Exit", "每人抽 1 件文具，说完整句；听词辨别 /p/ 开头词"),
+        ("带回家", "“Today I can name 8 school things, say It’s a…, and catch the /p/ sound in pen, pencil, paper!”"),
     ]
     add_grid_table(doc, ["板块", "可执行内容"], rows, [Cm(3.2), Cm(13.5)], 9)
 
 
 def add_phonics_section(doc):
     doc.add_page_break()
-    add_section_heading(doc, "03", "Phonics 螺旋路线", "元音提前、CVC 提前；教材页码用于取材，不等于按页顺序硬推")
+    add_section_heading(doc, "03", "Phonics 螺旋路线", "音词一致、元音前置、L2 进入 CVC；绝不用发音不符的当堂词硬套元音")
     rows = [
-        ("L1", "/p/ + short /a/", "p.12 + p.32", "p–a sound slide；听辨 p / a", "pen, paper"),
-        ("L2", "/b/, /t/", "p.13–14", "pat, bat, tap（第一次 CVC）", "book, table"),
+        ("L1", "/p/（配 /b/ 对比）", "p.12–13", "吹纸巾辨 /p/ vs /b/；Robot Talk 口头合音", "pen, pencil, paper / book"),
+        ("L2", "short /a/ + /t/", "p.32 + p.14", "pat, bat, tap, bag（第一次 CVC，全为真短 /a/）", "bag, tap, table"),
         ("L3", "/d/ + a-family", "p.15", "dad, bad, pad；a 词族小游戏", "desk"),
         ("L4", "short /i/ + /f/", "p.34 + p.24", "fit, fib；a / i 最小对比", "five, favorite"),
         ("L5", "/v/, /g/", "p.25–26", "dig, pig, big, gap, bag", "van, big"),
@@ -439,10 +439,10 @@ def add_reading_section(doc):
 
 LESSONS = [
     ("L1\nU1A", "My School\nbook, pencil, pen, crayon, paper, eraser, desk, chair\nWhat is it? — It’s a ___.",
-     "/p/ + short /a/\n听辨与 p–a sound slide", "Spot Goes to School ①\n封面预测；找 school things",
-     "20 秒：展示 3 件文具，说 It’s a…"),
+     "/p/（配 /b/ 对比）\npen, pencil, paper vs book；Robot Talk 合音", "Spot Goes to School ①\n（或 Pip’s First Day）预测书包物品",
+     "20 秒：展示 3 件文具，说 It’s a… + 找 1 个 /p/ 词"),
     ("L2\nU1B", "green / yellow；3 / 4\nTime for School\nIt’s a green ___.",
-     "/b/ /t/\npat, bat, tap（首批 CVC）", "Spot ②\n图片排序 + 重复句回应",
+     "short /a/ + /t/\npat, bat, tap（首批 CVC）", "Spot ②\n图片排序 + 重复句回应",
      "拼 2 个 CVC + 说 1 个完整句"),
     ("L3\nWorkshop", "Unit 1 任务：Pack my school bag\n问答、分类、听指令；不新增大组词汇",
      "/d/ + a-family\ndad, bad, pad", "Spot ③\n表演第一天上学；三图复述",
@@ -534,8 +534,8 @@ def add_lesson_tables(doc):
             add_callout(
                 doc,
                 "家长可见的 L1 成果",
-                "会说 8 个校园词；会问答 What is it? — It’s a…；能听出 /p/ 与短 /a/；"
-                "能说出 Spot 第一天上学发生了什么。",
+                "会说 8 个校园词；会问答 What is it? — It’s a…；能听出 pen, pencil, paper 的首音 /p/（并区分 book 的 /b/）；"
+                "能说出第一天上学故事里发生了什么。",
                 MINT,
             )
         elif start == 6:
@@ -603,7 +603,7 @@ def add_parent_section(doc):
         doc,
         "TODAY I CAN…",
         "1) I can say: book, pencil, pen…  2) I can ask: What is it?  "
-        "3) I can hear: /p/ and short /a/.  家庭任务：任选 3 件文具完成 20 秒问答。",
+        "3) I can catch the /p/ sound in pen, pencil, paper!  家庭任务：任选 3 件文具完成 20 秒问答。",
         MINT,
     )
     add_bullets(doc, [
