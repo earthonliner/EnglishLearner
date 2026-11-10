@@ -7,7 +7,7 @@
 - [`lesson-plans/our-world-starter-phonics-24-lessons.docx`](lesson-plans/our-world-starter-phonics-24-lessons.docx)
   Our World Starter × Phonics 1 故事化启蒙课程（24 课修订版）：L1 直接进入 Unit 1，短元音前置，L2 开始 CVC，并采用有情节的绘本。
 - [`lesson-plans/our-world-starter-lesson1-my-school.pptx`](lesson-plans/our-world-starter-lesson1-my-school.pptx)
-  Starter 第 1 课 `My School!`（45 页 demo 风格重设计版）：15+ 课堂游戏（Pip says、神秘袋、Show Me、Listen & Do、递进式 What's Missing、Pass the Bag、Peek-a-boo、Freeze Dance、Pop or Bounce、Swat It、Robot Talk、声音篮接力…），内嵌 4 段 Kevin MacLeod 配乐，/p/·/b/ 纸巾与摸喉咙实验，原创故事 Pip's First Day，含中文总结页、教具清单和可打印词卡。
+  Starter 第 1 课 `My School!`（53 页多感官照片版）：真实感照片词卡（AI 生成原创素材）替代矢量图；每个单词一个专属感官入口 + 动作 chant（翻书声、慢速揭示、微距猜物、空中画彩虹、纸飞机、白板魔术、敲击乐、音乐椅子）；每 2 词插入复习游戏（回声山、喂怪兽、心灵感应、唇语）+ 声音袋 + 闪卡 + 递进式 What's Missing；句型与 Phonics 游戏含情绪骰子、Peek-a-boo、猜卡、Pass the Bag、Freeze Dance、Pop or Bounce、Swat It、Robot Talk、触卡接力；每个词 8-10 次跨感官接触 + Day1/Day3/Day7 回家温习计划；内嵌 4 段 Kevin MacLeod 配乐。
 - [`lesson-plans/our-world-1-phonics-24-lessons.docx`](lesson-plans/our-world-1-phonics-24-lessons.docx)
   Our World 1 × Phonics 课程大纲。
 - [`lesson-plans/our-world-starter-phonics-syllabus.docx`](lesson-plans/our-world-starter-phonics-syllabus.docx)
