@@ -285,22 +285,21 @@ def add_passage(doc):
                     end={"val": "single", "sz": "4", "color": TEAL})
     p = cell.paragraphs[0]
     p.paragraph_format.space_after = Pt(3)
-    r = p.add_run("OUR CHANGING CITY")
+    r = p.add_run("THE SCIENCE FAIR")
     r.bold = True
     r.font.size = Pt(10)
     r.font.color.rgb = RGBColor.from_string(NAVY)
     passage = (
-        "Our class usually 1. __________ (do) one big project each term. Last Monday, "
-        "our teacher 2. __________ (announce) a new project called “Our Changing City.” "
-        "We 3. __________ (work) on it this week.\n\n"
-        "Before our first group meeting yesterday, Lily 4. __________ already __________ "
-        "(collect) ten old photos. At 4 p.m., while I 5. __________ (interview) my grandfather, "
-        "my teammates 6. __________ (look) for information online. Grandpa 7. __________ (live) "
-        "in Shenzhen since 1985, so he knows how the city has changed. He 8. __________ (tell) "
-        "me some wonderful stories.\n\n"
-        "Since Tuesday, our group 9. __________ (prepare) a poster. We 10. __________ not "
-        "__________ (finish) it yet, but it already looks great. I think we 11. __________ "
-        "(complete) it tomorrow. Our teacher 12. __________ (help) us with the final part now."
+        "Our science club usually 1. __________ (meet) on Friday afternoons. This term, we "
+        "2. __________ (prepare) for the city science fair. We 3. __________ (work) on a small "
+        "robot for six weeks, and we 4. __________ (already / complete) its body.\n\n"
+        "Last Tuesday, while Mia 5. __________ (test) the motor, it suddenly 6. __________ (stop). "
+        "We discovered that a wire 7. __________ (come) loose before the test began. Our teacher "
+        "8. __________ (show) us how to repair it. Since then, the robot 9. __________ (pass) "
+        "every test.\n\n"
+        "Yesterday, two judges 10. __________ (visit) our school and asked several difficult "
+        "questions. We 11. __________ (answer) all of them. The final is next Friday, and I think "
+        "our robot 12. __________ (surprise) everyone."
     )
     p = cell.add_paragraph(passage)
     p.paragraph_format.space_after = Pt(0)
@@ -313,49 +312,47 @@ def add_passage(doc):
 def build_worksheet():
     doc = Document()
     setup_document(doc)
-    add_title(doc, "TENSE TRAINING", "8 Tenses · Mixed Practice")
+    add_title(doc, "MIXED TENSE CHALLENGE", "A2–B1 · 8 Tenses")
     add_tense_bank(doc)
 
     add_section_heading(
-        doc, "A", "ONE SENTENCE, ONE CLUE",
-        "用括号内动词的正确形式填空。每空 1 分，共 12 分",
+        doc, "A", "GRAMMAR IN CONTEXT",
+        "根据完整语境填写正确时态。每空 1 分，共 12 分",
     )
     items_a = [
-        "Leo usually __________ (practice) basketball after school.",
-        "Listen! Someone __________ (knock) at the door.",
-        "We __________ (visit) the science museum last Saturday.",
-        "I think our team __________ (win) the match tomorrow.",
-        "At 8 p.m. yesterday, I __________ (do) my homework.",
-        "Amy __________ (know) her best friend since primary school.",
-        "By the time we reached the station, the train __________ (leave).",
-        "Ben is tired because he __________ (run) for forty minutes.",
-        "Mum __________ not __________ (finish) dinner yet.",
-        "While I __________ (walk) home, it suddenly began to rain.",
-        "My brother __________ (read) this book twice.",
-        "Sara normally takes the bus, but today she __________ (cycle) to school.",
+        "Evan normally __________ (work) from home, but this month he __________ (work) at the branch office.",
+        "I __________ (wait) for the bus when I __________ (receive) a message saying it was delayed.",
+        "Maya __________ (not finish) her report yet, although she started it yesterday.",
+        "By the time the firefighters arrived, the neighbours __________ (lead) everyone outside.",
+        "I __________ (lend) you my notes if you are absent tomorrow.",
+        "We __________ (know) each other for years, but we only became classmates last term.",
+        "How long __________ (you / prepare) for the speaking competition?",
+        "During our holiday last year, we __________ (take) a night train to Beijing.",
+        "This is the third time I __________ (read) this article, and I still notice something new.",
+        "The days __________ (get) shorter now that winter is approaching.",
     ]
     add_numbered_items(doc, items_a, font_size=10, after=4.0)
 
     add_section_heading(
-        doc, "B", "CHOOSE THE BEST TIMELINE",
-        "选择最佳答案。每题 1 分，共 8 分",
+        doc, "B", "CHOOSE THE BEST MEANING",
+        "结合动作状态与先后关系选择最佳答案。每题 1 分，共 8 分",
     )
     items_b = [
-        "When we arrived, the film ___.\nA starts  B had started  C has started",
-        "Nina ___ for the bus since 9:00.\nA waits  B waited  C has been waiting",
-        "I ___ my keys yesterday.\nA lose  B lost  C have lost",
-        "Look! The dog ___ after the ball.\nA runs  B ran  C is running",
-        "Dad ___ coffee every morning.\nA drinks  B is drinking  C drank",
-        "At midnight, the baby ___ .\nA slept  B was sleeping  C has slept",
-        "We ___ that museum three times.\nA visit  B visited  C have visited",
-        "Don’t worry. I ___ you tonight.\nA call  B called  C will call",
+        "Lena moved here in 2021 and ___ here ever since.\nA lived  B has lived  C is living",
+        "I can’t return the book; I ___ it and I’m only halfway through.\nA read  B have read  C have been reading",
+        "When the principal entered, we ___ the problem.\nA discussed  B were discussing  C have discussed",
+        "When the office closed, every student ___ the form.\nA submitted  B had submitted  C has submitted",
+        "Whenever the alarm rings, the dog ___ under the table.\nA hides  B is hiding  C hid",
+        "The sky is clear. I don’t think it ___ tonight.\nA rains  B rained  C will rain",
+        "You can check your inbox; I ___ the file already.\nA sent  B have sent  C had sent",
+        "Tom didn’t hear me because he ___ to music.\nA listened  B was listening  C has listened",
     ]
     add_mc_grid(doc, items_b)
 
     doc.add_page_break()
 
-    add_title(doc, "TENSE TRAINING", "Page 2 · Apply & Check", score=False)
-    add_tip(doc, "先圈出时间线索，再判断动作是习惯、进行中、已完成，还是先于另一个过去动作。")
+    add_title(doc, "MIXED TENSE CHALLENGE", "Page 2 · Apply & Check", score=False)
+    add_tip(doc, "不要只看单个时间词；先画出动作时间线，再判断是结果、持续、背景动作还是先发生的动作。")
     doc.add_paragraph().paragraph_format.space_after = Pt(0)
 
     add_section_heading(
@@ -363,20 +360,20 @@ def build_worksheet():
         "每句有 1 处时态或动词形式错误，改写正确。每题 1 分，共 8 分",
     )
     items_c = [
-        "She go to the library every Friday.",
-        "Be quiet! The baby sleeps now.",
-        "I have seen Leo yesterday afternoon.",
-        "When the lights went out, we are watching TV.",
-        "By the time I got home, Dad has cooked dinner.",
-        "Sam has practiced the piano for two hours and he is still playing.",
-        "I think people live on Mars one day.",
-        "We didn’t went to the park because it rained.",
+        "I am usually taking the underground to school.",
+        "We have finished the experiment two hours ago.",
+        "Ella has been knowing her best friend since Grade 1.",
+        "By the time we arrived, the guests already went home.",
+        "While I did my homework, my cousin called me.",
+        "Leo has been completing three tasks today.",
+        "Nora waits for the doctor since 4 p.m. and is still there.",
+        "If the last bus has gone, I take a taxi home tonight.",
     ]
     add_correction_grid(doc, items_c)
 
     add_section_heading(
-        doc, "D", "STORY MODE: MIX THE TENSES",
-        "根据时间线与上下文填空。每空 1 分，共 12 分",
+        doc, "D", "MIXED-TENSE CLOZE",
+        "根据整篇语境判断时态。每空 1 分，共 12 分",
     )
     add_passage(doc)
 
@@ -407,35 +404,34 @@ def add_key_section(doc, label, title, body):
 def build_answer_key():
     doc = Document()
     setup_document(doc)
-    add_title(doc, "ANSWER KEY", "Tense Training · Teacher Copy", score=False, identity=False)
+    add_title(doc, "ANSWER KEY", "Mixed Tense Challenge · Teacher Copy", score=False, identity=False)
 
     add_key_section(
-        doc, "A", "ONE SENTENCE, ONE CLUE",
-        "1. practices   2. is knocking   3. visited   4. will win\n"
-        "5. was doing   6. has known   7. had left   8. has been running\n"
-        "9. has not / hasn’t finished   10. was walking   11. has read   12. is cycling",
+        doc, "A", "GRAMMAR IN CONTEXT",
+        "1. works; is working   2. was waiting; received   3. has not / hasn’t finished\n"
+        "4. had led   5. will lend   6. have known   7. have you been preparing\n"
+        "8. took   9. have read   10. are getting",
     )
     add_key_section(
-        doc, "B", "CHOOSE THE BEST TIMELINE",
-        "1. B   2. C   3. B   4. C   5. A   6. B   7. C   8. C",
+        doc, "B", "CHOOSE THE BEST MEANING",
+        "1. B   2. C   3. B   4. B   5. A   6. C   7. B   8. B",
     )
     add_key_section(
         doc, "C", "ERROR HUNT",
-        "1. She goes to the library every Friday.\n"
-        "2. Be quiet! The baby is sleeping now.\n"
-        "3. I saw Leo yesterday afternoon.\n"
-        "4. When the lights went out, we were watching TV.\n"
-        "5. By the time I got home, Dad had cooked dinner.\n"
-        "6. Sam has been practicing the piano for two hours and he is still playing.\n"
-        "7. I think people will live on Mars one day.\n"
-        "8. We didn’t go to the park because it rained.",
+        "1. I usually take the underground to school.\n"
+        "2. We finished the experiment two hours ago.\n"
+        "3. Ella has known her best friend since Grade 1.\n"
+        "4. By the time we arrived, the guests had already gone home.\n"
+        "5. While I was doing my homework, my cousin called me.\n"
+        "6. Leo has completed three tasks today.\n"
+        "7. Nora has been waiting for the doctor since 4 p.m. and is still there.\n"
+        "8. If the last bus has gone, I will take a taxi home tonight.",
     )
     add_key_section(
-        doc, "D", "STORY MODE: MIX THE TENSES",
-        "1. does   2. announced   3. are working   4. had, collected\n"
-        "5. was interviewing   6. were looking   7. has lived   8. told\n"
-        "9. has been preparing   10. have not / haven’t finished   11. will complete\n"
-        "12. is helping",
+        doc, "D", "MIXED-TENSE CLOZE",
+        "1. meets   2. are preparing   3. have been working   4. have already completed\n"
+        "5. was testing   6. stopped   7. had come   8. showed\n"
+        "9. has passed   10. visited   11. answered   12. will surprise",
     )
 
     table = doc.add_table(rows=1, cols=1)
@@ -448,9 +444,9 @@ def build_answer_key():
     r.bold = True
     r.font.color.rgb = RGBColor.from_string(CORAL)
     p = cell.add_paragraph(
-        "Present perfect focuses on a result or life experience; present perfect continuous focuses "
-        "on duration or an activity still in progress. In British English, “practising” is also an "
-        "acceptable spelling of “practicing.”"
+        "Key contrasts: present perfect shows a result or completed number; present perfect continuous "
+        "emphasises duration or an unfinished activity. Stative verbs such as know normally do not use "
+        "continuous forms. Past perfect marks the earlier of two past actions."
     )
     p.paragraph_format.space_after = Pt(0)
     for run in p.runs:
@@ -460,9 +456,9 @@ def build_answer_key():
     p.paragraph_format.space_before = Pt(5)
     p.paragraph_format.space_after = Pt(0)
     r = p.add_run(
-        "Quick diagnosis:  A/B errors → identify time clues first.  "
-        "C errors → review form rules (third-person -s, did + base verb).  "
-        "D errors → draw a timeline and compare actions."
+        "Quick diagnosis: A/B errors → compare the meaning of both actions. "
+        "C errors → review tense contrasts and stative verbs. "
+        "D errors → draw one timeline for the whole passage before choosing forms."
     )
     r.font.size = Pt(8.2)
     r.font.color.rgb = RGBColor.from_string(MID)
