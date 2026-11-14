@@ -17,16 +17,16 @@ OUT_DIR = ROOT / "worksheets"
 WORKSHEET_PATH = OUT_DIR / "tense-practice-a2-b1.docx"
 KEY_PATH = OUT_DIR / "tense-practice-a2-b1-answer-key.docx"
 
-NAVY = "173B57"
-TEAL = "00A6A6"
-PALE_TEAL = "E7F7F6"
-CORAL = "F06B5B"
-PALE_CORAL = "FFF0ED"
-YELLOW = "FFF4C2"
-INK = "243442"
-MID = "607686"
+NAVY = "000000"
+TEAL = "000000"
+PALE_TEAL = "FFFFFF"
+CORAL = "000000"
+PALE_CORAL = "FFFFFF"
+YELLOW = "FFFFFF"
+INK = "000000"
+MID = "000000"
 WHITE = "FFFFFF"
-LIGHT = "E9EFF3"
+LIGHT = "000000"
 
 
 def set_cell_shading(cell, fill):
@@ -90,13 +90,7 @@ def set_repeat_header(section):
     header = section.header
     header.is_linked_to_previous = False
     p = header.paragraphs[0]
-    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     p.paragraph_format.space_after = Pt(0)
-    run = p.add_run("TENSE TRAINING  •  A2–B1")
-    run.font.name = "Aptos"
-    run.font.size = Pt(7.5)
-    run.font.bold = True
-    run.font.color.rgb = RGBColor.from_string(TEAL)
 
 
 def add_page_number(section):
@@ -105,30 +99,29 @@ def add_page_number(section):
     p = footer.paragraphs[0]
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_before = Pt(0)
-    run = p.add_run("—  ")
-    run.font.color.rgb = RGBColor.from_string(MID)
+    run = p.add_run("Page ")
+    run.font.name = "Times New Roman"
+    run.font.size = Pt(9)
     field = OxmlElement("w:fldSimple")
     field.set(qn("w:instr"), "PAGE")
     p._p.append(field)
-    run = p.add_run("  —")
-    run.font.color.rgb = RGBColor.from_string(MID)
 
 
 def setup_document(doc):
     section = doc.sections[0]
     section.page_width = Cm(21)
     section.page_height = Cm(29.7)
-    section.top_margin = Cm(1.15)
-    section.bottom_margin = Cm(1.1)
-    section.left_margin = Cm(1.3)
-    section.right_margin = Cm(1.3)
+    section.top_margin = Cm(1.25)
+    section.bottom_margin = Cm(1.2)
+    section.left_margin = Cm(1.5)
+    section.right_margin = Cm(1.5)
     section.header_distance = Cm(0.45)
     section.footer_distance = Cm(0.45)
     set_repeat_header(section)
     add_page_number(section)
 
     normal = doc.styles["Normal"]
-    normal.font.name = "Aptos"
+    normal.font.name = "Times New Roman"
     normal.font.size = Pt(10)
     normal.font.color.rgb = RGBColor.from_string(INK)
     normal.paragraph_format.space_after = Pt(2.5)
@@ -136,70 +129,46 @@ def setup_document(doc):
 
     for style_name in ("Title", "Subtitle"):
         style = doc.styles[style_name]
-        style.font.name = "Aptos Display"
+        style.font.name = "Times New Roman"
 
 
 def add_title(doc, title, subtitle, score=True, identity=True):
     p = doc.add_paragraph()
-    p.paragraph_format.space_after = Pt(1)
-    p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    p.paragraph_format.space_after = Pt(2)
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run(title)
-    run.font.name = "Aptos Display"
-    run.font.size = Pt(21)
+    run.font.name = "Times New Roman"
+    run.font.size = Pt(18)
     run.font.bold = True
-    run.font.color.rgb = RGBColor.from_string(NAVY)
-    run = p.add_run("  /  ")
-    run.font.size = Pt(14)
-    run.font.bold = True
-    run.font.color.rgb = RGBColor.from_string(CORAL)
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.paragraph_format.space_after = Pt(6)
     run = p.add_run(subtitle)
-    run.font.size = Pt(12)
-    run.font.bold = True
-    run.font.color.rgb = RGBColor.from_string(TEAL)
+    run.font.name = "Times New Roman"
+    run.font.size = Pt(10.5)
 
     if identity:
         p = doc.add_paragraph()
-        p.paragraph_format.space_after = Pt(5)
+        p.paragraph_format.space_after = Pt(7)
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         r = p.add_run("Name 姓名：__________________    Date 日期：______________")
-        r.font.size = Pt(8.5)
-        r.font.color.rgb = RGBColor.from_string(MID)
+        r.font.size = Pt(10)
         if score:
             r = p.add_run("    Score 得分：______ / 40")
-            r.font.bold = True
-            r.font.color.rgb = RGBColor.from_string(CORAL)
 
 
 def add_section_heading(doc, label, title, meta):
-    table = doc.add_table(rows=1, cols=2)
-    table.autofit = False
-    table.columns[0].width = Cm(1.15)
-    table.columns[1].width = Cm(17.15)
-    table.rows[0].height = Cm(0.72)
-    table.rows[0].height_rule = WD_ROW_HEIGHT_RULE.AT_LEAST
-    left, right = table.rows[0].cells
-    set_cell_shading(left, TEAL)
-    set_cell_shading(right, PALE_TEAL)
-    for cell in (left, right):
-        cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
-        set_cell_margins(cell, 45, 80, 45, 80)
-        set_cell_border(cell, bottom={"val": "single", "sz": "5", "color": TEAL})
-    p = left.paragraphs[0]
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = p.add_run(label)
+    p = doc.add_paragraph()
+    p.paragraph_format.space_before = Pt(4)
+    p.paragraph_format.space_after = Pt(3)
+    r = p.add_run(f"Part {label}.  {title}")
     r.bold = True
-    r.font.size = Pt(10)
-    r.font.color.rgb = RGBColor.from_string(WHITE)
-    p = right.paragraphs[0]
-    p.paragraph_format.space_after = Pt(0)
-    r = p.add_run(title)
-    r.bold = True
-    r.font.size = Pt(10.5)
-    r.font.color.rgb = RGBColor.from_string(NAVY)
-    r = p.add_run(f"   {meta}")
-    r.font.size = Pt(8)
-    r.font.color.rgb = RGBColor.from_string(MID)
+    r.font.size = Pt(11)
+    if meta:
+        r = p.add_run(f"  （{meta}）")
+        r.font.size = Pt(9)
     keep_paragraph(p, keep_next=True)
-    return table
+    return p
 
 
 def add_tense_bank(doc):
@@ -219,7 +188,7 @@ def add_tense_bank(doc):
     for i, (name, clue) in enumerate(items):
         cell = table.cell(i // 4, i % 4)
         cell.width = width
-        set_cell_shading(cell, PALE_CORAL if i % 2 else PALE_TEAL)
+        set_cell_shading(cell, WHITE)
         set_cell_margins(cell, 50, 70, 50, 70)
         set_cell_border(cell, top={"val": "single", "sz": "3", "color": LIGHT},
                         bottom={"val": "single", "sz": "3", "color": LIGHT},
@@ -230,10 +199,8 @@ def add_tense_bank(doc):
         r = p.add_run(name + "\n")
         r.bold = True
         r.font.size = Pt(8)
-        r.font.color.rgb = RGBColor.from_string(NAVY)
         r = p.add_run(clue)
         r.font.size = Pt(8)
-        r.font.color.rgb = RGBColor.from_string(MID)
     doc.add_paragraph().paragraph_format.space_after = Pt(0)
 
 
@@ -261,7 +228,7 @@ def add_mc_grid(doc, items):
         cell = table.cell(i // 2, i % 2)
         cell.width = Cm(9.1)
         set_cell_margins(cell, 55, 80, 45, 80)
-        set_cell_shading(cell, "F8FAFB")
+        set_cell_shading(cell, WHITE)
         set_cell_border(cell, top={"val": "single", "sz": "3", "color": LIGHT},
                         bottom={"val": "single", "sz": "3", "color": LIGHT},
                         start={"val": "single", "sz": "3", "color": LIGHT},
@@ -277,20 +244,12 @@ def add_mc_grid(doc, items):
 
 
 def add_tip(doc, text):
-    table = doc.add_table(rows=1, cols=1)
-    cell = table.cell(0, 0)
-    set_cell_shading(cell, YELLOW)
-    set_cell_margins(cell, 55, 85, 55, 85)
-    set_cell_border(cell, start={"val": "single", "sz": "16", "color": CORAL})
-    p = cell.paragraphs[0]
-    p.paragraph_format.space_after = Pt(0)
-    r = p.add_run("TIME DETECTIVE TIP  ")
+    p = doc.add_paragraph()
+    p.paragraph_format.space_after = Pt(4)
+    r = p.add_run("提示：")
     r.bold = True
-    r.font.size = Pt(7.8)
-    r.font.color.rgb = RGBColor.from_string(CORAL)
     r = p.add_run(text)
-    r.font.size = Pt(7.8)
-    r.font.color.rgb = RGBColor.from_string(INK)
+    r.font.size = Pt(9)
 
 
 def add_correction_grid(doc, items):
@@ -318,7 +277,7 @@ def add_correction_grid(doc, items):
 def add_passage(doc):
     table = doc.add_table(rows=1, cols=1)
     cell = table.cell(0, 0)
-    set_cell_shading(cell, "F7FAFC")
+    set_cell_shading(cell, WHITE)
     set_cell_margins(cell, 90, 110, 85, 110)
     set_cell_border(cell, top={"val": "single", "sz": "4", "color": TEAL},
                     bottom={"val": "single", "sz": "4", "color": TEAL},
